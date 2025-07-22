@@ -1,5 +1,3 @@
-using SalesRecords.Products.Api.Contracts.Dtos;
-
 namespace SalesRecords.Products.Contracts.Dtos;
 
 public class ProductDto
