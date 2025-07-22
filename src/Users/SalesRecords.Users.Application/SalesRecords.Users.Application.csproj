@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Shared\SalesRecords.SharedKernel\SalesRecords.SharedKernel.csproj" />
+      <ProjectReference Include="..\..\Shared\SalesRecords.Shared.SharedKernel\SalesRecords.Shared.SharedKernel.csproj" />
       <ProjectReference Include="..\SalesRecords.Users.Contracts\SalesRecords.Users.Contracts.csproj" />
       <ProjectReference Include="..\SalesRecords.Users.Domain\SalesRecords.Users.Domain.csproj" />
     </ItemGroup>

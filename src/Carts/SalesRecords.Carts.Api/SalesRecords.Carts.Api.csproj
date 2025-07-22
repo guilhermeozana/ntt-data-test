@@ -15,7 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Shared\SalesRecords.Shared.Api\SalesRecords.Shared.Api.csproj" />
-      <ProjectReference Include="..\..\Shared\SalesRecords.SharedKernel\SalesRecords.SharedKernel.csproj" />
+      <ProjectReference Include="..\..\Shared\SalesRecords.Shared.SharedKernel\SalesRecords.Shared.SharedKernel.csproj" />
       <ProjectReference Include="..\SalesRecords.Carts.Application\SalesRecords.Carts.Application.csproj" />
       <ProjectReference Include="..\SalesRecords.Carts.Contracts\SalesRecords.Carts.Contracts.csproj" />
       <ProjectReference Include="..\SalesRecords.Carts.Infrastructure\SalesRecords.Carts.Infrastructure.csproj" />
