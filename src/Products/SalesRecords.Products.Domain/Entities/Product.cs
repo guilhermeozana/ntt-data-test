@@ -1,10 +1,10 @@
 using SalesRecords.Products.Domain.ValueObjects;
+using SalesRecords.Shared.SharedKernel.Domain;
 
 namespace SalesRecords.Products.Domain.Entities;
 
-public class Product
+public class Product: AggregateRoot<int>
 {
-    public Guid Id { get; private set; }
     public string Title { get; private set; }
     public decimal Price { get; private set; }
     public string Description { get; private set; }
@@ -12,9 +12,8 @@ public class Product
     public string Image { get; private set; }
     public Rating Rating { get; private set; }
 
-    private Product(Guid id, string title, decimal price, string description, string category, string image, Rating rating)
+    private Product(string title, decimal price, string description, string category, string image, Rating rating)
     {
-        Id = id;
         Title = title;
         Price = price;
         Description = description;
@@ -22,10 +21,12 @@ public class Product
         Image = image;
         Rating = rating;
     }
+    
+    private Product() { }
 
     public static Product Create(string title, decimal price, string description, string category, string image, Rating rating)
     {
-        return new Product(Guid.NewGuid(), title, price, description, category, image, rating);
+        return new Product(title, price, description, category, image, rating);
     }
 
     public void Update(string title, decimal price, string description, string category, string image, Rating rating)

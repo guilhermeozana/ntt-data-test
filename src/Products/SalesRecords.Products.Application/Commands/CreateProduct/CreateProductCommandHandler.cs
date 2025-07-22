@@ -1,7 +1,6 @@
 using AutoMapper;
 using ErrorOr;
 using MediatR;
-using SalesRecords.Products.Api.Contracts.Dtos;
 using SalesRecords.Products.Application.Common.Interfaces;
 using SalesRecords.Products.Contracts.Dtos;
 using SalesRecords.Products.Domain.Entities;

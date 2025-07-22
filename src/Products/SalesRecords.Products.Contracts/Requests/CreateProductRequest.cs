@@ -1,13 +1,13 @@
-using SalesRecords.Products.Api.Contracts.Dtos;
+using SalesRecords.Products.Contracts.Dtos;
 
-namespace SalesRecords.Products.Api.Contracts;
+namespace SalesRecords.Products.Contracts.Requests;
 
 public class CreateProductRequest
 {
-    public string Title { get; set; }
+    public required string Title { get; set; }
     public decimal Price { get; set; }
-    public string Description { get; set; }
-    public string Category { get; set; }
-    public string Image { get; set; }
-    public RatingDto Rating { get; set; }
+    public string? Description { get; set; }
+    public required string Category { get; set; }
+    public string? Image { get; set; }
+    public RatingDto? Rating { get; set; }
 }

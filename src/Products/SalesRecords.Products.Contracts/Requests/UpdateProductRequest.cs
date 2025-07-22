@@ -1,6 +1,6 @@
-using SalesRecords.Products.Api.Contracts.Dtos;
+using SalesRecords.Products.Contracts.Dtos;
 
-namespace SalesRecords.Products.Api.Contracts;
+namespace SalesRecords.Products.Contracts.Requests;
 
 public class UpdateProductRequest
 {

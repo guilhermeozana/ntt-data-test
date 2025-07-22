@@ -1,12 +1,13 @@
 using MediatR;
+using ErrorOr;
 
-namespace SalesRecords.Products.Application.Commands;
+namespace SalesRecords.Products.Application.Commands.DeleteProduct;
 
-public class DeleteProductCommand : IRequest<bool>
+public class DeleteProductCommand : IRequest<ErrorOr<Deleted>>
 {
-    public Guid Id { get; }
+    public int Id { get; }
 
-    public DeleteProductCommand(Guid id)
+    public DeleteProductCommand(int id)
     {
         Id = id;
     }

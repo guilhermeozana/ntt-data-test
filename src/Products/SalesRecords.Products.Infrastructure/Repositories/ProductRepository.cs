@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using SalesRecords.Products.Application.Common.Interfaces;
 using SalesRecords.Products.Domain.Entities;
 using SalesRecords.Products.Infrastructure.Context;
+using SalesRecords.Shared.SharedKernel.Dtos;
+using SalesRecords.Shared.SharedKernel.Extensions;
+using SalesRecords.Shared.SharedKernel.Pagination;
 
 namespace SalesRecords.Products.Infrastructure.Repositories
 {
@@ -14,27 +17,28 @@ namespace SalesRecords.Products.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<Product>> GetAllAsync()
+        public async Task<PagedResult<Product>> GetAllAsync(QueryCriteriaDto queryCriteria)
         {
-            return await _context.Products.ToListAsync();
+            IQueryable<Product> filteredQuery = _context.Products
+                .ApplyFiltering(queryCriteria.Filters, queryCriteria.MinValues, queryCriteria.MaxValues);
+
+            var totalCount = await filteredQuery.CountAsync();
+
+            var pagedItems = await filteredQuery
+                .ApplyOrdering(queryCriteria.Order)
+                .ApplyPagination(queryCriteria.Page, queryCriteria.Size)
+                .ToListAsync();
+
+            return new PagedResult<Product>
+            {
+                Items = pagedItems,
+                TotalCount = totalCount
+            };
         }
 
-        public async Task<Product?> GetByIdAsync(Guid id)
+        public async Task<Product?> GetByIdAsync(int id)
         {
             return await _context.Products.FindAsync(id);
-        }
-
-        public async Task<List<Product>> GetByCategoryAsync(string category, int? limit)
-        {
-            var query = _context.Products
-                .Where(p => p.Category == category);
-
-            if (limit.HasValue)
-                query = query.Take(limit.Value);
-
-            return await query
-                .OrderBy(p => p.Id)
-                .ToListAsync();
         }
 
         public async Task AddAsync(Product product)
@@ -56,8 +60,38 @@ namespace SalesRecords.Products.Infrastructure.Repositories
             
             return true;
         }
+        
+        public async Task<List<string>> GetAllCategoriesAsync()
+        {
+            return await _context.Products
+                .Select(p => p.Category)
+                .Distinct()
+                .OrderBy(c => c)
+                .ToListAsync();
+        }
+        
+        public async Task<PagedResult<Product>> GetByCategoryAsync(string category, QueryCriteriaDto queryCriteria)
+        {
+            var baseQuery = _context.Products
+                .Where(p => p.Category == category)
+                .ApplyFiltering(queryCriteria.Filters, queryCriteria.MinValues, queryCriteria.MaxValues);
 
-        public async Task<bool> ExistsAsync(Guid id)
+            var totalCount = await baseQuery.CountAsync();
+
+            var pagedQuery = baseQuery
+                .ApplyOrdering(queryCriteria.Order)
+                .ApplyPagination(queryCriteria.Page, queryCriteria.Size);
+
+            var products = await pagedQuery.ToListAsync();
+
+            return new PagedResult<Product>
+            {
+                Items = products,
+                TotalCount = totalCount
+            };
+        }
+
+        public async Task<bool> ExistsAsync(int id)
         {
             return await _context.Products.AnyAsync(p => p.Id.Equals(id));
         }

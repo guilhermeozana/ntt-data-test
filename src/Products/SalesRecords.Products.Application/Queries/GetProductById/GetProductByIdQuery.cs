@@ -6,9 +6,9 @@ namespace SalesRecords.Products.Application.Queries.GetProductById;
 
 public class GetProductByIdQuery : IRequest<ErrorOr<ProductDto>>
 {
-    public Guid Id { get; }
+    public int Id { get; }
 
-    public GetProductByIdQuery(Guid id)
+    public GetProductByIdQuery(int id)
     {
         Id = id;
     }

@@ -1,6 +1,5 @@
 using ErrorOr;
 using MediatR;
-using SalesRecords.Products.Api.Contracts.Dtos;
 using SalesRecords.Products.Contracts.Dtos;
 
 namespace SalesRecords.Products.Application.Commands.CreateProduct;

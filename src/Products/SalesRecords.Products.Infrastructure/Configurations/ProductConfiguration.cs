@@ -25,6 +25,16 @@ namespace SalesRecords.Products.Infrastructure.Configurations
 
             builder.Property(p => p.Category)
                 .HasMaxLength(50);
+            
+            builder.OwnsOne(p => p.Rating, rating =>
+            {
+                rating.Property(r => r.Rate)
+                    .HasColumnName("Rating_Rate")
+                    .HasColumnType("decimal(3,2)");
+
+                rating.Property(r => r.Count)
+                    .HasColumnName("Rating_Count");
+            });
         }
     }
 }

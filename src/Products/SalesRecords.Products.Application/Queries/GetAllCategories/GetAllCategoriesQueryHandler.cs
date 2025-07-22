@@ -8,7 +8,7 @@ using SalesRecords.Products.Domain.Entities;
 
 namespace SalesRecords.Products.Application.Queries.GetAllCategories;
 
-public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllProductsQuery, ErrorOr<List<ProductDto>>>
+public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuery, ErrorOr<List<string>>>
 {
     private readonly IProductRepository _repo;
     private readonly IMapper _mapper;
@@ -19,12 +19,10 @@ public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllProductsQuery,
         _mapper = mapper;
     }
 
-    public async Task<ErrorOr<List<ProductDto>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<List<string>>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
     {
-        var products = await _repo.GetAllAsync();
+        var categories = await _repo.GetAllCategoriesAsync();
         
-        var productDtos = _mapper.Map<List<ProductDto>>(products);
-        
-        return productDtos;
+        return categories;
     }
 }

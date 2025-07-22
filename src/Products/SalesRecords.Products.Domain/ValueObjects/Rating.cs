@@ -7,6 +7,8 @@ public class Rating
         Rate = rate;
         Count = count;
     }
+    
+    private Rating() { }
 
     public double Rate { get; set; }
     public int Count { get; set; }

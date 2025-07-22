@@ -1,20 +1,20 @@
 using MediatR;
 using ErrorOr;
-using SalesRecords.Products.Application.Common.Queries;
 using SalesRecords.Products.Contracts.Dtos;
+using SalesRecords.Shared.SharedKernel.Dtos;
+using SalesRecords.Shared.SharedKernel.Responses;
 
 namespace SalesRecords.Products.Application.Queries.GetProductsByCategory;
 
-public class GetProductsByCategoryQueryCriteria : QueryCriteria, IRequest<ErrorOr<List<ProductDto>>>
+public class GetProductsByCategoryQuery : IRequest<ErrorOr<PagedResponse<ProductDto>>>
 {
-    public string Category { get; set; }
-
-    public GetProductsByCategoryQueryCriteria(string category, int page, int size, string? order) 
-        : base(page, size, order)
+    public GetProductsByCategoryQuery(string category, QueryCriteriaDto criteria)
     {
         Category = category;
-        Page = page;
-        Size = size;
-        Order = order;
+        Criteria = criteria;
     }
+
+    public string Category { get; set; }
+    
+    public QueryCriteriaDto Criteria { get; set; }
 }

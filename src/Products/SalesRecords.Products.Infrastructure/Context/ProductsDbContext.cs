@@ -14,6 +14,10 @@ namespace SalesRecords.Products.Infrastructure.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Id)
+                .ValueGeneratedOnAdd();
+
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductsDbContext).Assembly);

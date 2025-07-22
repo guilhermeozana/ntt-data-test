@@ -1,13 +1,9 @@
+using AutoMapper;
 using SalesRecords.Products.Application.Commands.CreateProduct;
 using SalesRecords.Products.Application.Commands.UpdateProduct;
-using SalesRecords.Products.Application.Queries.GetProductsByCategory;
+using SalesRecords.Products.Contracts.Requests;
 
 namespace SalesRecords.Products.Api.Mapping;
-
-using AutoMapper;
-using SalesRecords.Products.Api.Contracts;
-using SalesRecords.Products.Application.Commands;
-using SalesRecords.Products.Application.Queries;
 
 public class ProductMappingProfile : Profile
 {
@@ -15,6 +11,5 @@ public class ProductMappingProfile : Profile
     {
         CreateMap<CreateProductRequest, CreateProductCommand>();
         CreateMap<UpdateProductRequest, UpdateProductCommand>();
-        CreateMap<GetProductsByCategoryRequest, GetProductsByCategoryQuery>();
     }
 }

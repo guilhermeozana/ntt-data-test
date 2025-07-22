@@ -7,11 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Shared\SalesRecords.SharedKernel\SalesRecords.SharedKernel.csproj" />
       <ProjectReference Include="..\SalesRecords.Products.Application\SalesRecords.Products.Application.csproj" />
       <ProjectReference Include="..\SalesRecords.Products.Domain\SalesRecords.Products.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.7" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
