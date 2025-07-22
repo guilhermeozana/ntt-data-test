@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="15.0.1" />
+        <PackageReference Include="ErrorOr" Version="2.0.1" />
+        <PackageReference Include="MediatR" Version="13.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\SalesRecords.Shared.Api\SalesRecords.Shared.Api.csproj" />
+      <ProjectReference Include="..\SalesRecords.Users.Contracts\SalesRecords.Users.Contracts.csproj" />
+      <ProjectReference Include="..\SalesRecords.Users.Infrastructure\SalesRecords.Users.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>
