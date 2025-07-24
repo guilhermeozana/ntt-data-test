@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="ErrorOr" Version="2.0.1" />
+      <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+      <PackageReference Include="MediatR" Version="13.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\DeveloperStore.Shared.Application\DeveloperStore.Shared.Application.csproj" />
+      <ProjectReference Include="..\..\Shared\DeveloperStore.Shared.SharedKernel\DeveloperStore.Shared.SharedKernel.csproj" />
+      <ProjectReference Include="..\..\Users\DeveloperStore.Users.Contracts\DeveloperStore.Users.Contracts.csproj" />
+      <ProjectReference Include="..\DeveloperStore.Auth.Contracts\DeveloperStore.Auth.Contracts.csproj" />
+    </ItemGroup>
+
+</Project>

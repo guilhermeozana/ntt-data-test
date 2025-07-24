@@ -1,0 +1,6 @@
+@DeveloperStore.Users.Api_HostAddress = http://localhost:5270
+
+GET {{DeveloperStore.Users.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

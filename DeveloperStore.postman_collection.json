@@ -1,0 +1,816 @@
+{
+	"info": {
+		"_postman_id": "642c7b54-d515-492d-96b5-bca81f896884",
+		"name": "DeveloperStore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13987605"
+	},
+	"item": [
+		{
+			"name": "Products API",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{productsApiURL}}/products",
+							"host": [
+								"{{productsApiURL}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{productsApiURL}}/products/5",
+							"host": [
+								"{{productsApiURL}}"
+							],
+							"path": [
+								"products",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidW5pcXVlX25hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZGV2ZWxvcGVyc3RvcmUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJqdGkiOiJkMzRiMjllYi1iMGI2LTQwY2MtODg1Yy1mZGY5ZjRkMDg1YmQiLCJleHAiOjE3NTMzMTY5NjksImlzcyI6IkRldmVsb3BlclN0b3JlLkF1dGgiLCJhdWQiOiJEZXZlbG9wZXJTdG9yZS5DbGllbnQifQ.VdYnND0EmMITB4sKsjmZuxpj5m-KywQkD8SCRNyuVcA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Smart Air Fryer\",\r\n  \"price\": 349.90,\r\n  \"description\": \"Digital air fryer with touchscreen, 8 preset modes and auto shut-off for easy cooking.\",\r\n  \"category\": \"Home & Kitchen\",\r\n  \"image\": \"https://cdn.example.com/products/airfryer.jpg\",\r\n  \"rating\": {\r\n    \"rate\": 4.8,\r\n    \"count\": 5123\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{productsApiURL}}/products",
+							"host": [
+								"{{productsApiURL}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Smart Air Fryer\",\r\n  \"price\": 299.90,\r\n  \"description\": \"Digital air fryer with touchscreen, 8 preset modes and auto shut-off for easy cooking.\",\r\n  \"category\": \"Home & Kitchen\",\r\n  \"image\": \"https://cdn.example.com/products/airfryer.jpg\",\r\n  \"rating\": {\r\n    \"rate\": 4.8,\r\n    \"count\": 5123\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{productsApiURL}}/products/5",
+							"host": [
+								"{{productsApiURL}}"
+							],
+							"path": [
+								"products",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{productsApiURL}}/products/1",
+							"host": [
+								"{{productsApiURL}}"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCategories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{productsApiURL}}/products/categories",
+							"host": [
+								"{{productsApiURL}}"
+							],
+							"path": [
+								"products",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetByCategory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{productsApiURL}}/products/category/Home & Kitchen",
+							"host": [
+								"{{productsApiURL}}"
+							],
+							"path": [
+								"products",
+								"category",
+								"Home & Kitchen"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users API",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{usersApiURL}}/users",
+							"host": [
+								"{{usersApiURL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{usersApiURL}}/users/2",
+							"host": [
+								"{{usersApiURL}}"
+							],
+							"path": [
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetByUsername",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidW5pcXVlX25hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZGV2ZWxvcGVyc3RvcmUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJqdGkiOiJkMzRiMjllYi1iMGI2LTQwY2MtODg1Yy1mZGY5ZjRkMDg1YmQiLCJleHAiOjE3NTMzMTY5NjksImlzcyI6IkRldmVsb3BlclN0b3JlLkF1dGgiLCJhdWQiOiJEZXZlbG9wZXJTdG9yZS5DbGllbnQifQ.VdYnND0EmMITB4sKsjmZuxpj5m-KywQkD8SCRNyuVcA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{usersApiURL}}/users/byUsername/admin",
+							"host": [
+								"{{usersApiURL}}"
+							],
+							"path": [
+								"users",
+								"byUsername",
+								"admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin2@developerstore.com\",\r\n    \"username\": \"admin2\",\r\n    \"password\": \"admin123\",\r\n    \"name\": {\r\n        \"firstname\": \"Ana\",\r\n        \"lastname\": \"Costa\"\r\n    },\r\n    \"address\": {\r\n        \"city\": \"São Paulo\",\r\n        \"street\": \"Av. Paulista\",\r\n        \"number\": 1578,\r\n        \"zipcode\": \"01310-200\",\r\n        \"geolocation\": {\r\n            \"lat\": \"-23.564018\",\r\n            \"long\": \"-46.652713\"\r\n        }\r\n    },\r\n    \"phone\": \"(11) 91234-5678\",\r\n    \"status\": \"Active\",\r\n    \"role\": \"Admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{usersApiURL}}/users/",
+							"host": [
+								"{{usersApiURL}}"
+							],
+							"path": [
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin4@developerstore.com\",\r\n    \"username\": \"admin2\",\r\n    \"password\": \"admin123\",\r\n    \"name\": {\r\n        \"firstname\": \"Ana\",\r\n        \"lastname\": \"Costa\"\r\n    },\r\n    \"address\": {\r\n        \"city\": \"São Paulo\",\r\n        \"street\": \"Av. Paulista\",\r\n        \"number\": 1578,\r\n        \"zipcode\": \"01310-200\",\r\n        \"geolocation\": {\r\n            \"lat\": \"-23.564018\",\r\n            \"long\": \"-46.652713\"\r\n        }\r\n    },\r\n    \"phone\": \"(11) 91234-5678\",\r\n    \"status\": \"Active\",\r\n    \"role\": \"Admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{usersApiURL}}/users/3",
+							"host": [
+								"{{usersApiURL}}"
+							],
+							"path": [
+								"users",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{usersApiURL}}/users/2",
+							"host": [
+								"{{usersApiURL}}"
+							],
+							"path": [
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sales API",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{salesApiURL}}/sales",
+							"host": [
+								"{{salesApiURL}}"
+							],
+							"path": [
+								"sales"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{salesApiURL}}/sales/7",
+							"host": [
+								"{{salesApiURL}}"
+							],
+							"path": [
+								"sales",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"customerId\": 42,\r\n  \"branchId\": 3,\r\n  \"date\": \"2025-07-23\",\r\n  \"products\": [\r\n    {\r\n      \"productId\": 101,\r\n      \"quantity\": 2,\r\n      \"unitPrice\": 89.90\r\n    },\r\n    {\r\n      \"productId\": 157,\r\n      \"quantity\": 1,\r\n      \"unitPrice\": 299.00\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{salesApiURL}}/sales",
+							"host": [
+								"{{salesApiURL}}"
+							],
+							"path": [
+								"sales"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"customerId\": 42,\r\n  \"branchId\": 3,\r\n  \"date\": \"2025-07-21\",\r\n  \"products\": [\r\n    {\r\n      \"productId\": 101,\r\n      \"quantity\": 2,\r\n      \"unitPrice\": 89.90\r\n    },\r\n    {\r\n      \"productId\": 157,\r\n      \"quantity\": 1,\r\n      \"unitPrice\": 299.00\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{salesApiURL}}/sales/7",
+							"host": [
+								"{{salesApiURL}}"
+							],
+							"path": [
+								"sales",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{salesApiURL}}/sales/7",
+							"host": [
+								"{{salesApiURL}}"
+							],
+							"path": [
+								"sales",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Carts API",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cartsApiURL}}/carts",
+							"host": [
+								"{{cartsApiURL}}"
+							],
+							"path": [
+								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cartsApiURL}}/carts/5",
+							"host": [
+								"{{cartsApiURL}}"
+							],
+							"path": [
+								"carts",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userId\": 27,\r\n  \"date\": \"2025-07-23\",\r\n  \"products\": [\r\n    {\r\n      \"productId\": 101,\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"productId\": 204,\r\n      \"quantity\": 1\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cartsApiURL}}/carts",
+							"host": [
+								"{{cartsApiURL}}"
+							],
+							"path": [
+								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": 27,\r\n    \"date\": \"22/07/2025 03:00:00\",\r\n    \"products\": [\r\n        {\r\n            \"productId\": 101,\r\n            \"quantity\": 2\r\n        },\r\n        {\r\n            \"productId\": 204,\r\n            \"quantity\": 1\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cartsApiURL}}/carts/5",
+							"host": [
+								"{{cartsApiURL}}"
+							],
+							"path": [
+								"carts",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{cartsApiURL}}/carts/1",
+							"host": [
+								"{{cartsApiURL}}"
+							],
+							"path": [
+								"carts",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth API",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"admin123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7231/auth/login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7231",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "usersApiURL",
+			"value": "https://localhost:7258",
+			"type": "default"
+		},
+		{
+			"key": "productsApiURL",
+			"value": "https://localhost:7032",
+			"type": "default"
+		},
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidW5pcXVlX25hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZGV2ZWxvcGVyc3RvcmUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJqdGkiOiI3ZjU4ODk1ZC03NmFhLTQ5MWUtYWRmYS05NjY0NGM3MzExYmUiLCJleHAiOjE3NTMzMjQzNTMsImlzcyI6IkRldmVsb3BlclN0b3JlLkF1dGgiLCJhdWQiOiJEZXZlbG9wZXJTdG9yZS5DbGllbnQifQ.RKcdkeOXSJggjl2tvRQ1YE9MnO1Pz-LVDH37poSlPpo",
+			"type": "default"
+		},
+		{
+			"key": "salesApiURL",
+			"value": "https://localhost:7220",
+			"type": "default"
+		},
+		{
+			"key": "cartsApiURL",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "authApiURL",
+			"value": "https://localhost:7231",
+			"type": "default"
+		}
+	]
+}

@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Events\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="15.0.1" />
+      <PackageReference Include="ErrorOr" Version="2.0.1" />
+      <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+      <PackageReference Include="MediatR" Version="13.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\DeveloperStore.Shared.Contracts\DeveloperStore.Shared.Contracts.csproj" />
+      <ProjectReference Include="..\..\Shared\DeveloperStore.Shared.SharedKernel\DeveloperStore.Shared.SharedKernel.csproj" />
+      <ProjectReference Include="..\DeveloperStore.Users.Contracts\DeveloperStore.Users.Contracts.csproj" />
+      <ProjectReference Include="..\DeveloperStore.Users.Domain\DeveloperStore.Users.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

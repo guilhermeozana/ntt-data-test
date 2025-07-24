@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="15.0.1" />
+        <PackageReference Include="ErrorOr" Version="2.0.1" />
+        <PackageReference Include="MediatR" Version="13.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\DeveloperStore.Shared.Api\DeveloperStore.Shared.Api.csproj" />
+      <ProjectReference Include="..\DeveloperStore.Carts.Application\DeveloperStore.Carts.Application.csproj" />
+      <ProjectReference Include="..\DeveloperStore.Carts.Contracts\DeveloperStore.Carts.Contracts.csproj" />
+      <ProjectReference Include="..\DeveloperStore.Carts.Infrastructure\DeveloperStore.Carts.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>
