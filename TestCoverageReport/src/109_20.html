@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Application\Commands\CreateUser\CreateUserCommand.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using ErrorOr;
+using MediatR;
+using DeveloperStore.Shared.Contracts.Dtos;
+
+namespace DeveloperStore.Users.Application.Commands.CreateUser;
+
+public class CreateUserCommand : IRequest&lt;ErrorOr&lt;UserDto&gt;&gt;
+{
+    public string Email { get; set; } = default!;
+    public string Username { get; set; } = default!;
+    public string Password { get; set; } = default!;
+    public NameDto Name { get; set; } = new();
+    public AddressDto Address { get; set; } = new();
+    public string Phone { get; set; } = default!;
+    public string Status { get; set; } = &quot;Active&quot;;
+    public string Role { get; set; } = &quot;Customer&quot;;
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,27,9,31,1],[9,32,9,36,1],[9,41,9,49,1],[10,30,10,34,1],[10,35,10,39,1],[10,44,10,52,1],[11,30,11,34,1],[11,35,11,39,1],[11,44,11,52,1],[12,27,12,31,1],[12,32,12,36,1],[12,41,12,46,1],[13,33,13,37,1],[13,38,13,42,1],[13,47,13,52,1],[14,27,14,31,1],[14,32,14,36,1],[14,41,14,49,1],[15,28,15,32,1],[15,33,15,37,1],[15,42,15,50,1],[16,26,16,30,1],[16,31,16,35,1],[16,40,16,50,1]]);
+    </script>
+  </body>
+</html>

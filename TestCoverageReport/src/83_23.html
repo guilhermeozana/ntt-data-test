@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Infrastructure\Repositories\UserRepository.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.EntityFrameworkCore;
+using DeveloperStore.Users.Domain.Entities;
+using DeveloperStore.Users.Infrastructure.Context;
+using DeveloperStore.Shared.SharedKernel.Dtos;
+using DeveloperStore.Shared.SharedKernel.Extensions;
+using DeveloperStore.Shared.SharedKernel.Pagination;
+using DeveloperStore.Users.Application.Common.Repositories;
+
+namespace DeveloperStore.Users.Infrastructure.Repositories;
+
+public class UserRepository : IUserRepository
+{
+    private readonly UsersDbContext _context;
+
+    public UserRepository(UsersDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task&lt;PagedResult&lt;User&gt;&gt; GetAllAsync(QueryCriteriaDto queryCriteria)
+    {
+        var filteredQuery = _context.Users
+            .ApplyFiltering(queryCriteria.Filters, queryCriteria.MinValues, queryCriteria.MaxValues);
+
+        var totalCount = await filteredQuery.CountAsync();
+
+        var pagedQuery = filteredQuery
+            .ApplyOrdering(queryCriteria.Order)
+            .ApplyPagination(queryCriteria.Page, queryCriteria.Size);
+
+        var users = await pagedQuery.ToListAsync();
+
+        return new PagedResult&lt;User&gt;
+        {
+            Items = users,
+            TotalCount = totalCount
+        };
+    }
+
+    public async Task&lt;User?&gt; GetByIdAsync(int id)
+    {
+        return await _context.Users.FindAsync(id);
+    }
+    
+    public async Task&lt;User?&gt; GetByUsernameAsync(string username)
+    {
+        return await _context.Users.Where(u =&gt; u.Username == username).FirstOrDefaultAsync();
+    }
+
+    public async Task AddAsync(User user)
+    {
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(User user)
+    {
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task&lt;bool&gt; DeleteAsync(User user)
+    {
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task&lt;bool&gt; ExistsAsync(int id)
+    {
+        return await _context.Users.AnyAsync(u =&gt; u.Id == id);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,5,15,50,1],[16,5,16,6,1],[17,9,17,28,1],[18,5,18,6,1],[21,5,21,6,1],[22,9,23,102,1],[25,9,25,59,1],[27,9,29,70,1],[31,9,31,52,1],[33,9,37,11,1],[38,5,38,6,1],[41,5,41,6,1],[42,9,42,51,1],[43,5,43,6,1],[46,5,46,6,1],[47,9,47,94,1],[48,5,48,6,1],[51,5,51,6,1],[52,9,52,45,1],[53,9,53,43,1],[54,5,54,6,1],[57,5,57,6,1],[58,9,58,37,1],[59,9,59,43,1],[60,5,60,6,1],[63,5,63,6,1],[64,9,64,37,1],[65,9,65,43,1],[66,9,66,21,1],[67,5,67,6,1],[70,5,70,6,1],[71,9,71,63,1],[72,5,72,6,1]]);
+    </script>
+  </body>
+</html>

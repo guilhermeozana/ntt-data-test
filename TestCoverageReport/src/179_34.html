@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Sales\DeveloperStore.Sales.UnitTests\Domain\Entities\SaleTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentAssertions;
+using DeveloperStore.Sales.Domain.Entities;
+
+namespace DeveloperStore.Sales.UnitTests.Domain.Entities;
+
+public class SaleTests
+{
+    [Fact]
+    public void Create_ShouldInitializeSaleAndEmitEvent()
+    {
+        // Arrange
+        var now = DateTime.Today;
+
+        // Act
+        var sale = Sale.Create(&quot;SALE-0001&quot;, now, customerId: 10, branchId: 1);
+
+        // Assert
+        sale.SaleNumber.Should().Be(&quot;SALE-0001&quot;);
+        sale.Date.Should().Be(now);
+        sale.CustomerId.Should().Be(10);
+        sale.BranchId.Should().Be(1);
+        sale.Products.Should().BeEmpty();
+        sale.IsCancelled.Should().BeFalse();
+        sale.DomainEvents.Should().ContainSingle(e =&gt; e is DeveloperStore.Sales.Domain.Events.SaleCreatedEvent);
+    }
+
+    [Fact]
+    public void AddItem_ShouldAddValidItemAndCalculateTotals()
+    {
+        var sale = Sale.Create(&quot;S-1&quot;, DateTime.Now, 1, 1);
+
+        var result = sale.AddItem(101, 5, 100);
+
+        result.IsError.Should().BeFalse();
+        sale.Products.Should().ContainSingle(i =&gt; i.ProductId == 101);
+        sale.TotalAmount.Should().Be(450); // 5 * 100 - 10% desconto
+    }
+
+    [Fact]
+    public void AddItem_ShouldReplaceExistingItemWithSameProductId()
+    {
+        var sale = Sale.Create(&quot;S-2&quot;, DateTime.Now, 1, 1);
+
+        sale.AddItem(999, 4, 100); // 10% desconto = 360
+        sale.AddItem(999, 10, 100); // 20% desconto = 800
+
+        sale.Products.Should().HaveCount(1);
+        sale.TotalAmount.Should().Be(800);
+    }
+
+    [Fact]
+    public void AddItem_ShouldReturnError_WhenQuantityExceedsLimit()
+    {
+        var sale = Sale.Create(&quot;S-3&quot;, DateTime.Now, 1, 1);
+
+        var result = sale.AddItem(999, 25, 50);
+
+        result.IsError.Should().BeTrue();
+        result.FirstError.Description.Should().Contain(&quot;Cannot purchase more than&quot;);
+        sale.Products.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Update_ShouldChangeValuesAndEmitModifiedEvent()
+    {
+        var sale = Sale.Create(&quot;S-4&quot;, DateTime.Today, 1, 1);
+
+        sale.Update(DateTime.Today.AddDays(1), 2, 3);
+
+        sale.CustomerId.Should().Be(2);
+        sale.BranchId.Should().Be(3);
+        sale.DomainEvents.Should().Contain(e =&gt; e is DeveloperStore.Sales.Domain.Events.SaleModifiedEvent);
+    }
+
+    [Fact]
+    public void Cancel_ShouldMarkSaleAsCancelledAndEmitEvents()
+    {
+        var sale = Sale.Create(&quot;S-5&quot;, DateTime.Now, 1, 1);
+        sale.AddItem(1001, 5, 100);
+        sale.AddItem(1002, 3, 150);
+
+        sale.Cancel();
+
+        sale.IsCancelled.Should().BeTrue();
+        sale.DomainEvents.Should().Contain(e =&gt; e is DeveloperStore.Sales.Domain.Events.SaleCancelledEvent);
+        sale.DomainEvents.Count(e =&gt; e is DeveloperStore.Sales.Domain.Events.ItemCancelledEvent).Should().Be(2);
+    }
+
+    [Fact]
+    public void Cancel_ShouldDoNothing_WhenAlreadyCancelled()
+    {
+        var sale = Sale.Create(&quot;S-6&quot;, DateTime.Now, 1, 1);
+        sale.Cancel();
+        sale.Cancel(); // segunda chamada
+
+        sale.IsCancelled.Should().BeTrue();
+        sale.DomainEvents.Count(e =&gt; e is DeveloperStore.Sales.Domain.Events.SaleCancelledEvent).Should().Be(1);
+    }
+
+    [Fact]
+    public void ClearItems_ShouldRemoveAllProducts()
+    {
+        var sale = Sale.Create(&quot;S-7&quot;, DateTime.Now, 1, 1);
+        sale.AddItem(3001, 5, 10);
+        sale.AddItem(3002, 2, 15);
+
+        sale.ClearItems();
+
+        sale.Products.Should().BeEmpty();
+        sale.TotalAmount.Should().Be(0);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,5,10,6,1],[12,9,12,34,1],[15,9,15,79,1],[18,9,18,50,1],[19,9,19,36,1],[20,9,20,41,1],[21,9,21,38,1],[22,9,22,42,1],[23,9,23,45,1],[24,9,24,113,1],[25,5,25,6,1],[29,5,29,6,1],[30,9,30,59,1],[32,9,32,48,1],[34,9,34,43,1],[35,9,35,71,1],[36,9,36,43,1],[37,5,37,6,1],[41,5,41,6,1],[42,9,42,59,1],[44,9,44,35,1],[45,9,45,36,1],[47,9,47,45,1],[48,9,48,43,1],[49,5,49,6,1],[53,5,53,6,1],[54,9,54,59,1],[56,9,56,48,1],[58,9,58,42,1],[59,9,59,85,1],[60,9,60,42,1],[61,5,61,6,1],[65,5,65,6,1],[66,9,66,61,1],[68,9,68,54,1],[70,9,70,40,1],[71,9,71,38,1],[72,9,72,108,1],[73,5,73,6,1],[77,5,77,6,1],[78,9,78,59,1],[79,9,79,36,1],[80,9,80,36,1],[82,9,82,23,1],[84,9,84,44,1],[85,9,85,109,1],[86,9,86,38,1],[86,38,86,96,1],[86,96,86,113,1],[87,5,87,6,1],[91,5,91,6,1],[92,9,92,59,1],[93,9,93,23,1],[94,9,94,23,1],[96,9,96,44,1],[97,9,97,38,1],[97,38,97,96,1],[97,96,97,113,1],[98,5,98,6,1],[102,5,102,6,1],[103,9,103,59,1],[104,9,104,35,1],[105,9,105,35,1],[107,9,107,27,1],[109,9,109,42,1],[110,9,110,41,1],[111,5,111,6,1]]);
+    </script>
+  </body>
+</html>

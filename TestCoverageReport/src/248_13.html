@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Carts\DeveloperStore.Carts.UnitTests\Application\Queries\GetAllCartsQueryHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Xunit;
+using FluentAssertions;
+using NSubstitute;
+using AutoMapper;
+using DeveloperStore.Carts.Application.Queries.GetAllCarts;
+using DeveloperStore.Carts.Application.Common.Interfaces;
+using DeveloperStore.Carts.Contracts.Dtos;
+using DeveloperStore.Carts.Domain.Entities;
+using DeveloperStore.Shared.SharedKernel.Responses;
+using DeveloperStore.Shared.SharedKernel.Pagination;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
+using DeveloperStore.Shared.SharedKernel.Dtos;
+
+namespace DeveloperStore.Carts.UnitTests.Application.Queries;
+
+public class GetAllCartsQueryHandlerTests
+{
+    private readonly ICartRepository _repo = Substitute.For&lt;ICartRepository&gt;();
+    private readonly IMapper _mapper = Substitute.For&lt;IMapper&gt;();
+    private GetAllCartsQueryHandler CreateHandler() =&gt; new(_repo, _mapper);
+
+    private QueryCriteriaDto BuildCriteria(int page = 1, int size = 2) =&gt; new(page, size, null, null, null, null);
+
+    [Fact]
+    public async Task Handle_ShouldReturnPagedCarts_WhenCartsExist()
+    {
+        // Arrange
+        var criteria = BuildCriteria();
+        var query = new GetAllCartsQuery(criteria);
+
+        var carts = new List&lt;Cart&gt;
+        {
+            Cart.Create(userId: 1, date: new DateTime(2025, 1, 1)),
+            Cart.Create(userId: 2, date: new DateTime(2025, 1, 2))
+        };
+
+        var pagedResult = new PagedResult&lt;Cart&gt;
+        {
+            Items = carts,
+            TotalCount = 5
+        };
+
+        _repo.GetPagedAsync(criteria).Returns(pagedResult);
+
+        _mapper.Map&lt;List&lt;CartDto&gt;&gt;(carts).Returns(new List&lt;CartDto&gt;
+        {
+            new() { UserId = 1, Date = &quot;2025-01-01&quot;, Products = new List&lt;CartItemDto&gt;() },
+            new() { UserId = 2, Date = &quot;2025-01-02&quot;, Products = new List&lt;CartItemDto&gt;() }
+        });
+
+        var handler = CreateHandler();
+
+        // Act
+        var result = await handler.Handle(query, default);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Data.Should().HaveCount(2);
+        result.Value.TotalItems.Should().Be(5);
+        result.Value.CurrentPage.Should().Be(1);
+        result.Value.TotalPages.Should().Be(3); // 5 itens / 2 por p&#225;gina
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnEmpty_WhenNoCartsExist()
+    {
+        var criteria = BuildCriteria();
+        var query = new GetAllCartsQuery(criteria);
+
+        _repo.GetPagedAsync(criteria).Returns(new PagedResult&lt;Cart&gt;
+        {
+            Items = new List&lt;Cart&gt;(),
+            TotalCount = 0
+        });
+
+        _mapper.Map&lt;List&lt;CartDto&gt;&gt;(Arg.Any&lt;List&lt;Cart&gt;&gt;()).Returns(new List&lt;CartDto&gt;());
+
+        var handler = CreateHandler();
+        var result = await handler.Handle(query, default);
+
+        result.IsError.Should().BeFalse();
+        result.Value.Data.Should().BeEmpty();
+        result.Value.TotalItems.Should().Be(0);
+        result.Value.TotalPages.Should().Be(0);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[20,5,20,80,1],[21,5,21,66,1],[22,56,22,75,1],[24,75,24,114,1],[28,5,28,6,1],[30,9,30,40,1],[31,9,31,52,1],[33,9,37,11,1],[39,9,43,11,1],[45,9,45,60,1],[47,9,51,12,1],[53,9,53,39,1],[56,9,56,59,1],[59,9,59,43,1],[60,9,60,49,1],[61,9,61,48,1],[62,9,62,49,1],[63,9,63,48,1],[64,5,64,6,1],[68,5,68,6,1],[69,9,69,40,1],[70,9,70,52,1],[72,9,76,12,1],[78,9,78,88,1],[80,9,80,39,1],[81,9,81,59,1],[83,9,83,43,1],[84,9,84,46,1],[85,9,85,48,1],[86,9,86,48,1],[87,5,87,6,1]]);
+    </script>
+  </body>
+</html>

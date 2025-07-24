@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Products\DeveloperStore.Products.Infrastructure\Configurations\ProductConfiguration.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using DeveloperStore.Products.Domain.Entities;
+
+namespace DeveloperStore.Products.Infrastructure.Configurations
+{
+    public class ProductConfiguration : IEntityTypeConfiguration&lt;Product&gt;
+    {
+        public void Configure(EntityTypeBuilder&lt;Product&gt; builder)
+        {
+            builder.HasKey(p =&gt; p.Id);
+
+            builder.Property(p =&gt; p.Id)
+                .ValueGeneratedOnAdd();
+
+            builder.Property(p =&gt; p.Title)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            builder.Property(p =&gt; p.Description)
+                .HasMaxLength(500);
+
+            builder.Property(p =&gt; p.Price)
+                .HasColumnType(&quot;decimal(18,2)&quot;);
+
+            builder.Property(p =&gt; p.Category)
+                .HasMaxLength(50);
+            
+            builder.OwnsOne(p =&gt; p.Rating, rating =&gt;
+            {
+                rating.Property(r =&gt; r.Rate)
+                    .HasColumnName(&quot;Rating_Rate&quot;)
+                    .HasColumnType(&quot;decimal(3,2)&quot;);
+
+                rating.Property(r =&gt; r.Count)
+                    .HasColumnName(&quot;Rating_Count&quot;);
+            });
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,9,10,10,1],[11,13,11,39,1],[13,13,14,40,1],[16,13,18,36,1],[20,13,21,36,1],[23,13,24,49,1],[26,13,27,35,1],[29,13,30,13,1],[30,13,30,14,1],[30,14,31,17,1],[31,17,33,52,1],[33,52,35,17,1],[35,17,36,52,1],[36,52,37,13,1],[37,13,37,14,1],[37,14,37,16,1],[38,9,38,10,1]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Sales\DeveloperStore.Sales.Application\Commands\UpdateSale\UpdateSaleCommand.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using ErrorOr;
+using MediatR;
+using DeveloperStore.Sales.Contracts.Dtos;
+
+namespace DeveloperStore.Sales.Application.Commands.UpdateSale;
+
+public class UpdateSaleCommand : IRequest&lt;ErrorOr&lt;SaleDto&gt;&gt;
+{
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+    public int BranchId { get; set; }
+    public string Date { get; set; }
+    public List&lt;SaleItemDto&gt; Products { get; set; } = new();
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,21,9,25,1],[9,26,9,30,1],[10,29,10,33,1],[10,34,10,38,1],[11,27,11,31,1],[11,32,11,36,1],[12,26,12,30,1],[12,31,12,35,1],[13,41,13,45,1],[13,46,13,50,1],[13,55,13,60,1]]);
+    </script>
+  </body>
+</html>

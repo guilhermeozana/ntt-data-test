@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Shared\DeveloperStore.Shared.Api\Extensions\ControllerExtensions.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using ErrorOr;
+using Microsoft.AspNetCore.Mvc;
+
+namespace DeveloperStore.Shared.Api.Extensions;
+
+public static class ControllerExtensions
+{
+    public static IActionResult Problem(this ControllerBase controller, List&lt;Error&gt; errors)
+    {
+        if (errors.Count is 0)
+        {
+            return controller.StatusCode(500, new
+            {
+                type = &quot;InternalServerError&quot;,
+                error = &quot;Unexpected failure&quot;,
+                detail = &quot;No error information was provided&quot;
+            });
+        }
+
+        if (errors.All(e =&gt; e.Type == ErrorType.Validation))
+        {
+            return controller.ValidationProblem(errors);
+        }
+
+        return controller.Problem(errors[0]);
+    }
+
+    public static IActionResult ValidationProblem(this ControllerBase controller, List&lt;Error&gt; errors)
+    {
+        var details = errors.Select(e =&gt; e.Description).ToList();
+
+        return controller.BadRequest(new
+        {
+            type = &quot;ValidationError&quot;,
+            error = &quot;Invalid input data&quot;,
+            detail = string.Join(&quot; | &quot;, details)
+        });
+    }
+
+    public static IActionResult Problem(this ControllerBase controller, Error error)
+    {
+        var (statusCode, type, summary) = error.Type switch
+        {
+            ErrorType.NotFound =&gt; (404, &quot;ResourceNotFound&quot;, &quot;Product not found&quot;),
+            ErrorType.Unauthorized =&gt; (401, &quot;AuthenticationError&quot;, &quot;Invalid authentication token&quot;),
+            ErrorType.Conflict =&gt; (409, &quot;ConflictError&quot;, &quot;Conflicting operation&quot;),
+            ErrorType.Validation =&gt; (400, &quot;ValidationError&quot;, &quot;Invalid input data&quot;),
+            _ =&gt; (500, &quot;InternalServerError&quot;, &quot;Unexpected failure&quot;)
+        };
+
+        return controller.StatusCode(statusCode, new
+        {
+            type = type,
+            error = summary,
+            detail = error.Description
+        });
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,5,9,6,1],[10,9,10,31,1],[11,9,11,10,1],[12,13,17,16,1],[20,9,20,29,1],[20,29,20,59,1],[20,59,20,61,1],[21,9,21,10,1],[22,13,22,57,1],[25,9,25,46,1],[26,5,26,6,1],[29,5,29,6,1],[30,9,30,42,1],[30,42,30,55,1],[30,55,30,66,1],[32,9,37,12,1],[38,5,38,6,1],[41,5,41,6,1],[42,9,44,35,1],[44,35,44,81,1],[44,81,45,39,1],[45,39,45,99,1],[45,99,46,35,1],[46,35,46,82,1],[46,82,47,37,1],[47,37,47,83,1],[47,83,48,18,1],[48,18,48,68,1],[48,68,49,11,1],[51,9,56,12,1],[57,5,57,6,1]]);
+    </script>
+  </body>
+</html>

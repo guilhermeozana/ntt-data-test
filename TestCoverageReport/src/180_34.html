@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Sales\DeveloperStore.Sales.UnitTests\Domain\ValueObjects\SaleItemTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentAssertions;
+using DeveloperStore.Sales.Domain.ValueObjects;
+
+namespace DeveloperStore.Sales.UnitTests.Domain.ValueObjects;
+
+public class SaleItemTests
+{
+    [Theory]
+    [InlineData(3, 0.00)]
+    [InlineData(4, 0.10)]
+    [InlineData(9, 0.10)]
+    [InlineData(10, 0.20)]
+    [InlineData(15, 0.20)]
+    [InlineData(20, 0.20)]
+    [InlineData(21, 0.00)]
+    public void DiscountRate_ShouldMatchQuantityRange(int quantity, decimal expectedRate)
+    {
+        var item = new SaleItem(1, quantity, 100);
+
+        item.DiscountRate.Should().Be(expectedRate);
+    }
+
+    [Fact]
+    public void Should_CalculateDiscountCorrectly()
+    {
+        var item = new SaleItem(productId: 10, quantity: 5, unitPrice: 100);
+
+        item.DiscountRate.Should().Be(0.10m);
+        item.Discount.Should().Be(50);
+        item.TotalAmount.Should().Be(450);
+    }
+
+    [Fact]
+    public void Should_HandleZeroDiscountRate()
+    {
+        var item = new SaleItem(10, 2, 50);
+
+        item.DiscountRate.Should().Be(0.00m);
+        item.Discount.Should().Be(0);
+        item.TotalAmount.Should().Be(100);
+    }
+
+    [Fact]
+    public void Should_RespectEquality_AndBehaveLikeValueObject()
+    {
+        var item1 = new SaleItem(99, 10, 25);
+        var item2 = new SaleItem(99, 10, 25);
+        var item3 = new SaleItem(99, 9, 25);
+
+        item1.Should().Be(item2);
+        item1.Should().NotBe(item3);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[17,5,17,6,1],[18,9,18,51,1],[20,9,20,53,1],[21,5,21,6,1],[25,5,25,6,1],[26,9,26,77,1],[28,9,28,46,1],[29,9,29,39,1],[30,9,30,43,1],[31,5,31,6,1],[35,5,35,6,1],[36,9,36,44,1],[38,9,38,46,1],[39,9,39,38,1],[40,9,40,43,1],[41,5,41,6,1],[45,5,45,6,1],[46,9,46,46,1],[47,9,47,46,1],[48,9,48,45,1],[50,9,50,34,1],[51,9,51,37,1],[52,5,52,6,1]]);
+    </script>
+  </body>
+</html>

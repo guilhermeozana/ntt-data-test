@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Auth\DeveloperStore.Auth.UnitTests\Application\Commands\LoginCommandHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentAssertions;
+using NSubstitute;
+using DeveloperStore.Auth.Application.Commands.Login;
+using DeveloperStore.Auth.Application.External;
+using DeveloperStore.Auth.Application.Security;
+using DeveloperStore.Auth.Contracts.Security;
+using DeveloperStore.Shared.Contracts.Dtos;
+
+namespace DeveloperStore.Auth.UnitTests.Application.Commands;
+
+public class LoginCommandHandlerTests
+{
+    private readonly IUsersApiClient _usersApiClient = Substitute.For&lt;IUsersApiClient&gt;();
+    private readonly IJwtProvider _jwtProvider = Substitute.For&lt;IJwtProvider&gt;();
+    private LoginCommandHandler CreateHandler() =&gt; new(_usersApiClient, _jwtProvider);
+
+    [Fact]
+    public async Task Handle_ShouldReturnToken_WhenCredentialsAreValid()
+    {
+        // Arrange
+        var request = new LoginCommand(&quot;john&quot;, &quot;secure123&quot;);
+        var user = new UserDto
+        {
+            Id = 1,
+            Username = &quot;john&quot;,
+            Password = &quot;secure123&quot;,
+            Email = &quot;john@example.com&quot;,
+            Role = &quot;admin&quot;
+        };
+
+        _usersApiClient.GetByUsernameAsync(&quot;john&quot;).Returns(user);
+        _jwtProvider.Generate(Arg.Any&lt;TokenPayload&gt;()).Returns(&quot;mocked-jwt-token&quot;);
+
+        var handler = CreateHandler();
+
+        // Act
+        var result = await handler.Handle(request, default);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().Be(&quot;mocked-jwt-token&quot;);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnError_WhenUserNotFound()
+    {
+        var request = new LoginCommand(&quot;invalid&quot;, &quot;123&quot;);
+
+        _usersApiClient.GetByUsernameAsync(&quot;invalid&quot;).Returns((UserDto?)null);
+
+        var handler = CreateHandler();
+        var result = await handler.Handle(request, default);
+
+        result.IsError.Should().BeTrue();
+        result.FirstError.Code.Should().Be(&quot;Auth.InvalidCredentials&quot;);
+        result.FirstError.Description.Should().Be(&quot;Invalid username or password.&quot;);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnError_WhenPasswordIsIncorrect()
+    {
+        var request = new LoginCommand(&quot;john&quot;, &quot;wrong-pass&quot;);
+        var user = new UserDto
+        {
+            Id = 2,
+            Username = &quot;john&quot;,
+            Password = &quot;correct-pass&quot;,
+            Email = &quot;john@example.com&quot;,
+            Role = &quot;user&quot;
+        };
+
+        _usersApiClient.GetByUsernameAsync(&quot;john&quot;).Returns(user);
+
+        var handler = CreateHandler();
+        var result = await handler.Handle(request, default);
+
+        result.IsError.Should().BeTrue();
+        result.FirstError.Code.Should().Be(&quot;Auth.InvalidCredentials&quot;);
+        result.FirstError.Description.Should().Be(&quot;Invalid username or password.&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,5,13,90,1],[14,5,14,81,1],[15,52,15,86,1],[19,5,19,6,1],[21,9,21,61,1],[22,9,29,11,1],[31,9,31,66,1],[32,9,32,84,1],[34,9,34,39,1],[37,9,37,61,1],[40,9,40,43,1],[41,9,41,54,1],[42,5,42,6,1],[46,5,46,6,1],[47,9,47,58,1],[49,9,49,79,1],[51,9,51,39,1],[52,9,52,61,1],[54,9,54,42,1],[55,9,55,71,1],[56,9,56,84,1],[57,5,57,6,1],[61,5,61,6,1],[62,9,62,62,1],[63,9,70,11,1],[72,9,72,66,1],[74,9,74,39,1],[75,9,75,61,1],[77,9,77,42,1],[78,9,78,71,1],[79,9,79,84,1],[80,5,80,6,1]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Carts\DeveloperStore.Carts.Infrastructure\Configurations\CartConfiguration.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using DeveloperStore.Carts.Domain.Entities;
+
+namespace DeveloperStore.Carts.Infrastructure.Configurations;
+
+public class CartConfiguration : IEntityTypeConfiguration&lt;Cart&gt;
+{
+    public void Configure(EntityTypeBuilder&lt;Cart&gt; builder)
+    {
+        builder.HasKey(c =&gt; c.Id);
+
+        builder.Property(c =&gt; c.Id)
+            .ValueGeneratedOnAdd();
+
+        builder.Property(c =&gt; c.UserId)
+            .IsRequired();
+
+        builder.Property(c =&gt; c.Date)
+            .IsRequired();
+
+        builder.OwnsMany(c =&gt; c.Products, item =&gt;
+        {
+            item.WithOwner().HasForeignKey(&quot;CartId&quot;);
+
+            item.Property(i =&gt; i.ProductId).IsRequired();
+            item.Property(i =&gt; i.Quantity).IsRequired();
+        });
+
+        builder.Navigation(c =&gt; c.Products)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,5,10,6,1],[11,9,11,35,1],[13,9,14,36,1],[16,9,17,27,1],[19,9,20,27,1],[22,9,23,9,1],[23,9,23,10,1],[23,10,24,13,1],[24,13,24,54,1],[24,54,26,13,1],[26,13,26,58,1],[26,58,27,13,1],[27,13,27,57,1],[27,57,28,9,1],[28,9,28,10,1],[28,10,28,12,1],[30,9,31,62,1],[32,5,32,6,1]]);
+    </script>
+  </body>
+</html>

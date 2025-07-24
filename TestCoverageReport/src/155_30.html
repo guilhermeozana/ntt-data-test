@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Sales\DeveloperStore.Sales.Application\Queries\GetAllSales\GetAllSalesQueryHandler.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using ErrorOr;
+using MediatR;
+using DeveloperStore.Sales.Application.Common.Repositories;
+using DeveloperStore.Sales.Contracts.Dtos;
+using DeveloperStore.Shared.SharedKernel.Responses;
+
+namespace DeveloperStore.Sales.Application.Queries.GetAllSales;
+
+public class GetAllSalesQueryHandler : IRequestHandler&lt;GetAllSalesQuery, ErrorOr&lt;PagedResponse&lt;SaleDto&gt;&gt;&gt;
+{
+    private readonly ISaleRepository _repo;
+    private readonly IMapper _mapper;
+
+    public GetAllSalesQueryHandler(ISaleRepository repo, IMapper mapper)
+    {
+        _repo = repo;
+        _mapper = mapper;
+    }
+
+    public async Task&lt;ErrorOr&lt;PagedResponse&lt;SaleDto&gt;&gt;&gt; Handle(GetAllSalesQuery request, CancellationToken cancellationToken)
+    {
+        var result = await _repo.GetPagedAsync(request.Criteria);
+
+        var saleDtos = _mapper.Map&lt;List&lt;SaleDto&gt;&gt;(result.Items);
+
+        var totalPages = (int)Math.Ceiling((double)result.TotalCount / request.Criteria.Size);
+
+        var pagedResponse = new PagedResponse&lt;SaleDto&gt;
+        {
+            Data = saleDtos,
+            TotalItems = result.TotalCount,
+            CurrentPage = request.Criteria.Page,
+            TotalPages = totalPages
+        };
+
+        return pagedResponse;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,5,15,73,0],[16,5,16,6,0],[17,9,17,22,0],[18,9,18,26,0],[19,5,19,6,0],[22,5,22,6,0],[23,9,23,66,0],[25,9,25,65,0],[27,9,27,95,0],[29,9,35,11,0],[37,9,37,30,0],[38,5,38,6,0]]);
+    </script>
+  </body>
+</html>

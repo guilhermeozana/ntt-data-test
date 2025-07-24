@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Domain\ValueObjects\Name.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using DeveloperStore.Shared.SharedKernel.Domain;
+
+namespace DeveloperStore.Users.Domain.ValueObjects;
+
+public class Name : ValueObject
+{
+    public string Firstname { get; }
+    public string Lastname { get; }
+
+    public Name(string firstname, string lastname)
+    {
+        Firstname = firstname;
+        Lastname = lastname;
+    }
+
+    protected override IEnumerable&lt;object&gt; GetEqualityComponents()
+    {
+        yield return Firstname;
+        yield return Lastname;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[7,31,7,35,1],[8,30,8,34,1],[10,5,10,51,1],[11,5,11,6,1],[12,9,12,31,1],[13,9,13,29,1],[14,5,14,6,1],[17,5,17,6,1],[18,9,18,32,1],[19,9,19,31,1],[20,5,20,6,1]]);
+    </script>
+  </body>
+</html>

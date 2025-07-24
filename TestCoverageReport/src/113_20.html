@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Application\Commands\DeleteUser\DeleteUserCommandHandler.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using DeveloperStore.Users.Application.Common.Repositories;
+using ErrorOr;
+using MediatR;
+
+namespace DeveloperStore.Users.Application.Commands.DeleteUser;
+
+public class DeleteUserCommandHandler : IRequestHandler&lt;DeleteUserCommand, ErrorOr&lt;Deleted&gt;&gt;
+{
+    private readonly IUserRepository _repo;
+
+    public DeleteUserCommandHandler(IUserRepository repo)
+    {
+        _repo = repo;
+    }
+
+    public async Task&lt;ErrorOr&lt;Deleted&gt;&gt; Handle(DeleteUserCommand request, CancellationToken cancellationToken)
+    {
+        var user = await _repo.GetByIdAsync(request.Id);
+
+        if (user == null)
+            return Error.Validation(&quot;User.Delete.NotFound&quot;, $&quot;User with id {request.Id} does not exist&quot;);        
+        
+        var deleted = await _repo.DeleteAsync(user);
+        
+        return deleted ? Result.Deleted : Error.Unexpected(&quot;User.Delete.FailedToDelete&quot;, &quot;Failed to delete user&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[11,5,11,58,1],[12,5,12,6,1],[13,9,13,22,1],[14,5,14,6,1],[17,5,17,6,1],[18,9,18,57,1],[20,9,20,26,1],[21,13,21,106,1],[23,9,23,53,1],[25,9,25,115,1],[26,5,26,6,1]]);
+    </script>
+  </body>
+</html>

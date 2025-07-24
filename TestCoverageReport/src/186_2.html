@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Products\DeveloperStore.Products.Application\Commands\CreateProduct\CreateProductCommandHandler.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using ErrorOr;
+using MediatR;
+using DeveloperStore.Products.Application.Common.Interfaces;
+using DeveloperStore.Products.Contracts.Dtos;
+using DeveloperStore.Products.Domain.Entities;
+using DeveloperStore.Products.Domain.ValueObjects;
+
+namespace DeveloperStore.Products.Application.Commands.CreateProduct;
+
+public class CreateProductCommandHandler : IRequestHandler&lt;CreateProductCommand, ErrorOr&lt;ProductDto&gt;&gt;
+{
+    private readonly IProductRepository _repo;
+    private readonly IMapper _mapper;
+
+    public CreateProductCommandHandler(IProductRepository repo, IMapper mapper)
+    {
+        _repo = repo;
+        _mapper = mapper;
+    }
+
+    public async Task&lt;ErrorOr&lt;ProductDto&gt;&gt; Handle(CreateProductCommand request, CancellationToken cancellationToken)
+    {
+        var rating = new Rating(rate: request.Rating.Rate, count: request.Rating.Count);
+        
+        var product = Product.Create(
+            request.Title,
+            request.Price,
+            request.Description,
+            request.Category,
+            request.Image,
+            rating
+        );
+
+        await _repo.AddAsync(product);
+
+        var productDto = _mapper.Map&lt;ProductDto&gt;(product);
+        
+        return productDto;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,5,16,80,1],[17,5,17,6,1],[18,9,18,22,1],[19,9,19,26,1],[20,5,20,6,1],[23,5,23,6,1],[24,9,24,89,1],[26,9,33,11,1],[35,9,35,39,1],[37,9,37,59,1],[39,9,39,27,1],[40,5,40,6,1]]);
+    </script>
+  </body>
+</html>

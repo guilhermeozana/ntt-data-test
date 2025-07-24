@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Carts\DeveloperStore.Carts.Infrastructure\Migrations\20250723180921_InitialCreate.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace DeveloperStore.Carts.Infrastructure.Migrations
+{
+    /// &lt;inheritdoc /&gt;
+    public partial class InitialCreate : Migration
+    {
+        /// &lt;inheritdoc /&gt;
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: &quot;Carts&quot;,
+                columns: table =&gt; new
+                {
+                    Id = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false)
+                        .Annotation(&quot;Npgsql:ValueGenerationStrategy&quot;, NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false),
+                    Date = table.Column&lt;DateTime&gt;(type: &quot;timestamp with time zone&quot;, nullable: false),
+                    IsCancelled = table.Column&lt;bool&gt;(type: &quot;boolean&quot;, nullable: false)
+                },
+                constraints: table =&gt;
+                {
+                    table.PrimaryKey(&quot;PK_Carts&quot;, x =&gt; x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: &quot;CartItem&quot;,
+                columns: table =&gt; new
+                {
+                    CartId = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false),
+                    Id = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false)
+                        .Annotation(&quot;Npgsql:ValueGenerationStrategy&quot;, NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ProductId = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false),
+                    Quantity = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false)
+                },
+                constraints: table =&gt;
+                {
+                    table.PrimaryKey(&quot;PK_CartItem&quot;, x =&gt; new { x.CartId, x.Id });
+                    table.ForeignKey(
+                        name: &quot;FK_CartItem_Carts_CartId&quot;,
+                        column: x =&gt; x.CartId,
+                        principalTable: &quot;Carts&quot;,
+                        principalColumn: &quot;Id&quot;,
+                        onDelete: ReferentialAction.Cascade);
+                });
+        }
+
+        /// &lt;inheritdoc /&gt;
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: &quot;CartItem&quot;);
+
+            migrationBuilder.DropTable(
+                name: &quot;Carts&quot;);
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,9,14,10,0],[15,13,17,35,0],[17,35,24,18,0],[24,18,26,17,0],[26,17,26,18,0],[26,18,27,21,0],[27,21,27,61,0],[27,61,28,17,0],[28,17,28,18,0],[28,18,28,20,0],[30,13,32,35,0],[32,35,39,18,0],[39,18,41,17,0],[41,17,41,18,0],[41,18,42,21,0],[42,21,42,82,0],[42,82,43,21,0],[43,21,48,62,0],[48,62,49,17,0],[49,17,49,18,0],[49,18,49,20,0],[50,9,50,10,0],[54,9,54,10,0],[55,13,56,35,0],[58,13,59,32,0],[60,9,60,10,0]]);
+    </script>
+  </body>
+</html>

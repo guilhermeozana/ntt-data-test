@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Products\DeveloperStore.Products.UnitTests\Api\Controllers\ProductsControllerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using DeveloperStore.Products.Api.Controllers;
+using DeveloperStore.Products.Application.Commands.CreateProduct;
+using DeveloperStore.Products.Application.Commands.DeleteProduct;
+using DeveloperStore.Products.Application.Commands.UpdateProduct;
+using DeveloperStore.Products.Application.Queries.GetAllCategories;
+using DeveloperStore.Products.Application.Queries.GetAllProducts;
+using DeveloperStore.Products.Application.Queries.GetProductById;
+using DeveloperStore.Products.Application.Queries.GetProductsByCategory;
+using DeveloperStore.Products.Contracts.Dtos;
+using DeveloperStore.Products.Contracts.Requests;
+using DeveloperStore.Shared.Api.Queries;
+using DeveloperStore.Shared.SharedKernel.Responses;
+using ErrorOr;
+using FluentAssertions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using NSubstitute;
+
+namespace DeveloperStore.Products.UnitTests.Api.Controllers;
+
+public class ProductsControllerTests
+{
+    private readonly IMediator _mediator = Substitute.For&lt;IMediator&gt;();
+    private readonly IMapper _mapper = Substitute.For&lt;IMapper&gt;();
+    private readonly ProductsController _controller;
+
+    public ProductsControllerTests()
+    {
+        _controller = new ProductsController(_mediator, _mapper);
+    }
+
+    [Fact]
+    public async Task GetAll_ShouldReturnOk_WhenQueryIsValid()
+    {
+        var queryOptions = new RequestQueryOptions { Page = 1, Size = 10, Order = &quot;title&quot; };
+
+        var response = new PagedResponse&lt;ProductDto&gt;(
+            data: new List&lt;ProductDto&gt; { new ProductDto { Id = 1, Title = &quot;Laptop&quot;, Price = 3000, Category = &quot;tech&quot; } },
+            totalItems: 1,
+            currentPage: 1,
+            totalPages: 1
+        );
+
+        _mediator.Send(Arg.Any&lt;GetAllProductsQuery&gt;(), Arg.Any&lt;CancellationToken&gt;())
+            .Returns(response);
+
+        var result = await _controller.GetAll(queryOptions);
+
+        var ok = result.Should().BeOfType&lt;OkObjectResult&gt;().Subject;
+        ok.Value.Should().BeEquivalentTo(response);
+    }
+
+    [Fact]
+    public async Task GetById_ShouldReturnOk_WhenProductExists()
+    {
+        var product = new ProductDto { Id = 3, Title = &quot;Mouse&quot;, Price = 150, Category = &quot;tech&quot; };
+
+        _mediator.Send(Arg.Any&lt;GetProductByIdQuery&gt;(), Arg.Any&lt;CancellationToken&gt;())
+            .Returns(product);
+
+        var result = await _controller.GetById(3);
+
+        var ok = result.Should().BeOfType&lt;OkObjectResult&gt;().Subject;
+        ok.Value.Should().BeEquivalentTo(product);
+    }
+
+    [Fact]
+    public async Task Create_ShouldReturnCreatedAt_WhenSuccessful()
+    {
+        var request = new CreateProductRequest
+        {
+            Title = &quot;Smartphone&quot;,
+            Price = 2500,
+            Description = &quot;Fast and sleek&quot;,
+            Category = &quot;tech&quot;,
+            Image = &quot;smartphone.jpg&quot;,
+            Rating = new RatingDto { Rate = 4.8, Count = 100 }
+        };
+
+        var command = new CreateProductCommand
+        {
+            Title = request.Title,
+            Price = request.Price,
+            Description = request.Description,
+            Category = request.Category,
+            Image = request.Image,
+            Rating = request.Rating
+        };
+
+        var created = new ProductDto
+        {
+            Id = 10,
+            Title = request.Title,
+            Price = request.Price,
+            Description = request.Description,
+            Category = request.Category,
+            Image = request.Image,
+            Rating = request.Rating
+        };
+
+        _mapper.Map&lt;CreateProductCommand&gt;(request).Returns(command);
+        _mediator.Send(command, Arg.Any&lt;CancellationToken&gt;())
+            .Returns(created);
+
+        var result = await _controller.Create(request);
+
+        var createdAt = result.Should().BeOfType&lt;CreatedAtActionResult&gt;().Subject;
+        createdAt.Value.Should().BeEquivalentTo(created);
+        createdAt.RouteValues![&quot;id&quot;].Should().Be(created.Id);
+    }
+
+    [Fact]
+    public async Task Update_ShouldReturnOk_WhenSuccessful()
+    {
+        var request = new UpdateProductRequest
+        {
+            Id = 5,
+            Title = &quot;Monitor&quot;,
+            Price = 1200,
+            Description = &quot;Full HD display&quot;,
+            Category = &quot;tech&quot;,
+            Image = &quot;monitor.jpg&quot;,
+            Rating = new RatingDto { Rate = 4.5, Count = 80 }
+        };
+
+        var command = new UpdateProductCommand
+        {
+            Id = 5,
+            Title = request.Title,
+            Price = request.Price,
+            Description = request.Description,
+            Category = request.Category,
+            Image = request.Image,
+            Rating = request.Rating
+        };
+
+        var updated = new ProductDto
+        {
+            Id = 5,
+            Title = request.Title,
+            Price = request.Price,
+            Description = request.Description,
+            Category = request.Category,
+            Image = request.Image,
+            Rating = request.Rating
+        };
+
+        _mapper.Map&lt;UpdateProductCommand&gt;(request).Returns(command);
+        _mediator.Send(command, Arg.Any&lt;CancellationToken&gt;())
+            .Returns(updated);
+
+        var result = await _controller.Update(5, request);
+
+        var ok = result.Should().BeOfType&lt;OkObjectResult&gt;().Subject;
+        ok.Value.Should().BeEquivalentTo(updated);
+    }
+
+    [Fact]
+    public async Task Delete_ShouldReturnOk_WhenSuccessful()
+    {
+        _mediator.Send(Arg.Any&lt;DeleteProductCommand&gt;(), Arg.Any&lt;CancellationToken&gt;())
+            .Returns(new Deleted());
+
+        var result = await _controller.Delete(2);
+
+        result.Should().BeOfType&lt;OkObjectResult&gt;();
+    }
+
+    [Fact]
+    public async Task GetAllCategories_ShouldReturnOk_WhenSuccessful()
+    {
+        var categories = new List&lt;string&gt; { &quot;tech&quot;, &quot;fashion&quot;, &quot;books&quot; };
+
+        _mediator.Send(Arg.Any&lt;GetAllCategoriesQuery&gt;(), Arg.Any&lt;CancellationToken&gt;())
+            .Returns(categories);
+
+        var result = await _controller.GetAllCategories();
+
+        var ok = result.Should().BeOfType&lt;OkObjectResult&gt;().Subject;
+        ok.Value.Should().BeEquivalentTo(categories);
+    }
+
+    [Fact]
+    public async Task GetByCategory_ShouldReturnOk_WhenQueryIsValid()
+    {
+        var queryOptions = new RequestQueryOptions { Page = 1, Size = 5, Order = &quot;price&quot; };
+        var category = &quot;books&quot;;
+
+        var response = new PagedResponse&lt;ProductDto&gt;(
+            data: new List&lt;ProductDto&gt; { new ProductDto { Id = 1, Title = &quot;Clean Code&quot;, Price = 99, Category = &quot;books&quot; } },
+            totalItems: 1,
+            currentPage: 1,
+            totalPages: 1
+        );
+
+        _mediator.Send(Arg.Any&lt;GetProductsByCategoryQuery&gt;(), Arg.Any&lt;CancellationToken&gt;())
+            .Returns(response);
+
+        var result = await _controller.GetByCategory(category, queryOptions);
+
+        var ok = result.Should().BeOfType&lt;OkObjectResult&gt;().Subject;
+        ok.Value.Should().BeEquivalentTo(response);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[24,5,24,72,1],[25,5,25,66,1],[28,5,28,37,1],[29,5,29,6,1],[30,9,30,66,1],[31,5,31,6,1],[35,5,35,6,1],[36,9,36,93,1],[38,9,43,11,1],[45,9,46,32,1],[48,9,48,61,1],[50,9,50,69,1],[51,9,51,52,1],[52,5,52,6,1],[56,5,56,6,1],[57,9,57,98,1],[59,9,60,31,1],[62,9,62,51,1],[64,9,64,69,1],[65,9,65,51,1],[66,5,66,6,1],[70,5,70,6,1],[71,9,79,11,1],[81,9,89,11,1],[91,9,100,11,1],[102,9,102,69,1],[103,9,104,31,1],[106,9,106,56,1],[108,9,108,83,1],[109,9,109,58,1],[110,9,110,62,1],[111,5,111,6,1],[115,5,115,6,1],[116,9,125,11,1],[127,9,136,11,1],[138,9,147,11,1],[149,9,149,69,1],[150,9,151,31,1],[153,9,153,59,1],[155,9,155,69,1],[156,9,156,51,1],[157,5,157,6,1],[161,5,161,6,1],[162,9,163,37,1],[165,9,165,50,1],[167,9,167,52,1],[168,5,168,6,1],[172,5,172,6,1],[173,9,173,74,1],[175,9,176,34,1],[178,9,178,59,1],[180,9,180,69,1],[181,9,181,54,1],[182,5,182,6,1],[186,5,186,6,1],[187,9,187,92,1],[188,9,188,32,1],[190,9,195,11,1],[197,9,198,32,1],[200,9,200,78,1],[202,9,202,69,1],[203,9,203,52,1],[204,5,204,6,1]]);
+    </script>
+  </body>
+</html>

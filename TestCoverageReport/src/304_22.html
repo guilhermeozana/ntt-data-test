@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Domain\ValueObjects\Address.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using DeveloperStore.Shared.SharedKernel.Domain;
+
+namespace DeveloperStore.Users.Domain.ValueObjects;
+
+public class Address : ValueObject
+{
+    public string City { get; }
+    public string Street { get; }
+    public int Number { get; }
+    public string Zipcode { get; }
+    public Geolocation Geolocation { get; }
+    
+    private Address() { }
+
+    public Address(string city, string street, int number, string zipcode, Geolocation geolocation)
+    {
+        City = city;
+        Street = street;
+        Number = number;
+        Zipcode = zipcode;
+        Geolocation = geolocation;
+    }
+
+    protected override IEnumerable&lt;object&gt; GetEqualityComponents()
+    {
+        yield return City;
+        yield return Street;
+        yield return Number;
+        yield return Zipcode;
+        yield return Geolocation;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[7,26,7,30,1],[8,28,8,32,1],[9,25,9,29,1],[10,29,10,33,1],[11,38,11,42,1],[13,5,13,22,0],[13,23,13,24,0],[13,25,13,26,0],[15,5,15,100,1],[16,5,16,6,1],[17,9,17,21,1],[18,9,18,25,1],[19,9,19,25,1],[20,9,20,27,1],[21,9,21,35,1],[22,5,22,6,1],[25,5,25,6,1],[26,9,26,27,1],[27,9,27,29,1],[28,9,28,29,1],[29,9,29,30,1],[30,9,30,34,1],[31,5,31,6,1]]);
+    </script>
+  </body>
+</html>

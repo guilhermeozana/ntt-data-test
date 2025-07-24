@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Shared\DeveloperStore.Shared.UnitTests\Api\Extensions\ControllerExtensionsTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Text.Json;
+using DeveloperStore.Shared.Api.Extensions;
+using ErrorOr;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
+
+namespace DeveloperStore.Shared.UnitTests.Api.Extensions;
+
+public class ControllerExtensionsTests
+{
+    private class TestController : ControllerBase { }
+
+    private readonly TestController _controller = new();
+
+    private static JsonElement ToJsonElement(object value)
+    {
+        var json = JsonSerializer.Serialize(value);
+        return JsonDocument.Parse(json).RootElement;
+    }
+
+    [Fact]
+    public void Problem_ShouldReturn500_WhenErrorListIsEmpty()
+    {
+        // Arrange
+        var errors = new List&lt;Error&gt;();
+
+        // Act
+        var result = _controller.Problem(errors) as ObjectResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result!.StatusCode.Should().Be(500);
+
+        var root = ToJsonElement(result.Value!);
+        root.GetProperty(&quot;type&quot;).GetString().Should().Be(&quot;InternalServerError&quot;);
+        root.GetProperty(&quot;error&quot;).GetString().Should().Be(&quot;Unexpected failure&quot;);
+        root.GetProperty(&quot;detail&quot;).GetString().Should().Be(&quot;No error information was provided&quot;);
+    }
+
+    [Fact]
+    public void Problem_ShouldReturnValidationProblem_WhenAllErrorsAreValidation()
+    {
+        // Arrange
+        var errors = new List&lt;Error&gt;
+        {
+            Error.Validation(&quot;field1&quot;, &quot;Invalid name&quot;),
+            Error.Validation(&quot;field2&quot;, &quot;Invalid price&quot;)
+        };
+
+        // Act
+        var result = _controller.Problem(errors) as BadRequestObjectResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result!.StatusCode.Should().Be(400);
+
+        var root = ToJsonElement(result.Value!);
+        root.GetProperty(&quot;type&quot;).GetString().Should().Be(&quot;ValidationError&quot;);
+        root.GetProperty(&quot;error&quot;).GetString().Should().Be(&quot;Invalid input data&quot;);
+        root.GetProperty(&quot;detail&quot;).GetString().Should().Contain(&quot;Invalid name&quot;);
+        root.GetProperty(&quot;detail&quot;).GetString().Should().Contain(&quot;Invalid price&quot;);
+    }
+
+    [Theory]
+    [InlineData(ErrorType.NotFound, 404, &quot;ResourceNotFound&quot;, &quot;Product not found&quot;)]
+    [InlineData(ErrorType.Unauthorized, 401, &quot;AuthenticationError&quot;, &quot;Invalid authentication token&quot;)]
+    [InlineData(ErrorType.Conflict, 409, &quot;ConflictError&quot;, &quot;Conflicting operation&quot;)]
+    [InlineData(ErrorType.Validation, 400, &quot;ValidationError&quot;, &quot;Invalid input data&quot;)]
+    [InlineData(ErrorType.Unexpected, 500, &quot;InternalServerError&quot;, &quot;Unexpected failure&quot;)]
+    public void Problem_ShouldMapErrorTypeToStatusCode(ErrorType type, int expectedCode, string expectedType, string expectedMessage)
+    {
+        // Arrange
+        var error = Error.Custom((int)type, &quot;err_code&quot;, &quot;detail message&quot;);
+
+        // Act
+        var result = _controller.Problem(error) as ObjectResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result!.StatusCode.Should().Be(expectedCode);
+
+        var root = ToJsonElement(result.Value!);
+        root.GetProperty(&quot;type&quot;).GetString().Should().Be(expectedType);
+        root.GetProperty(&quot;error&quot;).GetString().Should().Be(expectedMessage);
+        root.GetProperty(&quot;detail&quot;).GetString().Should().Be(&quot;detail message&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,5,13,57,1],[16,5,16,6,1],[17,9,17,52,1],[18,9,18,53,1],[19,5,19,6,1],[23,5,23,6,1],[25,9,25,40,1],[28,9,28,66,1],[31,9,31,37,1],[32,9,32,45,1],[34,9,34,49,1],[35,9,35,81,1],[36,9,36,81,1],[37,9,37,97,1],[38,5,38,6,1],[42,5,42,6,1],[44,9,48,11,1],[51,9,51,76,1],[54,9,54,37,1],[55,9,55,45,1],[57,9,57,49,1],[58,9,58,77,1],[59,9,59,81,1],[60,9,60,81,1],[61,9,61,82,1],[62,5,62,6,1],[71,5,71,6,1],[73,9,73,75,1],[76,9,76,65,1],[79,9,79,37,1],[80,9,80,54,1],[82,9,82,49,1],[83,9,83,72,1],[84,9,84,76,1],[85,9,85,78,1],[86,5,86,6,1]]);
+    </script>
+  </body>
+</html>

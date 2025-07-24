@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Users\DeveloperStore.Users.UnitTests\Api\Controllers\UsersControllerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using DeveloperStore.Shared.Api.Queries;
+using DeveloperStore.Shared.Contracts.Dtos;
+using DeveloperStore.Shared.SharedKernel.Responses;
+using DeveloperStore.Users.Api.Controllers;
+using DeveloperStore.Users.Application.Commands.CreateUser;
+using DeveloperStore.Users.Application.Commands.DeleteUser;
+using DeveloperStore.Users.Application.Commands.UpdateUser;
+using DeveloperStore.Users.Application.Queries.GetAllUsers;
+using DeveloperStore.Users.Application.Queries.GetUserById;
+using DeveloperStore.Users.Application.Queries.GetUserByUsername;
+using DeveloperStore.Users.Contracts.Requests;
+using ErrorOr;
+using FluentAssertions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using NSubstitute;
+
+namespace DeveloperStore.Users.UnitTests.Api.Controllers;
+
+public class UsersControllerTests
+{
+    private readonly IMediator _mediator = Substitute.For&lt;IMediator&gt;();
+    private readonly IMapper _mapper = Substitute.For&lt;IMapper&gt;();
+    private readonly UsersController _controller;
+
+    public UsersControllerTests()
+    {
+        _controller = new UsersController(_mediator, _mapper);
+    }
+
+    [Fact]
+    public async Task GetAll_ShouldReturnOk_WhenQueryIsValid()
+    {
+        var request = new RequestQueryOptions { Page = 1, Size = 10, Order = &quot;username&quot; };
+
+        var expected = new PagedResponse&lt;UserDto&gt;(
+            data: new List&lt;UserDto&gt; { new UserDto { Id = 1, Username = &quot;user1&quot;, Email = &quot;user1@example.com&quot; } },
+            totalItems: 1,
+            currentPage: 1,
+            totalPages: 1
+        );
+
+        _mediator.Send(Arg.Any&lt;GetAllUsersQuery&gt;(), Arg.Any&lt;CancellationToken&gt;())
+            .Returns(expected);
+
+        var result = await _controller.GetAll(request);
+
+        var ok = result.Should().BeOfType&lt;OkObjectResult&gt;().Subject;
+        ok.Value.Should().BeEquivalentTo(expected);
+    }
+
+    [Fact]
+    public async Task GetById_ShouldReturnOk_WhenUserExists()
+    {
+        var user = new UserDto { Id = 42, Username = &quot;user42&quot;, Email = &quot;u42@example.com&quot; };
+
+        _mediator.Send(Arg.Any&lt;GetUserByIdQuery&gt;(), Arg.Any&lt;CancellationToken&gt;())
+            .Returns(user);
+
+        var result = await _controller.GetById(42);
+
+        var ok = result.Should().BeOfType&lt;OkObjectResult&gt;().Subject;
+        ok.Value.Should().BeEquivalentTo(user);
+    }
+
+    [Fact]
+    public async Task GetByUsername_ShouldReturnOk_WhenUserExists()
+    {
+        var user = new UserDto { Id = 99, Username = &quot;johndoe&quot;, Email = &quot;john@example.com&quot; };
+
+        _mediator.Send(Arg.Any&lt;GetUserByUsernameQuery&gt;(), Arg.Any&lt;CancellationToken&gt;())
+            .Returns(user);
+
+        var result = await _controller.GetByUsername(&quot;johndoe&quot;);
+
+        var ok = result.Should().BeOfType&lt;OkObjectResult&gt;().Subject;
+        ok.Value.Should().BeEquivalentTo(user);
+    }
+
+    [Fact]
+    public async Task Create_ShouldReturnCreatedAt_WhenSuccessful()
+    {
+        var request = new CreateUserRequest
+        {
+            Email = &quot;new@example.com&quot;,
+            Username = &quot;newuser&quot;,
+            Password = &quot;secure&quot;,
+            Name = new NameDto { Firstname = &quot;New&quot;, Lastname = &quot;User&quot; },
+            Address = new AddressDto { City = &quot;Rio&quot;, Street = &quot;Main&quot;, Number = 100 },
+            Phone = &quot;123456789&quot;,
+            Status = &quot;Active&quot;,
+            Role = &quot;Customer&quot;
+        };
+
+        var command = new CreateUserCommand
+        {
+            Email = request.Email,
+            Username = request.Username,
+            Password = request.Password,
+            Name = request.Name,
+            Address = request.Address,
+            Phone = request.Phone,
+            Status = request.Status,
+            Role = request.Role
+        };
+
+        var createdUser = new UserDto
+        {
+            Id = 10,
+            Username = request.Username,
+            Email = request.Email
+        };
+
+        _mapper.Map&lt;CreateUserCommand&gt;(request).Returns(command);
+        _mediator.Send(command, Arg.Any&lt;CancellationToken&gt;())
+            .Returns(createdUser);
+
+        var result = await _controller.Create(request);
+
+        var created = result.Should().BeOfType&lt;CreatedAtActionResult&gt;().Subject;
+        created.Value.Should().BeEquivalentTo(createdUser);
+        created.RouteValues![&quot;id&quot;].Should().Be(createdUser.Id);
+    }
+
+    [Fact]
+    public async Task Update_ShouldReturnOk_WhenSuccessful()
+    {
+        var request = new UpdateUserRequest
+        {
+            Id = 5,
+            Email = &quot;update@example.com&quot;,
+            Username = &quot;updateduser&quot;,
+            Password = &quot;newpass&quot;,
+            Name = new NameDto { Firstname = &quot;Updated&quot;, Lastname = &quot;User&quot; },
+            Address = new AddressDto { City = &quot;SP&quot;, Street = &quot;Rua Nova&quot;, Number = 50 },
+            Phone = &quot;987654321&quot;,
+            Status = &quot;Active&quot;,
+            Role = &quot;Admin&quot;
+        };
+
+        var command = new UpdateUserCommand
+        {
+            Id = 5,
+            Email = request.Email,
+            Username = request.Username,
+            Password = request.Password,
+            Name = request.Name,
+            Address = request.Address,
+            Phone = request.Phone,
+            Status = request.Status,
+            Role = request.Role
+        };
+
+        var updatedUser = new UserDto
+        {
+            Id = 5,
+            Username = request.Username,
+            Email = request.Email
+        };
+
+        _mapper.Map&lt;UpdateUserCommand&gt;(request).Returns(command);
+        _mediator.Send(command, Arg.Any&lt;CancellationToken&gt;())
+            .Returns(updatedUser);
+
+        var result = await _controller.Update(5, request);
+
+        var ok = result.Should().BeOfType&lt;OkObjectResult&gt;().Subject;
+        ok.Value.Should().BeEquivalentTo(updatedUser);
+    }
+
+    [Fact]
+    public async Task Delete_ShouldReturnOk_WhenSuccessful()
+    {
+        _mediator.Send(Arg.Any&lt;DeleteUserCommand&gt;(), Arg.Any&lt;CancellationToken&gt;())
+            .Returns(new Deleted());
+
+        var result = await _controller.Delete(3);
+
+        result.Should().BeOfType&lt;OkObjectResult&gt;();
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[23,5,23,72,1],[24,5,24,66,1],[27,5,27,34,1],[28,5,28,6,1],[29,9,29,63,1],[30,5,30,6,1],[34,5,34,6,1],[35,9,35,91,1],[37,9,42,11,1],[44,9,45,32,1],[47,9,47,56,1],[49,9,49,69,1],[50,9,50,52,1],[51,5,51,6,1],[55,5,55,6,1],[56,9,56,92,1],[58,9,59,28,1],[61,9,61,52,1],[63,9,63,69,1],[64,9,64,48,1],[65,5,65,6,1],[69,5,69,6,1],[70,9,70,94,1],[72,9,73,28,1],[75,9,75,65,1],[77,9,77,69,1],[78,9,78,48,1],[79,5,79,6,1],[83,5,83,6,1],[84,9,94,11,1],[96,9,106,11,1],[108,9,113,11,1],[115,9,115,66,1],[116,9,117,35,1],[119,9,119,56,1],[121,9,121,81,1],[122,9,122,60,1],[123,9,123,64,1],[124,5,124,6,1],[128,5,128,6,1],[129,9,140,11,1],[142,9,153,11,1],[155,9,160,11,1],[162,9,162,66,1],[163,9,164,35,1],[166,9,166,59,1],[168,9,168,69,1],[169,9,169,55,1],[170,5,170,6,1],[174,5,174,6,1],[175,9,176,37,1],[178,9,178,50,1],[180,9,180,52,1],[181,5,181,6,1]]);
+    </script>
+  </body>
+</html>

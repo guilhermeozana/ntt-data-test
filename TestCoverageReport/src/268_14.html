@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Carts\DeveloperStore.Carts.Application\Queries\GetAllCarts\GetAllCartsQuery.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using ErrorOr;
+using MediatR;
+using DeveloperStore.Carts.Contracts.Dtos;
+using DeveloperStore.Shared.SharedKernel.Dtos;
+using DeveloperStore.Shared.SharedKernel.Responses;
+
+namespace DeveloperStore.Carts.Application.Queries.GetAllCarts;
+
+public class GetAllCartsQuery : IRequest&lt;ErrorOr&lt;PagedResponse&lt;CartDto&gt;&gt;&gt;
+{
+    public QueryCriteriaDto Criteria { get; }
+
+    public GetAllCartsQuery(QueryCriteriaDto criteria)
+    {
+        Criteria = criteria;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[11,40,11,44,1],[13,5,13,55,1],[14,5,14,6,1],[15,9,15,29,1],[16,5,16,6,1]]);
+    </script>
+  </body>
+</html>

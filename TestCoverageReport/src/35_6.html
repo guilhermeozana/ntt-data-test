@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Products\DeveloperStore.Products.UnitTests\Domain\Entities\ProductTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentAssertions;
+using DeveloperStore.Products.Domain.Entities;
+using DeveloperStore.Products.Domain.ValueObjects;
+
+namespace DeveloperStore.Products.UnitTests.Domain.Entities;
+
+public class ProductTests
+{
+    private Rating BuildRating(double rate = 4.5, int count = 50)
+        =&gt; new(rate, count);
+
+    [Fact]
+    public void Create_ShouldInitializeProductWithCorrectValues()
+    {
+        var rating = BuildRating();
+
+        var product = Product.Create(
+            title: &quot;Notebook Dell&quot;,
+            price: 3500.99m,
+            description: &quot;Notebook potente para desenvolvimento&quot;,
+            category: &quot;Eletr&#244;nicos&quot;,
+            image: &quot;image-url&quot;,
+            rating: rating
+        );
+
+        product.Title.Should().Be(&quot;Notebook Dell&quot;);
+        product.Price.Should().Be(3500.99m);
+        product.Description.Should().Be(&quot;Notebook potente para desenvolvimento&quot;);
+        product.Category.Should().Be(&quot;Eletr&#244;nicos&quot;);
+        product.Image.Should().Be(&quot;image-url&quot;);
+        product.Rating.Should().Be(rating);
+    }
+
+    [Fact]
+    public void Update_ShouldChangeProductProperties()
+    {
+        var product = Product.Create(
+            title: &quot;Notebook Dell&quot;,
+            price: 3500.99m,
+            description: &quot;Notebook potente para desenvolvimento&quot;,
+            category: &quot;Eletr&#244;nicos&quot;,
+            image: &quot;image-url&quot;,
+            rating: BuildRating()
+        );
+
+        var updatedRating = BuildRating(rate: 4.8, count: 120);
+
+        // Act
+        product.Update(
+            title: &quot;Notebook HP&quot;,
+            price: 2999.99m,
+            description: &quot;Modelo atualizado com &#243;timo custo-benef&#237;cio&quot;,
+            category: &quot;Tecnologia&quot;,
+            image: &quot;new-image-url&quot;,
+            rating: updatedRating
+        );
+
+        // Assert
+        product.Title.Should().Be(&quot;Notebook HP&quot;);
+        product.Price.Should().Be(2999.99m);
+        product.Description.Should().Be(&quot;Modelo atualizado com &#243;timo custo-benef&#237;cio&quot;);
+        product.Category.Should().Be(&quot;Tecnologia&quot;);
+        product.Image.Should().Be(&quot;new-image-url&quot;);
+        product.Rating.Should().Be(updatedRating);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,12,10,28,1],[14,5,14,6,1],[15,9,15,36,1],[17,9,24,11,1],[26,9,26,52,1],[27,9,27,45,1],[28,9,28,82,1],[29,9,29,53,1],[30,9,30,48,1],[31,9,31,44,1],[32,5,32,6,1],[36,5,36,6,1],[37,9,44,11,1],[46,9,46,64,1],[49,9,56,11,1],[59,9,59,50,1],[60,9,60,45,1],[61,9,61,88,1],[62,9,62,52,1],[63,9,63,52,1],[64,9,64,51,1],[65,5,65,6,1]]);
+    </script>
+  </body>
+</html>

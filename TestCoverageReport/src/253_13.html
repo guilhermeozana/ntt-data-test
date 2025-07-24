@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Carts\DeveloperStore.Carts.UnitTests\Domain\ValueObjects\CartItemTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentAssertions;
+using DeveloperStore.Carts.Domain.ValueObjects;
+
+namespace DeveloperStore.Carts.UnitTests.Domain.ValueObjects;
+
+public class CartItemTests
+{
+    [Fact]
+    public void Should_CreateCartItem_WithCorrectValues()
+    {
+        var item = new CartItem(productId: 101, quantity: 3);
+
+        item.ProductId.Should().Be(101);
+        item.Quantity.Should().Be(3);
+    }
+
+    [Fact]
+    public void Should_ConsiderTwoCartItemsEqual_WhenPropertiesAreIdentical()
+    {
+        var item1 = new CartItem(200, 2);
+        var item2 = new CartItem(200, 2);
+
+        item1.Should().Be(item2); // Usa l&#243;gica de ValueObject
+    }
+
+    [Fact]
+    public void Should_ConsiderTwoCartItemsDifferent_WhenProductIdOrQuantityDiffer()
+    {
+        var item1 = new CartItem(300, 1);
+        var item2 = new CartItem(300, 5);
+        var item3 = new CartItem(999, 1);
+
+        item1.Should().NotBe(item2);
+        item1.Should().NotBe(item3);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,5,10,6,1],[11,9,11,62,1],[13,9,13,41,1],[14,9,14,38,1],[15,5,15,6,1],[19,5,19,6,1],[20,9,20,42,1],[21,9,21,42,1],[23,9,23,34,1],[24,5,24,6,1],[28,5,28,6,1],[29,9,29,42,1],[30,9,30,42,1],[31,9,31,42,1],[33,9,33,37,1],[34,9,34,37,1],[35,5,35,6,1]]);
+    </script>
+  </body>
+</html>

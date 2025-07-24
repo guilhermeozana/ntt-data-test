@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Products\DeveloperStore.Products.UnitTests\Domain\ValueObjects\RatingTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentAssertions;
+using DeveloperStore.Products.Domain.ValueObjects;
+
+namespace DeveloperStore.Products.UnitTests.Domain.ValueObjects;
+
+public class RatingTests
+{
+    [Fact]
+    public void Constructor_ShouldInitializeRatingCorrectly()
+    {
+        var rating = new Rating(rate: 4.7, count: 123);
+
+        rating.Rate.Should().Be(4.7);
+        rating.Count.Should().Be(123);
+    }
+
+    [Fact]
+    public void Properties_ShouldBeMutable()
+    {
+        var rating = new Rating(rate: 3.5, count: 80);
+
+        rating.Rate = 4.9;
+        rating.Count = 150;
+
+        rating.Rate.Should().Be(4.9);
+        rating.Count.Should().Be(150);
+    }
+
+    [Theory]
+    [InlineData(0.0, 0)]
+    [InlineData(5.0, 9999)]
+    public void Constructor_ShouldAcceptBoundaryValues(double rate, int count)
+    {
+        var rating = new Rating(rate, count);
+
+        rating.Rate.Should().Be(rate);
+        rating.Count.Should().Be(count);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,5,10,6,1],[11,9,11,56,1],[13,9,13,38,1],[14,9,14,39,1],[15,5,15,6,1],[19,5,19,6,1],[20,9,20,55,1],[22,9,22,27,1],[23,9,23,28,1],[25,9,25,38,1],[26,9,26,39,1],[27,5,27,6,1],[33,5,33,6,1],[34,9,34,46,1],[36,9,36,39,1],[37,9,37,41,1],[38,5,38,6,1]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Carts\DeveloperStore.Carts.Application\Commands\UpdateCart\UpdateCartCommand.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using ErrorOr;
+using MediatR;
+using DeveloperStore.Carts.Contracts.Dtos;
+
+namespace DeveloperStore.Carts.Application.Commands.UpdateCart;
+
+public class UpdateCartCommand : IRequest&lt;ErrorOr&lt;CartDto&gt;&gt;
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public string Date { get; set; }
+    public List&lt;CartItemDto&gt; Products { get; set; }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,21,9,25,1],[9,26,9,30,1],[10,25,10,29,1],[10,30,10,34,1],[11,26,11,30,1],[11,31,11,35,1],[12,41,12,45,1],[12,46,12,50,1]]);
+    </script>
+  </body>
+</html>

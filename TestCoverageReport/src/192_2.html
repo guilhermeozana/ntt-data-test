@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Products\DeveloperStore.Products.Application\Commands\UpdateProduct\UpdateProductCommandValidator.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentValidation;
+
+namespace DeveloperStore.Products.Application.Commands.UpdateProduct;
+
+public class UpdateProductCommandValidator : AbstractValidator&lt;UpdateProductCommand&gt;
+{
+    public UpdateProductCommandValidator()
+    {
+        RuleFor(x =&gt; x.Id)
+            .GreaterThan(0).WithMessage(&quot;Id must be a positive number.&quot;);
+
+        RuleFor(x =&gt; x.Title)
+            .NotEmpty().WithMessage(&quot;Title is required.&quot;);
+
+        RuleFor(x =&gt; x.Price)
+            .GreaterThan(0).WithMessage(&quot;Price must be greater than zero.&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[7,5,7,43,1],[8,5,8,6,1],[9,9,10,74,1],[12,9,13,59,1],[15,9,16,77,1],[17,5,17,6,1]]);
+    </script>
+  </body>
+</html>

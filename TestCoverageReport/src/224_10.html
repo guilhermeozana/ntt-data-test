@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Shared\DeveloperStore.Shared.SharedKernel\Extensions\QueriableExtensions.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Linq.Expressions;
+
+namespace DeveloperStore.Shared.SharedKernel.Extensions;
+
+public static class QueryableExtensions
+{
+    public static IQueryable&lt;T&gt; ApplyOrdering&lt;T&gt;(this IQueryable&lt;T&gt; query, string? order)
+    {
+        if (string.IsNullOrWhiteSpace(order))
+            return query;
+
+        var clauses = order.Split(&#39;,&#39;);
+
+        bool isFirst = true;
+
+        foreach (var clause in clauses)
+        {
+            var tokens = clause.Trim().Split(&#39; &#39;);
+            var propertyName = tokens[0];
+            var descending = tokens.Length &gt; 1 &amp;&amp; tokens[1].Equals(&quot;desc&quot;, StringComparison.OrdinalIgnoreCase);
+
+            query = ApplyOrder(query, propertyName, descending, isFirst);
+            isFirst = false;
+        }
+
+        return query;
+    }
+
+    private static IQueryable&lt;T&gt; ApplyOrder&lt;T&gt;(IQueryable&lt;T&gt; query, string propertyName, bool descending, bool isFirst)
+    {
+        var parameter = Expression.Parameter(typeof(T), &quot;x&quot;);
+        var property = Expression.PropertyOrField(parameter, propertyName);
+        var lambda = Expression.Lambda(property, parameter);
+
+        var methodName = isFirst
+            ? (descending ? &quot;OrderByDescending&quot; : &quot;OrderBy&quot;)
+            : (descending ? &quot;ThenByDescending&quot; : &quot;ThenBy&quot;);
+
+        var method = typeof(Queryable).GetMethods()
+            .First(m =&gt; m.Name == methodName &amp;&amp; m.GetParameters().Length == 2)
+            .MakeGenericMethod(typeof(T), property.Type);
+
+        return (IQueryable&lt;T&gt;)method.Invoke(null, new object[] { query, lambda })!;
+    }
+
+    public static IQueryable&lt;T&gt; ApplyPagination&lt;T&gt;(this IQueryable&lt;T&gt; query, int page, int size)
+    {
+        var skip = (page - 1) * size;
+        var take = size;
+
+        return query.Skip(skip).Take(take);
+    }
+    
+    public static IQueryable&lt;T&gt; ApplyFiltering&lt;T&gt;(
+    this IQueryable&lt;T&gt; query,
+    Dictionary&lt;string, string&gt;? filters,
+    Dictionary&lt;string, decimal&gt;? minValues,
+    Dictionary&lt;string, decimal&gt;? maxValues)
+{
+    var parameter = Expression.Parameter(typeof(T), &quot;x&quot;);
+
+    if (filters is not null)
+    {
+        foreach (var (key, value) in filters)
+        {
+            if (string.IsNullOrWhiteSpace(value)) continue;
+
+            var property = Expression.PropertyOrField(parameter, key);
+            var constant = Expression.Constant(value);
+            Expression comparison;
+
+            if (value.StartsWith(&quot;*&quot;) &amp;&amp; value.EndsWith(&quot;*&quot;))
+            {
+                comparison = Expression.Call(property, &quot;Contains&quot;, null, Expression.Constant(value.Trim(&#39;*&#39;)));
+            }
+            else if (value.StartsWith(&quot;*&quot;))
+            {
+                comparison = Expression.Call(property, &quot;EndsWith&quot;, null, Expression.Constant(value.TrimStart(&#39;*&#39;)));
+            }
+            else if (value.EndsWith(&quot;*&quot;))
+            {
+                comparison = Expression.Call(property, &quot;StartsWith&quot;, null, Expression.Constant(value.TrimEnd(&#39;*&#39;)));
+            }
+            else
+            {
+                comparison = Expression.Equal(property, constant);
+            }
+
+            var lambda = Expression.Lambda&lt;Func&lt;T, bool&gt;&gt;(comparison, parameter);
+            query = query.Where(lambda);
+        }
+    }
+
+    if (minValues is not null)
+    {
+        foreach (var (key, min) in minValues)
+        {
+            var property = Expression.PropertyOrField(parameter, key);
+            var constant = Expression.Constant(min);
+            var comparison = Expression.GreaterThanOrEqual(property, constant);
+            var lambda = Expression.Lambda&lt;Func&lt;T, bool&gt;&gt;(comparison, parameter);
+            query = query.Where(lambda);
+        }
+    }
+
+    if (maxValues is not null)
+    {
+        foreach (var (key, max) in maxValues)
+        {
+            var property = Expression.PropertyOrField(parameter, key);
+            var constant = Expression.Constant(max);
+            var comparison = Expression.LessThanOrEqual(property, constant);
+            var lambda = Expression.Lambda&lt;Func&lt;T, bool&gt;&gt;(comparison, parameter);
+            query = query.Where(lambda);
+        }
+    }
+
+    return query;
+}
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[8,5,8,6,1],[9,9,9,46,1],[10,13,10,26,1],[12,9,12,40,0],[14,9,14,29,0],[16,9,16,16,0],[16,18,16,28,0],[16,29,16,31,0],[16,32,16,39,0],[17,9,17,10,0],[18,13,18,51,0],[19,13,19,42,0],[20,13,20,112,0],[22,13,22,74,0],[23,13,23,29,0],[24,9,24,10,0],[26,9,26,22,0],[27,5,27,6,1],[30,5,30,6,0],[31,9,31,62,0],[32,9,32,76,0],[33,9,33,61,0],[35,9,37,60,0],[39,9,40,25,0],[40,25,40,78,0],[40,78,41,58,0],[43,9,43,84,0],[44,5,44,6,0],[47,5,47,6,1],[48,9,48,38,1],[49,9,49,25,1],[51,9,51,44,1],[52,5,52,6,1],[59,1,59,2,1],[60,5,60,58,1],[62,5,62,29,1],[63,5,63,6,0],[64,9,64,16,0],[64,18,64,34,0],[64,35,64,37,0],[64,38,64,45,0],[65,9,65,10,0],[66,13,66,50,0],[66,51,66,60,0],[68,13,68,71,0],[69,13,69,55,0],[72,13,72,62,0],[73,13,73,14,0],[74,17,74,112,0],[75,13,75,14,0],[76,18,76,44,0],[77,13,77,14,0],[78,17,78,117,0],[79,13,79,14,0],[80,18,80,42,0],[81,13,81,14,0],[82,17,82,117,0],[83,13,83,14,0],[85,13,85,14,0],[86,17,86,67,0],[87,13,87,14,0],[89,13,89,82,0],[90,13,90,41,0],[91,9,91,10,0],[92,5,92,6,0],[94,5,94,31,1],[95,5,95,6,0],[96,9,96,16,0],[96,18,96,32,0],[96,33,96,35,0],[96,36,96,45,0],[97,9,97,10,0],[98,13,98,71,0],[99,13,99,53,0],[100,13,100,80,0],[101,13,101,82,0],[102,13,102,41,0],[103,9,103,10,0],[104,5,104,6,0],[106,5,106,31,1],[107,5,107,6,0],[108,9,108,16,0],[108,18,108,32,0],[108,33,108,35,0],[108,36,108,45,0],[109,9,109,10,0],[110,13,110,71,0],[111,13,111,53,0],[112,13,112,77,0],[113,13,113,82,0],[114,13,114,41,0],[115,9,115,10,0],[116,5,116,6,0],[118,5,118,18,1],[119,1,119,2,1]]);
+    </script>
+  </body>
+</html>

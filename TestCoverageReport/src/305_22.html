@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Domain\ValueObjects\Geolocation.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using DeveloperStore.Shared.SharedKernel.Domain;
+
+namespace DeveloperStore.Users.Domain.ValueObjects;
+
+public class Geolocation : ValueObject
+{
+    public string Lat { get; }
+    public string Long { get; }
+
+    public Geolocation(string lat, string @long)
+    {
+        Lat = lat;
+        Long = @long;
+    }
+
+    protected override IEnumerable&lt;object&gt; GetEqualityComponents()
+    {
+        yield return Lat;
+        yield return Long;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[7,25,7,29,1],[8,26,8,30,1],[10,5,10,49,1],[11,5,11,6,1],[12,9,12,19,1],[13,9,13,22,1],[14,5,14,6,1],[17,5,17,6,1],[18,9,18,26,1],[19,9,19,27,1],[20,5,20,6,1]]);
+    </script>
+  </body>
+</html>

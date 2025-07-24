@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Products\DeveloperStore.Products.Infrastructure\Context\ProductsDbContext.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.EntityFrameworkCore;
+using DeveloperStore.Products.Domain.Entities;
+
+namespace DeveloperStore.Products.Infrastructure.Context
+{
+    public class ProductsDbContext : DbContext
+    {
+        public ProductsDbContext(DbContextOptions&lt;ProductsDbContext&gt; options)
+            : base(options)
+        {
+        }
+
+        public DbSet&lt;Product&gt; Products =&gt; Set&lt;Product&gt;();
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity&lt;Product&gt;()
+                .Property(p =&gt; p.Id)
+                .ValueGeneratedOnAdd();
+
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductsDbContext).Assembly);
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,15,9,28,1],[10,9,10,10,1],[11,9,11,10,1],[13,43,13,57,1],[16,9,16,10,1],[17,13,19,40,1],[21,13,21,48,1],[23,13,23,94,1],[24,9,24,10,1]]);
+    </script>
+  </body>
+</html>

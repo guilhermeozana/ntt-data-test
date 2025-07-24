@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Carts\DeveloperStore.Carts.Application\Queries\GetAllCarts\GetAllCartsQueryHandler.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using ErrorOr;
+using MediatR;
+using DeveloperStore.Carts.Application.Common.Interfaces;
+using DeveloperStore.Carts.Contracts.Dtos;
+using DeveloperStore.Shared.SharedKernel.Responses;
+
+namespace DeveloperStore.Carts.Application.Queries.GetAllCarts;
+
+public class GetAllCartsQueryHandler : IRequestHandler&lt;GetAllCartsQuery, ErrorOr&lt;PagedResponse&lt;CartDto&gt;&gt;&gt;
+{
+    private readonly ICartRepository _repo;
+    private readonly IMapper _mapper;
+
+    public GetAllCartsQueryHandler(ICartRepository repo, IMapper mapper)
+    {
+        _repo = repo;
+        _mapper = mapper;
+    }
+
+    public async Task&lt;ErrorOr&lt;PagedResponse&lt;CartDto&gt;&gt;&gt; Handle(GetAllCartsQuery request, CancellationToken cancellationToken)
+    {
+        var result = await _repo.GetPagedAsync(request.Criteria);
+
+        var cartDtos = _mapper.Map&lt;List&lt;CartDto&gt;&gt;(result.Items);
+
+        var totalPages = (int)Math.Ceiling((double)result.TotalCount / request.Criteria.Size);
+
+        var pagedResponse = new PagedResponse&lt;CartDto&gt;
+        {
+            Data = cartDtos,
+            TotalItems = result.TotalCount,
+            CurrentPage = request.Criteria.Page,
+            TotalPages = totalPages
+        };
+
+        return pagedResponse;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,5,15,73,1],[16,5,16,6,1],[17,9,17,22,1],[18,9,18,26,1],[19,5,19,6,1],[22,5,22,6,1],[23,9,23,66,1],[25,9,25,65,1],[27,9,27,95,1],[29,9,35,11,1],[37,9,37,30,1],[38,5,38,6,1]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Users\DeveloperStore.Users.UnitTests\Application\Queries\GetAllUsersQueryHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using FluentAssertions;
+using NSubstitute;
+using DeveloperStore.Shared.Contracts.Dtos;
+using DeveloperStore.Shared.SharedKernel.Dtos;
+using DeveloperStore.Shared.SharedKernel.Pagination;
+using DeveloperStore.Users.Application.Common.Repositories;
+using DeveloperStore.Users.Application.Queries.GetAllUsers;
+using DeveloperStore.Users.Domain.Entities;
+using DeveloperStore.Users.Domain.Enums;
+
+namespace DeveloperStore.Users.UnitTests.Application.Queries;
+
+public class GetAllUsersQueryHandlerTests
+{
+    private readonly IUserRepository _repo = Substitute.For&lt;IUserRepository&gt;();
+    private readonly IMapper _mapper = Substitute.For&lt;IMapper&gt;();
+    private GetAllUsersQueryHandler CreateHandler() =&gt; new(_repo, _mapper);
+
+    [Fact]
+    public async Task Handle_ShouldReturnPagedUsers_WhenUsersExist()
+    {
+        // Arrange
+        var criteria = new QueryCriteriaDto(
+            page: 1,
+            size: 2, // ⬅️ Mudado para simular 3 p&#225;ginas (5 / 2 = 2.5 → 3)
+            order: &quot;username&quot;,
+            filters: new Dictionary&lt;string, string&gt; { [&quot;status&quot;] = &quot;active&quot; },
+            minValues: null,
+            maxValues: null
+        );
+
+        var query = new GetAllUsersQuery(criteria);
+
+        var domainUsers = new List&lt;User&gt;
+        {
+            User.Create(&quot;u1@email.com&quot;, &quot;u1&quot;, &quot;pwd&quot;, new(&quot;Ana&quot;, &quot;Lima&quot;), new(&quot;Rio&quot;, &quot;R1&quot;, 1, &quot;00000-000&quot;, new(&quot;0&quot;, &quot;0&quot;)), &quot;21999999999&quot;, UserStatus.Active, UserRole.Customer),
+            User.Create(&quot;u2@email.com&quot;, &quot;u2&quot;, &quot;pwd&quot;, new(&quot;Jo&#227;o&quot;, &quot;Silva&quot;), new(&quot;SP&quot;, &quot;R2&quot;, 2, &quot;11111-111&quot;, new(&quot;1&quot;, &quot;1&quot;)), &quot;21988888888&quot;, UserStatus.Inactive, UserRole.Manager)
+        };
+
+        var pagedResult = new PagedResult&lt;User&gt;
+        {
+            Items = domainUsers,
+            TotalCount = 5
+        };
+
+        _repo.GetAllAsync(query.Criteria).Returns(pagedResult);
+
+        _mapper.Map&lt;List&lt;UserDto&gt;&gt;(domainUsers).Returns(new List&lt;UserDto&gt;
+        {
+            new() { Email = &quot;u1@email.com&quot; },
+            new() { Email = &quot;u2@email.com&quot; }
+        });
+
+        var handler = CreateHandler();
+
+        // Act
+        var result = await handler.Handle(query, default);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Data.Should().HaveCount(2);
+        result.Value.TotalItems.Should().Be(5);
+        result.Value.CurrentPage.Should().Be(1);
+        result.Value.TotalPages.Should().Be(3);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnEmptyResult_WhenNoUsersExist()
+    {
+        //Arrange
+        var criteria = new QueryCriteriaDto(
+            page: 1,
+            size: 5,
+            order: &quot;username&quot;,
+            filters: new Dictionary&lt;string, string&gt; { [&quot;status&quot;] = &quot;active&quot; },
+            minValues: null,
+            maxValues: null
+        );
+        
+        var query = new GetAllUsersQuery(criteria);
+
+        _repo.GetAllAsync(query.Criteria).Returns(new PagedResult&lt;User&gt;
+        {
+            Items = new List&lt;User&gt;(),
+            TotalCount = 0
+        });
+
+        _mapper.Map&lt;List&lt;UserDto&gt;&gt;(Arg.Any&lt;List&lt;User&gt;&gt;()).Returns(new List&lt;UserDto&gt;());
+
+        var handler = CreateHandler();
+        
+        //Act
+        var result = await handler.Handle(query, default);
+        
+        //Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Data.Should().BeEmpty();
+        result.Value.TotalItems.Should().Be(0);
+        result.Value.TotalPages.Should().Be(0);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,5,16,80,1],[17,5,17,66,1],[18,56,18,75,1],[22,5,22,6,1],[24,9,31,11,1],[33,9,33,52,1],[35,9,39,11,1],[41,9,45,11,1],[47,9,47,64,1],[49,9,53,12,1],[55,9,55,39,1],[58,9,58,59,1],[61,9,61,43,1],[62,9,62,49,1],[63,9,63,48,1],[64,9,64,49,1],[65,9,65,48,1],[66,5,66,6,1],[70,5,70,6,1],[72,9,79,11,1],[81,9,81,52,1],[83,9,87,12,1],[89,9,89,88,1],[91,9,91,39,1],[94,9,94,59,1],[97,9,97,43,1],[98,9,98,46,1],[99,9,99,48,1],[100,9,100,48,1],[101,5,101,6,1]]);
+    </script>
+  </body>
+</html>

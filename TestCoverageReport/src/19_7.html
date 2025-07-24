@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Shared\DeveloperStore.Shared.Api\Middlewares\ErrorHandlingMiddleware.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Net;
+using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+
+namespace DeveloperStore.Shared.Api.Middlewares;
+
+public class ErrorHandlingMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly ILogger&lt;ErrorHandlingMiddleware&gt; _logger;
+
+    public ErrorHandlingMiddleware(RequestDelegate next, ILogger&lt;ErrorHandlingMiddleware&gt; logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
+
+    public async Task Invoke(HttpContext context)
+    {
+        try
+        {
+            await _next(context);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, &quot;Unhandled exception&quot;);
+
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.ContentType = &quot;application/json&quot;;
+
+            var errorResponse = new
+            {
+                type = &quot;InternalServerError&quot;,
+                error = &quot;Unexpected failure&quot;,
+                detail = ex.Message
+            };
+
+            var json = JsonSerializer.Serialize(errorResponse);
+            await context.Response.WriteAsync(json);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,5,13,98,1],[14,5,14,6,1],[15,9,15,22,1],[16,9,16,26,1],[17,5,17,6,1],[20,5,20,6,1],[22,9,22,10,1],[23,13,23,34,1],[24,9,24,10,1],[25,9,25,29,1],[26,9,26,10,1],[27,13,27,57,1],[29,13,29,83,1],[30,13,30,63,1],[32,13,37,15,1],[39,13,39,64,1],[40,13,40,53,1],[41,9,41,10,1],[42,5,42,6,1]]);
+    </script>
+  </body>
+</html>

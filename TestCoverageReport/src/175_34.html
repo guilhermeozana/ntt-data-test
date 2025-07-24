@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Sales\DeveloperStore.Sales.UnitTests\Application\Queries\GetAllSalesQueryHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentAssertions;
+using DeveloperStore.Sales.Application.Commands.UpdateSale;
+using DeveloperStore.Sales.Contracts.Dtos;
+
+namespace DeveloperStore.Sales.UnitTests.Application.Queries;
+
+public class UpdateSaleCommandValidatorTests
+{
+    private readonly UpdateSaleCommandValidator _validator = new();
+
+    private UpdateSaleCommand BuildValidCommand() =&gt;
+        new UpdateSaleCommand
+        {
+            Id = 1,
+            CustomerId = 10,
+            BranchId = 20,
+            Date = DateTime.Today.ToString(&quot;yyyy-MM-dd&quot;),
+            Products = new List&lt;SaleItemDto&gt;
+            {
+                new() { ProductId = 101, Quantity = 5, UnitPrice = 50 }
+            }
+        };
+
+    [Fact]
+    public void Should_ValidateSuccessfully_WhenCommandIsValid()
+    {
+        var command = BuildValidCommand();
+        var result = _validator.Validate(command);
+        result.IsValid.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Should_FailValidation_WhenIdIsZero()
+    {
+        var command = BuildValidCommand();
+        command.Id = 0;
+
+        var result = _validator.Validate(command);
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; e.PropertyName == &quot;Id&quot;);
+    }
+
+    [Fact]
+    public void Should_FailValidation_WhenDateIsInvalid()
+    {
+        var command = BuildValidCommand();
+        command.Date = &quot;not-a-date&quot;;
+
+        var result = _validator.Validate(command);
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; e.PropertyName == &quot;Date&quot;);
+    }
+
+    [Fact]
+    public void Should_FailValidation_WhenProductQuantityIsTooHigh()
+    {
+        var command = BuildValidCommand();
+        command.Products[0].Quantity = 25;
+
+        var result = _validator.Validate(command);
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; e.PropertyName.Contains(&quot;Products[0].Quantity&quot;));
+    }
+
+    [Fact]
+    public void Should_FailValidation_WhenProductsAreEmpty()
+    {
+        var command = BuildValidCommand();
+        command.Products = new List&lt;SaleItemDto&gt;();
+
+        var result = _validator.Validate(command);
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; e.PropertyName == &quot;Products&quot;);
+    }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(0)]
+    public void Should_Fail_WhenCustomerOrBranchIdIsInvalid(int invalidValue)
+    {
+        var command = BuildValidCommand();
+        command.CustomerId = invalidValue;
+        command.BranchId = invalidValue;
+
+        var result = _validator.Validate(command);
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; e.PropertyName == &quot;CustomerId&quot;);
+        result.Errors.Should().Contain(e =&gt; e.PropertyName == &quot;BranchId&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,5,9,68,1],[12,9,22,10,1],[26,5,26,6,1],[27,9,27,43,1],[28,9,28,51,1],[29,9,29,42,1],[30,5,30,6,1],[34,5,34,6,1],[35,9,35,43,1],[36,9,36,24,1],[38,9,38,51,1],[39,9,39,43,1],[40,9,40,69,1],[41,5,41,6,1],[45,5,45,6,1],[46,9,46,43,1],[47,9,47,37,1],[49,9,49,51,1],[50,9,50,43,1],[51,9,51,71,1],[52,5,52,6,1],[56,5,56,6,1],[57,9,57,43,1],[58,9,58,43,1],[60,9,60,51,1],[61,9,61,43,1],[62,9,62,94,1],[63,5,63,6,1],[67,5,67,6,1],[68,9,68,43,1],[69,9,69,52,1],[71,9,71,51,1],[72,9,72,43,1],[73,9,73,75,1],[74,5,74,6,1],[80,5,80,6,1],[81,9,81,43,1],[82,9,82,43,1],[83,9,83,41,1],[85,9,85,51,1],[86,9,86,43,1],[87,9,87,77,1],[88,9,88,75,1],[89,5,89,6,1]]);
+    </script>
+  </body>
+</html>

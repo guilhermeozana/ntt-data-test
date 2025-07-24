@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Carts\DeveloperStore.Carts.Infrastructure\Context\CartsDbContext.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.EntityFrameworkCore;
+using DeveloperStore.Carts.Domain.Entities;
+
+namespace DeveloperStore.Carts.Infrastructure.Context
+{
+    public class CartsDbContext : DbContext
+    {
+        public CartsDbContext(DbContextOptions&lt;CartsDbContext&gt; options)
+            : base(options)
+        {
+        }
+
+        public DbSet&lt;Cart&gt; Carts =&gt; Set&lt;Cart&gt;();
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity&lt;Cart&gt;()
+                .Property(p =&gt; p.Id)
+                .ValueGeneratedOnAdd();
+
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(CartsDbContext).Assembly);
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,15,9,28,1],[10,9,10,10,1],[11,9,11,10,1],[13,37,13,48,1],[16,9,16,10,1],[17,13,19,40,1],[21,13,21,48,1],[23,13,23,91,1],[24,9,24,10,1]]);
+    </script>
+  </body>
+</html>

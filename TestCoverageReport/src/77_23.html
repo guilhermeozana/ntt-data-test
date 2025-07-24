@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Infrastructure\Configurations\UserConfiguration.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using DeveloperStore.Users.Domain.Entities;
+
+namespace DeveloperStore.Users.Infrastructure.Configurations;
+
+public class UserConfiguration : IEntityTypeConfiguration&lt;User&gt;
+{
+    public void Configure(EntityTypeBuilder&lt;User&gt; builder)
+    {
+        builder.HasKey(u =&gt; u.Id);
+
+        builder.Property(u =&gt; u.Id)
+            .ValueGeneratedOnAdd();
+
+        builder.Property(u =&gt; u.Email)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(u =&gt; u.Username)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        builder.Property(u =&gt; u.Password)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(u =&gt; u.Phone)
+            .IsRequired()
+            .HasMaxLength(20);
+
+        builder.Property(u =&gt; u.Status)
+            .HasConversion&lt;string&gt;()
+            .IsRequired();
+
+        builder.Property(u =&gt; u.Role)
+            .HasConversion&lt;string&gt;()
+            .IsRequired();
+
+        builder.OwnsOne(u =&gt; u.Name, name =&gt;
+        {
+            name.Property(n =&gt; n.Firstname).HasColumnName(&quot;Firstname&quot;).HasMaxLength(50);
+            name.Property(n =&gt; n.Lastname).HasColumnName(&quot;Lastname&quot;).HasMaxLength(50);
+        });
+
+        builder.OwnsOne(u =&gt; u.Address, address =&gt;
+        {
+            address.Property(a =&gt; a.City).HasColumnName(&quot;City&quot;).HasMaxLength(50);
+            address.Property(a =&gt; a.Street).HasColumnName(&quot;Street&quot;).HasMaxLength(100);
+            address.Property(a =&gt; a.Number).HasColumnName(&quot;Number&quot;);
+            address.Property(a =&gt; a.Zipcode).HasColumnName(&quot;Zipcode&quot;).HasMaxLength(20);
+
+            address.OwnsOne(a =&gt; a.Geolocation, geo =&gt;
+            {
+                geo.Property(g =&gt; g.Lat).HasColumnName(&quot;GeoLat&quot;).HasMaxLength(30);
+                geo.Property(g =&gt; g.Long).HasColumnName(&quot;GeoLong&quot;).HasMaxLength(30);
+            });
+        });
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,5,10,6,1],[11,9,11,35,1],[13,9,14,36,1],[16,9,18,32,1],[20,9,22,31,1],[24,9,26,32,1],[28,9,30,31,1],[32,9,34,27,1],[36,9,38,27,1],[40,9,41,9,1],[41,9,41,10,1],[41,10,42,13,1],[42,13,42,89,1],[42,89,43,13,1],[43,13,43,87,1],[43,87,44,9,1],[44,9,44,10,1],[44,10,44,12,1],[46,9,47,9,1],[47,9,47,10,1],[47,10,48,13,1],[48,13,48,82,1],[48,82,49,13,1],[49,13,49,87,1],[49,87,50,13,1],[50,13,50,69,1],[50,69,51,13,1],[51,13,51,88,1],[51,88,53,13,1],[53,13,54,13,1],[54,13,54,14,1],[54,14,55,17,1],[55,17,55,83,1],[55,83,56,17,1],[56,17,56,85,1],[56,85,57,13,1],[57,13,57,14,1],[57,14,57,16,1],[57,16,58,9,1],[58,9,58,10,1],[58,10,58,12,1],[59,5,59,6,1]]);
+    </script>
+  </body>
+</html>

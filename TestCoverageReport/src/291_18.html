@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Users\DeveloperStore.Users.UnitTests\Domain\ValueObjects\NameTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentAssertions;
+using DeveloperStore.Users.Domain.ValueObjects;
+
+namespace DeveloperStore.Users.UnitTests.Domain.ValueObjects;
+
+public class NameTests
+{
+    [Fact]
+    public void Constructor_ShouldInitializeAllProperties()
+    {
+        var name = new Name(&quot;Guilherme&quot;, &quot;Lima&quot;);
+
+        name.Firstname.Should().Be(&quot;Guilherme&quot;);
+        name.Lastname.Should().Be(&quot;Lima&quot;);
+    }
+
+    [Fact]
+    public void Names_WithSameValues_ShouldBeEqual()
+    {
+        var name1 = new Name(&quot;Ana&quot;, &quot;Beatriz&quot;);
+        var name2 = new Name(&quot;Ana&quot;, &quot;Beatriz&quot;);
+
+        name1.Should().Be(name2); // igualdade estrutural
+    }
+
+    [Fact]
+    public void Names_WithDifferentFirstnames_ShouldNotBeEqual()
+    {
+        var name1 = new Name(&quot;Jo&#227;o&quot;, &quot;Silva&quot;);
+        var name2 = new Name(&quot;Maria&quot;, &quot;Silva&quot;);
+
+        name1.Should().NotBe(name2);
+    }
+
+    [Fact]
+    public void Names_WithDifferentLastnames_ShouldNotBeEqual()
+    {
+        var name1 = new Name(&quot;Jo&#227;o&quot;, &quot;Silva&quot;);
+        var name2 = new Name(&quot;Jo&#227;o&quot;, &quot;Oliveira&quot;);
+
+        name1.Should().NotBe(name2);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,5,10,6,1],[11,9,11,50,1],[13,9,13,49,1],[14,9,14,43,1],[15,5,15,6,1],[19,5,19,6,1],[20,9,20,48,1],[21,9,21,48,1],[23,9,23,34,1],[24,5,24,6,1],[28,5,28,6,1],[29,9,29,47,1],[30,9,30,48,1],[32,9,32,37,1],[33,5,33,6,1],[37,5,37,6,1],[38,9,38,47,1],[39,9,39,50,1],[41,9,41,37,1],[42,5,42,6,1]]);
+    </script>
+  </body>
+</html>

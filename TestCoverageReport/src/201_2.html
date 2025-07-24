@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Products\DeveloperStore.Products.Application\Queries\GetProductsByCategory\GetProductsByCategoryQuery.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using MediatR;
+using ErrorOr;
+using DeveloperStore.Products.Contracts.Dtos;
+using DeveloperStore.Shared.SharedKernel.Dtos;
+using DeveloperStore.Shared.SharedKernel.Responses;
+
+namespace DeveloperStore.Products.Application.Queries.GetProductsByCategory;
+
+public class GetProductsByCategoryQuery : IRequest&lt;ErrorOr&lt;PagedResponse&lt;ProductDto&gt;&gt;&gt;
+{
+    public GetProductsByCategoryQuery(string category, QueryCriteriaDto criteria)
+    {
+        Category = category;
+        Criteria = criteria;
+    }
+
+    public string Category { get; set; }
+    
+    public QueryCriteriaDto Criteria { get; set; }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[11,5,11,82,1],[12,5,12,6,1],[13,9,13,29,1],[14,9,14,29,1],[15,5,15,6,1],[17,30,17,34,1],[17,35,17,39,1],[19,40,19,44,1],[19,45,19,49,1]]);
+    </script>
+  </body>
+</html>

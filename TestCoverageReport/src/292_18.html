@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Users\DeveloperStore.Users.UnitTests\Infrastructure\Repositories\UserRepositoryTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using DeveloperStore.Shared.SharedKernel.Dtos;
+using DeveloperStore.Users.Domain.Entities;
+using DeveloperStore.Users.Domain.Enums;
+using DeveloperStore.Users.Domain.ValueObjects;
+using DeveloperStore.Users.Infrastructure.Context;
+using DeveloperStore.Users.Infrastructure.Repositories;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+
+namespace DeveloperStore.Users.UnitTests.Infrastructure.Repositories;
+
+public class UserRepositoryTests
+{
+    private static User CreateUser(string username = &quot;admin&quot;, string email = &quot;admin@example.com&quot;)
+    {
+        var name = new Name(&quot;Junior&quot;, &quot;Silva&quot;);
+        var geo = new Geolocation(&quot;22.9068&quot;, &quot;-43.1729&quot;);
+        var address = new Address(&quot;Rio de Janeiro&quot;, &quot;Rua 1&quot;, 123, &quot;12345-678&quot;, geo);
+
+        return User.Create(
+            email,
+            username,
+            &quot;securePassword&quot;,
+            name,
+            address,
+            &quot;11999999999&quot;,
+            UserStatus.Active,
+            UserRole.Admin
+        );
+    }
+
+    private UserRepository GetRepository(out UsersDbContext context)
+    {
+        var options = new DbContextOptionsBuilder&lt;UsersDbContext&gt;()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+
+        context = new UsersDbContext(options);
+        context.Database.EnsureCreated();
+        return new UserRepository(context);
+    }
+
+    [Fact]
+    public async Task AddAsync_ShouldPersistUser()
+    {
+        var repo = GetRepository(out var context);
+        var user = CreateUser();
+
+        await repo.AddAsync(user);
+
+        context.Users.Should().ContainSingle();
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ShouldReturnUser()
+    {
+        var repo = GetRepository(out var context);
+        var user = CreateUser();
+        await context.Users.AddAsync(user);
+        await context.SaveChangesAsync();
+
+        var result = await repo.GetByIdAsync(user.Id);
+
+        result.Should().NotBeNull();
+        result!.Username.Should().Be(user.Username);
+    }
+
+    [Fact]
+    public async Task GetByUsernameAsync_ShouldFindUserByUsername()
+    {
+        var repo = GetRepository(out var context);
+        var user = CreateUser(&quot;uniqueuser&quot;);
+        await repo.AddAsync(user);
+
+        var found = await repo.GetByUsernameAsync(&quot;uniqueuser&quot;);
+
+        found.Should().NotBeNull();
+        found!.Email.Should().Be(user.Email);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ShouldApplyChanges()
+    {
+        var repo = GetRepository(out var context);
+        var user = CreateUser();
+        await repo.AddAsync(user);
+
+        var newName = new Name(&quot;Jo&#227;o&quot;, &quot;Oliveira&quot;);
+        var geo = new Geolocation(&quot;22.9100&quot;, &quot;-43.1700&quot;);
+        var newAddress = new Address(&quot;Rio de Janeiro&quot;, &quot;Rua 1&quot;, 123, &quot;12345-678&quot;, geo);
+
+        user.Update(&quot;joao@example.com&quot;, &quot;joao&quot;, &quot;newPass&quot;, newName, newAddress, &quot;21999999999&quot;, UserStatus.Inactive, UserRole.Customer);
+        await repo.UpdateAsync(user);
+
+        var updated = await repo.GetByIdAsync(user.Id);
+        updated!.Username.Should().Be(&quot;joao&quot;);
+        updated.Status.Should().Be(UserStatus.Inactive);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ShouldRemoveUser()
+    {
+        var repo = GetRepository(out var context);
+        var user = CreateUser();
+        await repo.AddAsync(user);
+
+        var result = await repo.DeleteAsync(user);
+
+        result.Should().BeTrue();
+        context.Users.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task ExistsAsync_ShouldReturnTrueIfUserExists()
+    {
+        var repo = GetRepository(out var context);
+        var user = CreateUser();
+        await repo.AddAsync(user);
+
+        var exists = await repo.ExistsAsync(user.Id);
+
+        exists.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task GetAllAsync_ShouldReturnPagedUsers()
+    {
+        var repo = GetRepository(out var context);
+
+        for (int i = 0; i &lt; 10; i++)
+        {
+            var user = CreateUser($&quot;user{i}&quot;, $&quot;user{i}@test.com&quot;);
+            await repo.AddAsync(user);
+        }
+
+        var criteria = new QueryCriteriaDto(page: 1, size: 5, order: null, filters: null, minValues: null, maxValues: null);
+        var result = await repo.GetAllAsync(criteria);
+
+        result.Items.Should().HaveCount(5);
+        result.TotalCount.Should().Be(10);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,5,15,6,1],[16,9,16,48,1],[17,9,17,58,1],[18,9,18,85,1],[20,9,29,11,1],[30,5,30,6,1],[33,5,33,6,1],[34,9,36,22,1],[38,9,38,47,1],[39,9,39,42,1],[40,9,40,44,1],[41,5,41,6,1],[45,5,45,6,1],[46,9,46,51,1],[47,9,47,33,1],[49,9,49,35,1],[51,9,51,48,1],[52,5,52,6,1],[56,5,56,6,1],[57,9,57,51,1],[58,9,58,33,1],[59,9,59,44,1],[60,9,60,42,1],[62,9,62,55,1],[64,9,64,37,1],[65,9,65,53,1],[66,5,66,6,1],[70,5,70,6,1],[71,9,71,51,1],[72,9,72,45,1],[73,9,73,35,1],[75,9,75,65,1],[77,9,77,36,1],[78,9,78,46,1],[79,5,79,6,1],[83,5,83,6,1],[84,9,84,51,1],[85,9,85,33,1],[86,9,86,35,1],[88,9,88,52,1],[89,9,89,58,1],[90,9,90,88,1],[92,9,92,136,1],[93,9,93,38,1],[95,9,95,56,1],[96,9,96,47,1],[97,9,97,57,1],[98,5,98,6,1],[102,5,102,6,1],[103,9,103,51,1],[104,9,104,33,1],[105,9,105,35,1],[107,9,107,51,1],[109,9,109,34,1],[110,9,110,42,1],[111,5,111,6,1],[115,5,115,6,1],[116,9,116,51,1],[117,9,117,33,1],[118,9,118,35,1],[120,9,120,54,1],[122,9,122,34,1],[123,5,123,6,1],[127,5,127,6,1],[128,9,128,51,1],[130,14,130,23,1],[130,25,130,31,1],[130,33,130,36,1],[131,9,131,10,1],[132,13,132,68,1],[133,13,133,39,1],[134,9,134,10,1],[136,9,136,125,1],[137,9,137,55,1],[139,9,139,44,1],[140,9,140,43,1],[141,5,141,6,1]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Contracts\Requests\CreateUserRequest.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+
+using DeveloperStore.Shared.Contracts.Dtos;
+
+namespace DeveloperStore.Users.Contracts.Requests;
+
+public class CreateUserRequest
+{
+    public string Email { get; set; } = default!;
+    public string Username { get; set; } = default!;
+    public string Password { get; set; } = default!;
+    public NameDto Name { get; set; } = new();
+    public AddressDto Address { get; set; } = new();
+    public string Phone { get; set; } = default!;
+    public string Status { get; set; } = &quot;Active&quot;;
+    public string Role { get; set; } = &quot;Customer&quot;;
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[8,27,8,31,1],[8,32,8,36,1],[8,41,8,49,1],[9,30,9,34,1],[9,35,9,39,1],[9,44,9,52,1],[10,30,10,34,1],[10,35,10,39,1],[10,44,10,52,1],[11,27,11,31,1],[11,32,11,36,1],[11,41,11,46,1],[12,33,12,37,1],[12,38,12,42,1],[12,47,12,52,1],[13,27,13,31,1],[13,32,13,36,1],[13,41,13,49,1],[14,28,14,32,1],[14,33,14,37,1],[14,42,14,50,1],[15,26,15,30,1],[15,31,15,35,1],[15,40,15,50,1]]);
+    </script>
+  </body>
+</html>

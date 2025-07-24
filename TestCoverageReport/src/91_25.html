@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Auth\DeveloperStore.Auth.UnitTests\Infrastructure\Security\JwtProviderTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using DeveloperStore.Auth.Contracts.Security;
+using DeveloperStore.Auth.Infrastructure.Security;
+using FluentAssertions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Xunit;
+
+namespace DeveloperStore.Auth.UnitTests.Infrastructure.Security;
+
+public class JwtProviderTests
+{
+    [Fact]
+    public void Generate_ShouldReturnValidToken_WhenPayloadIsCorrect()
+    {
+        // Arrange
+        var payload = new TokenPayload
+        {
+            UserId = 1,
+            Username = &quot;guilherme&quot;,
+            Email = &quot;gui@example.com&quot;,
+            Role = &quot;Customer&quot;
+        };
+
+        var configValues = new Dictionary&lt;string, string?&gt;
+        {
+            { &quot;Jwt:Secret&quot;, &quot;super_secure_test_secret_key_1234567890&quot; },
+            { &quot;Jwt:Issuer&quot;, &quot;DeveloperStore&quot; },
+            { &quot;Jwt:Audience&quot;, &quot;DeveloperAudience&quot; }
+        };
+
+        IConfiguration config = new ConfigurationBuilder()
+            .AddInMemoryCollection(configValues!)
+            .Build();
+
+        var provider = new JwtProvider(config);
+
+        // Act
+        var token = provider.Generate(payload);
+
+        // Assert
+        token.Should().NotBeNullOrWhiteSpace();
+
+        var handler = new JwtSecurityTokenHandler();
+        var validationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = config[&quot;Jwt:Issuer&quot;],
+            ValidateAudience = true,
+            ValidAudience = config[&quot;Jwt:Audience&quot;],
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config[&quot;Jwt:Secret&quot;]!)),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+
+        handler.ValidateToken(token, validationParameters, out var validatedToken);
+
+        validatedToken.Should().BeOfType&lt;JwtSecurityToken&gt;();
+        var jwt = (JwtSecurityToken)validatedToken;
+
+        jwt.Claims.Should().Contain(c =&gt; c.Type == JwtRegisteredClaimNames.Sub &amp;&amp; c.Value == payload.UserId.ToString());
+        jwt.Claims.Should().Contain(c =&gt; c.Type == JwtRegisteredClaimNames.Email &amp;&amp; c.Value == payload.Email);
+        jwt.Claims.Should().Contain(c =&gt; c.Type == JwtRegisteredClaimNames.UniqueName &amp;&amp; c.Value == payload.Username);
+        jwt.Claims.Should().Contain(c =&gt; c.Type == System.Security.Claims.ClaimTypes.Role &amp;&amp; c.Value == payload.Role);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,5,16,6,1],[18,9,24,11,1],[26,9,31,11,1],[33,9,35,22,1],[37,9,37,48,1],[40,9,40,48,1],[43,9,43,48,1],[45,9,45,53,1],[46,9,56,11,1],[58,9,58,84,1],[60,9,60,62,1],[61,9,61,52,1],[63,9,63,121,1],[64,9,64,111,1],[65,9,65,119,1],[66,9,66,119,1],[67,5,67,6,1]]);
+    </script>
+  </body>
+</html>

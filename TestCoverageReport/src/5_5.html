@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Products\DeveloperStore.Products.Infrastructure\Migrations\20250723224206_InitialCreate.Designer.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+// &lt;auto-generated /&gt;
+using DeveloperStore.Products.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace DeveloperStore.Products.Infrastructure.Migrations
+{
+    [DbContext(typeof(ProductsDbContext))]
+    [Migration(&quot;20250723224206_InitialCreate&quot;)]
+    partial class InitialCreate
+    {
+        /// &lt;inheritdoc /&gt;
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation(&quot;ProductVersion&quot;, &quot;9.0.7&quot;)
+                .HasAnnotation(&quot;Relational:MaxIdentifierLength&quot;, 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity(&quot;DeveloperStore.Products.Domain.Entities.Product&quot;, b =&gt;
+                {
+                    b.Property&lt;int&gt;(&quot;Id&quot;)
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType(&quot;integer&quot;);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property&lt;int&gt;(&quot;Id&quot;));
+
+                    b.Property&lt;string&gt;(&quot;Category&quot;)
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType(&quot;character varying(50)&quot;);
+
+                    b.Property&lt;string&gt;(&quot;Description&quot;)
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType(&quot;character varying(500)&quot;);
+
+                    b.Property&lt;string&gt;(&quot;Image&quot;)
+                        .IsRequired()
+                        .HasColumnType(&quot;text&quot;);
+
+                    b.Property&lt;decimal&gt;(&quot;Price&quot;)
+                        .HasColumnType(&quot;decimal(18,2)&quot;);
+
+                    b.Property&lt;string&gt;(&quot;Title&quot;)
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType(&quot;character varying(100)&quot;);
+
+                    b.HasKey(&quot;Id&quot;);
+
+                    b.ToTable(&quot;Products&quot;);
+                });
+
+            modelBuilder.Entity(&quot;DeveloperStore.Products.Domain.Entities.Product&quot;, b =&gt;
+                {
+                    b.OwnsOne(&quot;DeveloperStore.Products.Domain.ValueObjects.Rating&quot;, &quot;Rating&quot;, b1 =&gt;
+                        {
+                            b1.Property&lt;int&gt;(&quot;ProductId&quot;)
+                                .HasColumnType(&quot;integer&quot;);
+
+                            b1.Property&lt;int&gt;(&quot;Count&quot;)
+                                .HasColumnType(&quot;integer&quot;)
+                                .HasColumnName(&quot;Rating_Count&quot;);
+
+                            b1.Property&lt;double&gt;(&quot;Rate&quot;)
+                                .HasColumnType(&quot;decimal(3,2)&quot;)
+                                .HasColumnName(&quot;Rating_Rate&quot;);
+
+                            b1.HasKey(&quot;ProductId&quot;);
+
+                            b1.ToTable(&quot;Products&quot;);
+
+                            b1.WithOwner()
+                                .HasForeignKey(&quot;ProductId&quot;);
+                        });
+
+                    b.Navigation(&quot;Rating&quot;)
+                        .IsRequired();
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[19,9,19,10,0],[21,13,23,70,0],[25,13,25,84,0],[27,13,28,17,0],[28,17,28,18,0],[28,18,29,21,0],[29,21,31,51,0],[31,51,33,21,0],[33,21,33,103,0],[33,103,35,21,0],[35,21,38,65,0],[38,65,40,21,0],[40,21,43,66,0],[43,66,45,21,0],[45,21,47,48,0],[47,48,49,21,0],[49,21,50,57,0],[50,57,52,21,0],[52,21,55,66,0],[55,66,57,21,0],[57,21,57,36,0],[57,36,59,21,0],[59,21,59,43,0],[59,43,60,17,0],[60,17,60,18,0],[60,18,60,20,0],[62,13,63,17,0],[63,17,63,18,0],[63,18,64,21,0],[64,21,65,25,0],[65,25,65,26,0],[65,26,66,29,0],[66,29,67,59,0],[67,59,69,29,0],[69,29,71,64,0],[71,64,73,29,0],[73,29,75,63,0],[75,63,77,29,0],[77,29,77,52,0],[77,52,79,29,0],[79,29,79,52,0],[79,52,81,29,0],[81,29,82,61,0],[82,61,83,25,0],[83,25,83,26,0],[83,26,83,28,0],[83,28,85,21,0],[85,21,86,39,0],[86,39,87,17,0],[87,17,87,18,0],[87,18,87,20,0],[89,9,89,10,0]]);
+    </script>
+  </body>
+</html>

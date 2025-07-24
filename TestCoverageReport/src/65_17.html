@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Carts\DeveloperStore.Carts.Infrastructure\Migrations\CartsDbContextModelSnapshot.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+// &lt;auto-generated /&gt;
+using System;
+using DeveloperStore.Carts.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace DeveloperStore.Carts.Infrastructure.Migrations
+{
+    [DbContext(typeof(CartsDbContext))]
+    partial class CartsDbContextModelSnapshot : ModelSnapshot
+    {
+        protected override void BuildModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation(&quot;ProductVersion&quot;, &quot;9.0.7&quot;)
+                .HasAnnotation(&quot;Relational:MaxIdentifierLength&quot;, 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity(&quot;DeveloperStore.Carts.Domain.Entities.Cart&quot;, b =&gt;
+                {
+                    b.Property&lt;int&gt;(&quot;Id&quot;)
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType(&quot;integer&quot;);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property&lt;int&gt;(&quot;Id&quot;));
+
+                    b.Property&lt;DateTime&gt;(&quot;Date&quot;)
+                        .HasColumnType(&quot;timestamp with time zone&quot;);
+
+                    b.Property&lt;bool&gt;(&quot;IsCancelled&quot;)
+                        .HasColumnType(&quot;boolean&quot;);
+
+                    b.Property&lt;int&gt;(&quot;UserId&quot;)
+                        .HasColumnType(&quot;integer&quot;);
+
+                    b.HasKey(&quot;Id&quot;);
+
+                    b.ToTable(&quot;Carts&quot;);
+                });
+
+            modelBuilder.Entity(&quot;DeveloperStore.Carts.Domain.Entities.Cart&quot;, b =&gt;
+                {
+                    b.OwnsMany(&quot;DeveloperStore.Carts.Domain.ValueObjects.CartItem&quot;, &quot;Items&quot;, b1 =&gt;
+                        {
+                            b1.Property&lt;int&gt;(&quot;CartId&quot;)
+                                .HasColumnType(&quot;integer&quot;);
+
+                            b1.Property&lt;int&gt;(&quot;Id&quot;)
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType(&quot;integer&quot;);
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property&lt;int&gt;(&quot;Id&quot;));
+
+                            b1.Property&lt;int&gt;(&quot;ProductId&quot;)
+                                .HasColumnType(&quot;integer&quot;);
+
+                            b1.Property&lt;int&gt;(&quot;Quantity&quot;)
+                                .HasColumnType(&quot;integer&quot;);
+
+                            b1.HasKey(&quot;CartId&quot;, &quot;Id&quot;);
+
+                            b1.ToTable(&quot;CartItem&quot;);
+
+                            b1.WithOwner()
+                                .HasForeignKey(&quot;CartId&quot;);
+                        });
+
+                    b.Navigation(&quot;Items&quot;);
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[17,9,17,10,0],[19,13,21,70,0],[23,13,23,84,0],[25,13,26,17,0],[26,17,26,18,0],[26,18,27,21,0],[27,21,29,51,0],[29,51,31,21,0],[31,21,31,103,0],[31,103,33,21,0],[33,21,34,68,0],[34,68,36,21,0],[36,21,37,51,0],[37,51,39,21,0],[39,21,40,51,0],[40,51,42,21,0],[42,21,42,36,0],[42,36,44,21,0],[44,21,44,40,0],[44,40,45,17,0],[45,17,45,18,0],[45,18,45,20,0],[47,13,48,17,0],[48,17,48,18,0],[48,18,49,21,0],[49,21,50,25,0],[50,25,50,26,0],[50,26,51,29,0],[51,29,52,59,0],[52,59,54,29,0],[54,29,56,59,0],[56,59,58,29,0],[58,29,58,112,0],[58,112,60,29,0],[60,29,61,59,0],[61,59,63,29,0],[63,29,64,59,0],[64,59,66,29,0],[66,29,66,55,0],[66,55,68,29,0],[68,29,68,52,0],[68,52,70,29,0],[70,29,71,58,0],[71,58,72,25,0],[72,25,72,26,0],[72,26,72,28,0],[72,28,74,21,0],[74,21,74,43,0],[74,43,75,17,0],[75,17,75,18,0],[75,18,75,20,0],[77,9,77,10,0]]);
+    </script>
+  </body>
+</html>

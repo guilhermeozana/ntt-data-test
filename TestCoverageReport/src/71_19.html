@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Api\Mapping\UserMappingProfile.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using DeveloperStore.Shared.Contracts.Dtos;
+using DeveloperStore.Users.Application.Commands.CreateUser;
+using DeveloperStore.Users.Application.Commands.UpdateUser;
+using DeveloperStore.Users.Contracts.Requests;
+using DeveloperStore.Users.Domain.Entities;
+using DeveloperStore.Users.Domain.ValueObjects;
+
+namespace DeveloperStore.Users.Api.Mapping;
+
+public class UserMappingProfile : Profile
+{
+    public UserMappingProfile()
+    {
+        CreateMap&lt;User, UserDto&gt;()
+            .ForMember(dest =&gt; dest.Status, opt =&gt; opt.MapFrom(src =&gt; src.Status.ToString()))
+            .ForMember(dest =&gt; dest.Role, opt =&gt; opt.MapFrom(src =&gt; src.Role.ToString()));
+
+        CreateMap&lt;Name, NameDto&gt;();
+        CreateMap&lt;Geolocation, GeolocationDto&gt;();
+        CreateMap&lt;Address, AddressDto&gt;();
+        CreateMap&lt;CreateUserRequest, CreateUserCommand&gt;();
+        CreateMap&lt;UpdateUserRequest, UpdateUserCommand&gt;();
+
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,5,13,32,0],[14,5,14,6,0],[15,9,16,52,0],[16,52,16,93,0],[16,93,17,50,0],[17,50,17,89,0],[17,89,17,91,0],[19,9,19,36,0],[20,9,20,50,0],[21,9,21,42,0],[22,9,22,59,0],[23,9,23,59,0],[25,5,25,6,0]]);
+    </script>
+  </body>
+</html>

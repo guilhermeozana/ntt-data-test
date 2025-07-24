@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Application\DependencyInjection.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace DeveloperStore.Users.Application;
+
+public static class  DependencyInjection
+{
+    public static IServiceCollection AddApplication(this IServiceCollection services)
+    {
+        services.AddFluentValidationAutoValidation(); 
+        services.AddMediatR(options =&gt;
+        {
+            options.RegisterServicesFromAssemblyContaining(typeof(DependencyInjection));
+        });
+    
+        services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjection));
+
+        return services;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,5,10,6,0],[11,9,11,54,0],[12,9,13,9,0],[13,9,13,10,0],[13,10,14,13,0],[14,13,14,89,0],[14,89,15,9,0],[15,9,15,10,0],[15,10,15,12,0],[17,9,17,83,0],[19,9,19,25,0],[20,5,20,6,0]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Auth\DeveloperStore.Auth.UnitTests\Application\Validators\LoginCommandValidatorTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentAssertions;
+using DeveloperStore.Auth.Application.Commands.Login;
+
+namespace DeveloperStore.Auth.UnitTests.Application.Validators;
+
+public class LoginCommandValidatorTests
+{
+    private readonly LoginCommandValidator _validator = new();
+
+    [Fact]
+    public void Should_PassValidation_WhenUsernameAndPasswordAreValid()
+    {
+        var command = new LoginCommand(&quot;john.doe&quot;, &quot;securePass123&quot;);
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Should_HaveError_WhenUsernameIsEmpty()
+    {
+        var command = new LoginCommand(&quot;&quot;, &quot;securePass123&quot;);
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; 
+            e.PropertyName == &quot;Username&quot; &amp;&amp; 
+            e.ErrorMessage == &quot;Username is required.&quot;);
+    }
+
+    [Fact]
+    public void Should_HaveError_WhenUsernameIsTooShort()
+    {
+        var command = new LoginCommand(&quot;jo&quot;, &quot;securePass123&quot;);
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; 
+            e.PropertyName == &quot;Username&quot; &amp;&amp; 
+            e.ErrorMessage == &quot;Username must be at least 3 characters long.&quot;);
+    }
+
+    [Fact]
+    public void Should_HaveError_WhenPasswordIsEmpty()
+    {
+        var command = new LoginCommand(&quot;john.doe&quot;, &quot;&quot;);
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; 
+            e.PropertyName == &quot;Password&quot; &amp;&amp; 
+            e.ErrorMessage == &quot;Password is required.&quot;);
+    }
+
+    [Fact]
+    public void Should_HaveError_WhenPasswordIsTooShort()
+    {
+        var command = new LoginCommand(&quot;john.doe&quot;, &quot;12345&quot;);
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; 
+            e.PropertyName == &quot;Password&quot; &amp;&amp; 
+            e.ErrorMessage == &quot;Password must be at least 6 characters long.&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[8,5,8,63,1],[12,5,12,6,1],[13,9,13,69,1],[15,9,15,51,1],[17,9,17,42,1],[18,5,18,6,1],[22,5,22,6,1],[23,9,23,61,1],[25,9,25,51,1],[27,9,27,43,1],[28,9,30,56,1],[31,5,31,6,1],[35,5,35,6,1],[36,9,36,63,1],[38,9,38,51,1],[40,9,40,43,1],[41,9,43,79,1],[44,5,44,6,1],[48,5,48,6,1],[49,9,49,56,1],[51,9,51,51,1],[53,9,53,43,1],[54,9,56,56,1],[57,5,57,6,1],[61,5,61,6,1],[62,9,62,61,1],[64,9,64,51,1],[66,9,66,43,1],[67,9,69,79,1],[70,5,70,6,1]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Sales\DeveloperStore.Sales.UnitTests\Application\Queries\GetSaleByIdQueryHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using ErrorOr;
+using FluentAssertions;
+using NSubstitute;
+using DeveloperStore.Sales.Application.Common.Repositories;
+using DeveloperStore.Sales.Application.Queries.GetSaleById;
+using DeveloperStore.Sales.Contracts.Dtos;
+using DeveloperStore.Sales.Domain.Entities;
+
+namespace DeveloperStore.Sales.UnitTests.Application.Queries;
+
+public class GetSaleByIdQueryHandlerTests
+{
+    private readonly ISaleRepository _repo = Substitute.For&lt;ISaleRepository&gt;();
+    private readonly IMapper _mapper = Substitute.For&lt;IMapper&gt;();
+    private GetSaleByIdQueryHandler CreateHandler() =&gt; new(_repo, _mapper);
+
+    [Fact]
+    public async Task Handle_ShouldReturnNotFound_WhenSaleDoesNotExist()
+    {
+        var query = new GetSaleByIdQuery(99);
+
+        _repo.GetByIdAsync(query.Id).Returns((Sale?)null);
+
+        var handler = CreateHandler();
+        var result = await handler.Handle(query, default);
+
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Code.Should().Be(&quot;Sale.NotFound&quot;);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnSaleDto_WhenSaleExists()
+    {
+        var sale = Sale.Create(&quot;S-001&quot;, DateTime.Today, customerId: 1, branchId: 1);
+        var query = new GetSaleByIdQuery(sale.Id);
+
+        _repo.GetByIdAsync(query.Id).Returns(sale);
+
+        _mapper.Map&lt;SaleDto&gt;(sale).Returns(new SaleDto { SaleNumber = &quot;S-001&quot; });
+
+        var handler = CreateHandler();
+        var result = await handler.Handle(query, default);
+
+        result.IsError.Should().BeFalse();
+        result.Value.SaleNumber.Should().Be(&quot;S-001&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,5,14,80,1],[15,5,15,66,1],[16,56,16,75,1],[20,5,20,6,1],[21,9,21,46,1],[23,9,23,59,1],[25,9,25,39,1],[26,9,26,59,1],[28,9,28,42,1],[29,9,29,64,1],[30,9,30,61,1],[31,5,31,6,1],[35,5,35,6,1],[36,9,36,85,1],[37,9,37,51,1],[39,9,39,52,1],[41,9,41,82,1],[43,9,43,39,1],[44,9,44,59,1],[46,9,46,43,1],[47,9,47,54,1],[48,5,48,6,1]]);
+    </script>
+  </body>
+</html>

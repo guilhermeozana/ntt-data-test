@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Auth\DeveloperStore.Auth.Application\Commands\Login\LoginCommandHandler.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using ErrorOr;
+using MediatR;
+using DeveloperStore.Auth.Application.External;
+using DeveloperStore.Auth.Application.Security;
+using DeveloperStore.Auth.Contracts.Security;
+
+namespace DeveloperStore.Auth.Application.Commands.Login;
+
+public class LoginCommandHandler : IRequestHandler&lt;LoginCommand, ErrorOr&lt;string&gt;&gt;
+{
+    private readonly IUsersApiClient _usersApiClient;
+    private readonly IJwtProvider _jwtProvider;
+
+    public LoginCommandHandler(IUsersApiClient usersApiClient, IJwtProvider jwtProvider)
+    {
+        _usersApiClient = usersApiClient;
+        _jwtProvider = jwtProvider;
+    }
+
+    public async Task&lt;ErrorOr&lt;string&gt;&gt; Handle(LoginCommand request, CancellationToken cancellationToken)
+    {
+        var user = await _usersApiClient.GetByUsernameAsync(request.Username);
+
+        if (user is null || user.Password != request.Password)
+        {
+            return Error.Unauthorized(
+                code: &quot;Auth.InvalidCredentials&quot;,
+                description: &quot;Invalid username or password.&quot;);
+        }
+        
+        var payload = new TokenPayload
+        {
+            UserId = user.Id,
+            Username = user.Username,
+            Email = user.Email,
+            Role = user.Role
+        };
+
+        var token = _jwtProvider.Generate(payload);
+
+        return token;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,5,14,89,1],[15,5,15,6,1],[16,9,16,42,1],[17,9,17,36,1],[18,5,18,6,1],[21,5,21,6,1],[22,9,22,79,1],[24,9,24,63,1],[25,9,25,10,1],[26,13,28,63,1],[31,9,37,11,1],[39,9,39,52,1],[41,9,41,22,1],[42,5,42,6,1]]);
+    </script>
+  </body>
+</html>

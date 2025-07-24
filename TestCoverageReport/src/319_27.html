@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Auth\DeveloperStore.Auth.Infrastructure\DependencyInjection.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using DeveloperStore.Auth.Application.External;
+using DeveloperStore.Auth.Application.Security;
+using DeveloperStore.Auth.Infrastructure.External.Users;
+using DeveloperStore.Auth.Infrastructure.Security;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace DeveloperStore.Auth.Infrastructure;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddHttpClient&lt;IUsersApiClient, UsersApiClient&gt;(client =&gt;
+        {
+            client.BaseAddress = new Uri(configuration[&quot;UsersApi:BaseUrl&quot;]);
+        });
+        services.AddScoped&lt;IJwtProvider, JwtProvider&gt;();
+        return services;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,5,13,6,0],[14,9,15,9,0],[15,9,15,10,0],[15,10,16,13,0],[16,13,16,77,0],[16,77,17,9,0],[17,9,17,10,0],[17,10,17,12,0],[18,9,18,57,0],[19,9,19,25,0],[20,5,20,6,0]]);
+    </script>
+  </body>
+</html>

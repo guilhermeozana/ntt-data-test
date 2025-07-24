@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Sales\DeveloperStore.Sales.Application\Commands\CancelSale\CancelSaleCommandHandler.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using ErrorOr;
+using MediatR;
+using DeveloperStore.Sales.Application.Common.Events;
+using DeveloperStore.Sales.Application.Common.Repositories;
+
+namespace DeveloperStore.Sales.Application.Commands.CancelSale;
+
+public class CancelSaleCommandHandler : IRequestHandler&lt;CancelSaleCommand, ErrorOr&lt;Success&gt;&gt;
+{
+    private readonly ISaleRepository _repo;
+    private readonly IDomainEventDispatcher _dispatcher;
+
+    public CancelSaleCommandHandler(ISaleRepository repo, IDomainEventDispatcher dispatcher)
+    {
+        _repo = repo;
+        _dispatcher = dispatcher;
+    }
+
+    public async Task&lt;ErrorOr&lt;Success&gt;&gt; Handle(CancelSaleCommand request, CancellationToken cancellationToken)
+    {
+        var sale = await _repo.GetByIdAsync(request.Id);
+
+        if (sale is null)
+        {
+            return Error.NotFound(&quot;Sale.NotFound&quot;, $&quot;Sale with id {request.Id} was not found.&quot;);
+        }
+
+        sale.Cancel();
+
+        await _repo.UpdateAsync(sale);
+        await _dispatcher.DispatchEventsAsync(sale.DomainEvents);
+        sale.ClearDomainEvents();
+
+        return Result.Success;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,5,13,93,1],[14,5,14,6,1],[15,9,15,22,1],[16,9,16,34,1],[17,5,17,6,1],[20,5,20,6,1],[21,9,21,57,1],[23,9,23,26,1],[24,9,24,10,1],[25,13,25,97,1],[28,9,28,23,1],[30,9,30,39,1],[31,9,31,66,1],[32,9,32,34,1],[34,9,34,31,1],[35,5,35,6,1]]);
+    </script>
+  </body>
+</html>

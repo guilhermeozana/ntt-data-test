@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Carts\DeveloperStore.Carts.UnitTests\Application\Queries\GetCartByIdQueryHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using FluentAssertions;
+using NSubstitute;
+using DeveloperStore.Carts.Application.Common.Interfaces;
+using DeveloperStore.Carts.Application.Queries.GetCartById;
+using DeveloperStore.Carts.Contracts.Dtos;
+using DeveloperStore.Carts.Domain.Entities;
+using ErrorOr;
+
+namespace DeveloperStore.Carts.UnitTests.Application.Queries;
+
+public class GetCartByIdQueryHandlerTests
+{
+    private readonly ICartRepository _repo = Substitute.For&lt;ICartRepository&gt;();
+    private readonly IMapper _mapper = Substitute.For&lt;IMapper&gt;();
+    private GetCartByIdQueryHandler CreateHandler() =&gt; new(_repo, _mapper);
+
+    [Fact]
+    public async Task Handle_ShouldReturnMappedDto_WhenCartExists()
+    {
+        var cart = Cart.Create(userId: 1, date: new DateTime(2025, 1, 1));
+        cart.AddItem(1001, 2);
+
+        var query = new GetCartByIdQuery(cart.Id);
+
+        _repo.GetByIdAsync(query.Id).Returns(cart);
+
+        _mapper.Map&lt;CartDto&gt;(cart).Returns(new CartDto
+        {
+            UserId = 1,
+            Date = &quot;2025-01-01&quot;,
+            Products = new List&lt;CartItemDto&gt;
+            {
+                new() { ProductId = 1001, Quantity = 2 }
+            }
+        });
+
+        var handler = CreateHandler();
+        var result = await handler.Handle(query, default);
+
+        result.IsError.Should().BeFalse();
+        result.Value.UserId.Should().Be(1);
+        result.Value.Date.Should().Be(&quot;2025-01-01&quot;);
+        result.Value.Products.Should().ContainSingle(i =&gt; i.ProductId == 1001 &amp;&amp; i.Quantity == 2);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnNotFoundError_WhenCartNotFound()
+    {
+        // Arrange
+        var query = new GetCartByIdQuery(999);
+        _repo.GetByIdAsync(query.Id).Returns((Cart?)null);
+
+        var handler = CreateHandler();
+
+        // Act
+        var result = await handler.Handle(query, default);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Description.Should().Be(&quot;Cart not found.&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,5,14,80,1],[15,5,15,66,1],[16,56,16,75,1],[20,5,20,6,1],[21,9,21,75,1],[22,9,22,31,1],[24,9,24,51,1],[26,9,26,52,1],[28,9,36,12,1],[38,9,38,39,1],[39,9,39,59,1],[41,9,41,43,1],[42,9,42,44,1],[43,9,43,53,1],[44,9,44,99,1],[45,5,45,6,1],[49,5,49,6,1],[51,9,51,47,1],[52,9,52,59,1],[54,9,54,39,1],[57,9,57,59,1],[60,9,60,42,1],[61,9,61,64,1],[62,9,62,70,1],[63,5,63,6,1]]);
+    </script>
+  </body>
+</html>

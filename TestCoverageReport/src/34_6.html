@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Products\DeveloperStore.Products.UnitTests\Application\Validators\UpdateProductCommandValidatorTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentAssertions;
+using DeveloperStore.Products.Application.Commands.UpdateProduct;
+using DeveloperStore.Products.Contracts.Dtos;
+
+namespace DeveloperStore.Products.UnitTests.Application.Validators;
+
+public class UpdateProductCommandValidatorTests
+{
+    private readonly UpdateProductCommandValidator _validator = new();
+
+    [Fact]
+    public void Should_HaveValidationError_WhenIdIsZero()
+    {
+        var command = new UpdateProductCommand
+        {
+            Id = 0,
+            Title = &quot;Valid Title&quot;,
+            Price = 99.99m,
+            Description = &quot;Produto v&#225;lido&quot;,
+            Category = &quot;Categoria&quot;,
+            Image = &quot;img.jpg&quot;,
+            Rating = new RatingDto { Rate = 4.5, Count = 100 }
+        };
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt;
+            e.PropertyName == &quot;Id&quot; &amp;&amp;
+            e.ErrorMessage == &quot;Id must be a positive number.&quot;);
+    }
+
+    [Fact]
+    public void Should_HaveValidationError_WhenTitleIsEmpty()
+    {
+        var command = new UpdateProductCommand
+        {
+            Id = 1,
+            Title = &quot;&quot;,
+            Price = 99.99m,
+            Description = &quot;Produto sem t&#237;tulo&quot;,
+            Category = &quot;Categoria&quot;,
+            Image = &quot;img.jpg&quot;,
+            Rating = new RatingDto { Rate = 4.3, Count = 90 }
+        };
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt;
+            e.PropertyName == &quot;Title&quot; &amp;&amp;
+            e.ErrorMessage == &quot;Title is required.&quot;);
+    }
+
+    [Fact]
+    public void Should_HaveValidationError_WhenPriceIsZero()
+    {
+        var command = new UpdateProductCommand
+        {
+            Id = 1,
+            Title = &quot;Produto&quot;,
+            Price = 0,
+            Description = &quot;Valor inv&#225;lido&quot;,
+            Category = &quot;Categoria&quot;,
+            Image = &quot;img.jpg&quot;,
+            Rating = new RatingDto { Rate = 4.3, Count = 90 }
+        };
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt;
+            e.PropertyName == &quot;Price&quot; &amp;&amp;
+            e.ErrorMessage == &quot;Price must be greater than zero.&quot;);
+    }
+
+    [Fact]
+    public void Should_PassValidation_WhenCommandIsValid()
+    {
+        var command = new UpdateProductCommand
+        {
+            Id = 1,
+            Title = &quot;Produto v&#225;lido&quot;,
+            Price = 99.99m,
+            Description = &quot;Descri&#231;&#227;o ok&quot;,
+            Category = &quot;Categoria&quot;,
+            Image = &quot;img.jpg&quot;,
+            Rating = new RatingDto { Rate = 5.0, Count = 999 }
+        };
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeTrue();
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,5,9,71,1],[13,5,13,6,1],[14,9,23,11,1],[25,9,25,51,1],[27,9,27,43,1],[28,9,30,64,1],[31,5,31,6,1],[35,5,35,6,1],[36,9,45,11,1],[47,9,47,51,1],[49,9,49,43,1],[50,9,52,53,1],[53,5,53,6,1],[57,5,57,6,1],[58,9,67,11,1],[69,9,69,51,1],[71,9,71,43,1],[72,9,74,67,1],[75,5,75,6,1],[79,5,79,6,1],[80,9,89,11,1],[91,9,91,51,1],[93,9,93,42,1],[94,5,94,6,1]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Products\DeveloperStore.Products.Infrastructure\Migrations\20250723224206_InitialCreate.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace DeveloperStore.Products.Infrastructure.Migrations
+{
+    /// &lt;inheritdoc /&gt;
+    public partial class InitialCreate : Migration
+    {
+        /// &lt;inheritdoc /&gt;
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: &quot;Products&quot;,
+                columns: table =&gt; new
+                {
+                    Id = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false)
+                        .Annotation(&quot;Npgsql:ValueGenerationStrategy&quot;, NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Title = table.Column&lt;string&gt;(type: &quot;character varying(100)&quot;, maxLength: 100, nullable: false),
+                    Price = table.Column&lt;decimal&gt;(type: &quot;numeric(18,2)&quot;, nullable: false),
+                    Description = table.Column&lt;string&gt;(type: &quot;character varying(500)&quot;, maxLength: 500, nullable: false),
+                    Category = table.Column&lt;string&gt;(type: &quot;character varying(50)&quot;, maxLength: 50, nullable: false),
+                    Image = table.Column&lt;string&gt;(type: &quot;text&quot;, nullable: false),
+                    Rating_Rate = table.Column&lt;double&gt;(type: &quot;numeric(3,2)&quot;, nullable: false),
+                    Rating_Count = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false)
+                },
+                constraints: table =&gt;
+                {
+                    table.PrimaryKey(&quot;PK_Products&quot;, x =&gt; x.Id);
+                });
+        }
+
+        /// &lt;inheritdoc /&gt;
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: &quot;Products&quot;);
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,9,13,10,0],[14,13,16,35,0],[16,35,27,18,0],[27,18,29,17,0],[29,17,29,18,0],[29,18,30,21,0],[30,21,30,64,0],[30,64,31,17,0],[31,17,31,18,0],[31,18,31,20,0],[32,9,32,10,0],[36,9,36,10,0],[37,13,38,35,0],[39,9,39,10,0]]);
+    </script>
+  </body>
+</html>

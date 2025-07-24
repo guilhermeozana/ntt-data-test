@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Shared\DeveloperStore.Shared.SharedKernel\Dtos\QueryCriteriaDto.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace DeveloperStore.Shared.SharedKernel.Dtos;
+
+public class QueryCriteriaDto
+{
+    public QueryCriteriaDto(int page, int size, string? order, Dictionary&lt;string, string&gt;? filters, Dictionary&lt;string, decimal&gt;? minValues, Dictionary&lt;string, decimal&gt;? maxValues)
+    {
+        Page = page;
+        Size = size;
+        Order = order;
+        Filters = filters;
+        MinValues = minValues;
+        MaxValues = maxValues;
+    }
+
+    public int Page { get; }
+    public int Size { get; }
+    public string? Order { get; }
+    public Dictionary&lt;string, string&gt;? Filters { get; }
+    public Dictionary&lt;string, decimal&gt;? MinValues { get; }
+    public Dictionary&lt;string, decimal&gt;? MaxValues { get; }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[5,5,5,180,1],[6,5,6,6,1],[7,9,7,21,1],[8,9,8,21,1],[9,9,9,23,1],[10,9,10,27,1],[11,9,11,31,1],[12,9,12,31,1],[13,5,13,6,1],[15,23,15,27,1],[16,23,16,27,1],[17,28,17,32,1],[18,50,18,54,1],[19,53,19,57,1],[20,53,20,57,1]]);
+    </script>
+  </body>
+</html>

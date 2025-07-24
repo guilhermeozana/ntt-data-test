@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Application\Commands\UpdateUser\UpdateUserCommandHandler.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using ErrorOr;
+using MediatR;
+using DeveloperStore.Shared.Contracts.Dtos;
+using DeveloperStore.Users.Application.Common.Repositories;
+using DeveloperStore.Users.Domain.Enums;
+using DeveloperStore.Users.Domain.ValueObjects;
+
+namespace DeveloperStore.Users.Application.Commands.UpdateUser;
+
+public class UpdateUserCommandHandler : IRequestHandler&lt;UpdateUserCommand, ErrorOr&lt;UserDto&gt;&gt;
+{
+    private readonly IUserRepository _repo;
+    private readonly IMapper _mapper;
+
+    public UpdateUserCommandHandler(IUserRepository repo, IMapper mapper)
+    {
+        _repo = repo;
+        _mapper = mapper;
+    }
+
+    public async Task&lt;ErrorOr&lt;UserDto&gt;&gt; Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+    {
+        var existingUser = await _repo.GetByIdAsync(request.Id);
+
+        if (existingUser is null)
+        {
+            return Error.NotFound(&quot;User.NotFound&quot;, &quot;User not found.&quot;);
+        }
+
+        existingUser.Update(
+            email: request.Email,
+            username: request.Username,
+            password: request.Password,
+            name: new Name(request.Name.Firstname, request.Name.Lastname),
+            address: new Address(
+                request.Address.City,
+                request.Address.Street,
+                request.Address.Number,
+                request.Address.Zipcode,
+                new Geolocation(request.Address.Geolocation.Lat, request.Address.Geolocation.Long)
+            ),
+            phone: request.Phone,
+            status: Enum.Parse&lt;UserStatus&gt;(request.Status, ignoreCase: true),
+            role: Enum.Parse&lt;UserRole&gt;(request.Role, ignoreCase: true)
+        );
+
+        await _repo.UpdateAsync(existingUser);
+        var userDto = _mapper.Map&lt;UserDto&gt;(existingUser);
+
+        return userDto;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,5,16,74,1],[17,5,17,6,1],[18,9,18,22,1],[19,9,19,26,1],[20,5,20,6,1],[23,5,23,6,1],[24,9,24,65,1],[26,9,26,34,1],[27,9,27,10,1],[28,13,28,71,1],[31,9,46,11,1],[48,9,48,47,1],[49,9,49,58,1],[51,9,51,24,1],[52,5,52,6,1]]);
+    </script>
+  </body>
+</html>

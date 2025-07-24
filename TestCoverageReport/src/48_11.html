@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Shared\DeveloperStore.Shared.UnitTests\Api\Queries\RequestQueryOptionsBinderTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Globalization;
+using DeveloperStore.Shared.Api.Queries;
+using FluentAssertions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Primitives;
+
+namespace DeveloperStore.Shared.UnitTests.Api.Queries;
+
+public class RequestQueryOptionsBinderTests
+{
+    private static async Task&lt;RequestQueryOptions&gt; BindAsync(Dictionary&lt;string, StringValues&gt; queryParams)
+    {
+        var binder = new RequestQueryOptionsBinder();
+        var httpContext = new DefaultHttpContext();
+        httpContext.Request.Query = new QueryCollection(queryParams);
+
+        var bindingContext = new DefaultModelBindingContext();
+        bindingContext.ModelMetadata = new EmptyModelMetadataProvider().GetMetadataForType(typeof(RequestQueryOptions));
+        bindingContext.ModelState = new ModelStateDictionary();
+        bindingContext.ValueProvider = new QueryStringValueProvider(
+            BindingSource.Query, 
+            httpContext.Request.Query, 
+            CultureInfo.InvariantCulture);
+
+        bindingContext.ActionContext = new ActionContext
+        {
+            HttpContext = httpContext,
+            RouteData = new RouteData()
+        };
+
+        await binder.BindModelAsync(bindingContext);
+        return bindingContext.Result.Model as RequestQueryOptions;
+    }
+
+    [Fact]
+    public async Task Should_Bind_DefaultValues_When_QueryIsEmpty()
+    {
+        var result = await BindAsync(new Dictionary&lt;string, StringValues&gt;());
+
+        result.Page.Should().Be(1);
+        result.Size.Should().Be(10);
+        result.Order.Should().BeNull();
+        result.Filters.Should().BeEmpty();
+        result.MinValues.Should().BeEmpty();
+        result.MaxValues.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Should_Parse_Page_Size_Order()
+    {
+        var result = await BindAsync(new()
+        {
+            [&quot;_page&quot;] = &quot;2&quot;,
+            [&quot;_size&quot;] = &quot;50&quot;,
+            [&quot;_order&quot;] = &quot;title&quot;
+        });
+
+        result.Page.Should().Be(2);
+        result.Size.Should().Be(50);
+        result.Order.Should().Be(&quot;title&quot;);
+    }
+
+    [Fact]
+    public async Task Should_Parse_Filters_WithoutPrefix()
+    {
+        var result = await BindAsync(new()
+        {
+            [&quot;category&quot;] = &quot;games&quot;,
+            [&quot;brand&quot;] = &quot;nintendo&quot;
+        });
+
+        result.Filters.Should().ContainKey(&quot;category&quot;).And.ContainKey(&quot;brand&quot;);
+        result.Filters[&quot;category&quot;].Should().Be(&quot;games&quot;);
+        result.Filters[&quot;brand&quot;].Should().Be(&quot;nintendo&quot;);
+    }
+
+    [Fact]
+    public async Task Should_Parse_MinAndMaxValues()
+    {
+        var result = await BindAsync(new()
+        {
+            [&quot;_minprice&quot;] = &quot;100&quot;,
+            [&quot;_maxprice&quot;] = &quot;300&quot;,
+            [&quot;_minrating&quot;] = &quot;4.5&quot;
+        });
+
+        result.MinValues.Should().ContainKey(&quot;price&quot;).And.ContainKey(&quot;rating&quot;);
+        result.MaxValues.Should().ContainKey(&quot;price&quot;);
+
+        result.MinValues[&quot;price&quot;].Should().Be(100);
+        result.MinValues[&quot;rating&quot;].Should().Be(4.5m);
+        result.MaxValues[&quot;price&quot;].Should().Be(300);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,5,16,6,1],[17,9,17,54,1],[18,9,18,52,1],[19,9,19,70,1],[21,9,21,63,1],[22,9,22,121,1],[23,9,23,64,1],[24,9,27,43,1],[29,9,33,11,1],[35,9,35,53,1],[36,9,36,67,1],[37,5,37,6,1],[41,5,41,6,1],[42,9,42,78,1],[44,9,44,36,1],[45,9,45,37,1],[46,9,46,40,1],[47,9,47,43,1],[48,9,48,45,1],[49,9,49,45,1],[50,5,50,6,1],[54,5,54,6,1],[55,9,60,12,1],[62,9,62,36,1],[63,9,63,37,1],[64,9,64,43,1],[65,5,65,6,1],[69,5,69,6,1],[70,9,74,12,1],[76,9,76,80,1],[77,9,77,57,1],[78,9,78,57,1],[79,5,79,6,1],[83,5,83,6,1],[84,9,89,12,1],[91,9,91,80,1],[92,9,92,55,1],[94,9,94,52,1],[95,9,95,54,1],[96,9,96,52,1],[97,5,97,6,1]]);
+    </script>
+  </body>
+</html>

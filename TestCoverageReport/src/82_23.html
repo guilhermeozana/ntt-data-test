@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Infrastructure\Migrations\UsersDbContextModelSnapshot.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+// &lt;auto-generated /&gt;
+using DeveloperStore.Users.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace DeveloperStore.Users.Infrastructure.Migrations
+{
+    [DbContext(typeof(UsersDbContext))]
+    partial class UsersDbContextModelSnapshot : ModelSnapshot
+    {
+        protected override void BuildModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation(&quot;ProductVersion&quot;, &quot;9.0.7&quot;)
+                .HasAnnotation(&quot;Relational:MaxIdentifierLength&quot;, 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity(&quot;DeveloperStore.Users.Domain.Entities.User&quot;, b =&gt;
+                {
+                    b.Property&lt;int&gt;(&quot;Id&quot;)
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType(&quot;integer&quot;);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property&lt;int&gt;(&quot;Id&quot;));
+
+                    b.Property&lt;string&gt;(&quot;Email&quot;)
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType(&quot;character varying(100)&quot;);
+
+                    b.Property&lt;string&gt;(&quot;Password&quot;)
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType(&quot;character varying(200)&quot;);
+
+                    b.Property&lt;string&gt;(&quot;Phone&quot;)
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType(&quot;character varying(20)&quot;);
+
+                    b.Property&lt;string&gt;(&quot;Role&quot;)
+                        .IsRequired()
+                        .HasColumnType(&quot;text&quot;);
+
+                    b.Property&lt;string&gt;(&quot;Status&quot;)
+                        .IsRequired()
+                        .HasColumnType(&quot;text&quot;);
+
+                    b.Property&lt;string&gt;(&quot;Username&quot;)
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType(&quot;character varying(50)&quot;);
+
+                    b.HasKey(&quot;Id&quot;);
+
+                    b.ToTable(&quot;Users&quot;);
+                });
+
+            modelBuilder.Entity(&quot;DeveloperStore.Users.Domain.Entities.User&quot;, b =&gt;
+                {
+                    b.OwnsOne(&quot;DeveloperStore.Users.Domain.ValueObjects.Address&quot;, &quot;Address&quot;, b1 =&gt;
+                        {
+                            b1.Property&lt;int&gt;(&quot;UserId&quot;)
+                                .HasColumnType(&quot;integer&quot;);
+
+                            b1.Property&lt;string&gt;(&quot;City&quot;)
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType(&quot;character varying(50)&quot;)
+                                .HasColumnName(&quot;City&quot;);
+
+                            b1.Property&lt;int&gt;(&quot;Number&quot;)
+                                .HasColumnType(&quot;integer&quot;)
+                                .HasColumnName(&quot;Number&quot;);
+
+                            b1.Property&lt;string&gt;(&quot;Street&quot;)
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType(&quot;character varying(100)&quot;)
+                                .HasColumnName(&quot;Street&quot;);
+
+                            b1.Property&lt;string&gt;(&quot;Zipcode&quot;)
+                                .IsRequired()
+                                .HasMaxLength(20)
+                                .HasColumnType(&quot;character varying(20)&quot;)
+                                .HasColumnName(&quot;Zipcode&quot;);
+
+                            b1.HasKey(&quot;UserId&quot;);
+
+                            b1.ToTable(&quot;Users&quot;);
+
+                            b1.WithOwner()
+                                .HasForeignKey(&quot;UserId&quot;);
+
+                            b1.OwnsOne(&quot;DeveloperStore.Users.Domain.ValueObjects.Geolocation&quot;, &quot;Geolocation&quot;, b2 =&gt;
+                                {
+                                    b2.Property&lt;int&gt;(&quot;AddressUserId&quot;)
+                                        .HasColumnType(&quot;integer&quot;);
+
+                                    b2.Property&lt;string&gt;(&quot;Lat&quot;)
+                                        .IsRequired()
+                                        .HasMaxLength(30)
+                                        .HasColumnType(&quot;character varying(30)&quot;)
+                                        .HasColumnName(&quot;GeoLat&quot;);
+
+                                    b2.Property&lt;string&gt;(&quot;Long&quot;)
+                                        .IsRequired()
+                                        .HasMaxLength(30)
+                                        .HasColumnType(&quot;character varying(30)&quot;)
+                                        .HasColumnName(&quot;GeoLong&quot;);
+
+                                    b2.HasKey(&quot;AddressUserId&quot;);
+
+                                    b2.ToTable(&quot;Users&quot;);
+
+                                    b2.WithOwner()
+                                        .HasForeignKey(&quot;AddressUserId&quot;);
+                                });
+
+                            b1.Navigation(&quot;Geolocation&quot;)
+                                .IsRequired();
+                        });
+
+                    b.OwnsOne(&quot;DeveloperStore.Users.Domain.ValueObjects.Name&quot;, &quot;Name&quot;, b1 =&gt;
+                        {
+                            b1.Property&lt;int&gt;(&quot;UserId&quot;)
+                                .HasColumnType(&quot;integer&quot;);
+
+                            b1.Property&lt;string&gt;(&quot;Firstname&quot;)
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType(&quot;character varying(50)&quot;)
+                                .HasColumnName(&quot;Firstname&quot;);
+
+                            b1.Property&lt;string&gt;(&quot;Lastname&quot;)
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType(&quot;character varying(50)&quot;)
+                                .HasColumnName(&quot;Lastname&quot;);
+
+                            b1.HasKey(&quot;UserId&quot;);
+
+                            b1.ToTable(&quot;Users&quot;);
+
+                            b1.WithOwner()
+                                .HasForeignKey(&quot;UserId&quot;);
+                        });
+
+                    b.Navigation(&quot;Address&quot;)
+                        .IsRequired();
+
+                    b.Navigation(&quot;Name&quot;)
+                        .IsRequired();
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,9,16,10,0],[18,13,20,70,0],[22,13,22,84,0],[24,13,25,17,0],[25,17,25,18,0],[25,18,26,21,0],[26,21,28,51,0],[28,51,30,21,0],[30,21,30,103,0],[30,103,32,21,0],[32,21,35,66,0],[35,66,37,21,0],[37,21,40,66,0],[40,66,42,21,0],[42,21,45,65,0],[45,65,47,21,0],[47,21,49,48,0],[49,48,51,21,0],[51,21,53,48,0],[53,48,55,21,0],[55,21,58,65,0],[58,65,60,21,0],[60,21,60,36,0],[60,36,62,21,0],[62,21,62,40,0],[62,40,63,17,0],[63,17,63,18,0],[63,18,63,20,0],[65,13,66,17,0],[66,17,66,18,0],[66,18,67,21,0],[67,21,68,25,0],[68,25,68,26,0],[68,26,69,29,0],[69,29,70,59,0],[70,59,72,29,0],[72,29,76,56,0],[76,56,78,29,0],[78,29,80,58,0],[80,58,82,29,0],[82,29,86,58,0],[86,58,88,29,0],[88,29,92,59,0],[92,59,94,29,0],[94,29,94,49,0],[94,49,96,29,0],[96,29,96,49,0],[96,49,98,29,0],[98,29,99,58,0],[99,58,101,29,0],[101,29,102,33,0],[102,33,102,34,0],[102,34,103,37,0],[103,37,104,67,0],[104,67,106,37,0],[106,37,110,66,0],[110,66,112,37,0],[112,37,116,67,0],[116,67,118,37,0],[118,37,118,64,0],[118,64,120,37,0],[120,37,120,57,0],[120,57,122,37,0],[122,37,123,73,0],[123,73,124,33,0],[124,33,124,34,0],[124,34,124,36,0],[124,36,126,29,0],[126,29,127,47,0],[127,47,128,25,0],[128,25,128,26,0],[128,26,128,28,0],[128,28,130,21,0],[130,21,131,25,0],[131,25,131,26,0],[131,26,132,29,0],[132,29,133,59,0],[133,59,135,29,0],[135,29,139,61,0],[139,61,141,29,0],[141,29,145,60,0],[145,60,147,29,0],[147,29,147,49,0],[147,49,149,29,0],[149,29,149,49,0],[149,49,151,29,0],[151,29,152,58,0],[152,58,153,25,0],[153,25,153,26,0],[153,26,153,28,0],[153,28,155,21,0],[155,21,156,39,0],[156,39,158,21,0],[158,21,159,39,0],[159,39,160,17,0],[160,17,160,18,0],[160,18,160,20,0],[162,9,162,10,0]]);
+    </script>
+  </body>
+</html>

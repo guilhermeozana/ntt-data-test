@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Auth\DeveloperStore.Auth.Api\Controllers\AuthController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using DeveloperStore.Auth.Application.Commands.Login;
+using DeveloperStore.Auth.Contracts.Requests;
+using DeveloperStore.Auth.Contracts.Response;
+using DeveloperStore.Shared.Api.Extensions;
+
+namespace DeveloperStore.Auth.Api.Controllers;
+
+[ApiController]
+[Route(&quot;auth&quot;)]
+public class AuthController : ControllerBase
+{
+    private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
+
+    public AuthController(IMediator mediator, IMapper mapper)
+    {
+        _mediator = mediator;
+        _mapper = mapper;
+    }
+
+    [HttpPost(&quot;login&quot;)]
+    public async Task&lt;IActionResult&gt; Login(LoginRequest request)
+    {
+        var command = _mapper.Map&lt;LoginCommand&gt;(request);
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            token =&gt; Ok(new LoginResponse(token)),
+            this.Problem);
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[18,5,18,62,1],[19,5,19,6,1],[20,9,20,30,1],[21,9,21,26,1],[22,5,22,6,1],[26,5,26,6,1],[27,9,27,58,1],[28,9,28,52,1],[30,9,31,22,1],[31,22,31,50,1],[31,50,32,27,1],[33,5,33,6,1]]);
+    </script>
+  </body>
+</html>

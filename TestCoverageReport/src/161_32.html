@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Sales\DeveloperStore.Sales.Domain\Entities\Sale.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using ErrorOr;
+using DeveloperStore.Sales.Domain.Events;
+using DeveloperStore.Sales.Domain.ValueObjects;
+using DeveloperStore.Shared.SharedKernel.Domain;
+
+namespace DeveloperStore.Sales.Domain.Entities;
+
+public class Sale : AggregateRoot&lt;int&gt;
+{
+    public string SaleNumber { get; private set; }
+    public DateTime Date { get; private set; }
+    public int CustomerId { get; private set; }
+    public int BranchId { get; private set; }
+
+    private readonly List&lt;SaleItem&gt; _products = new();
+
+    public IReadOnlyCollection&lt;SaleItem&gt; Products =&gt; _products.AsReadOnly();
+
+    public bool IsCancelled { get; private set; }
+    public decimal TotalAmount =&gt; Products.Sum(i =&gt; i.TotalAmount);
+
+    public static Sale Create(string saleNumber, DateTime date, int customerId, int branchId)
+    {
+        var sale = new Sale
+        {
+            SaleNumber = saleNumber,
+            Date = date,
+            CustomerId = customerId,
+            BranchId = branchId
+        };
+
+        sale.AddDomainEvent(new SaleCreatedEvent(sale.Id, sale.SaleNumber, sale.Date));
+        return sale;
+    }
+    
+    public ErrorOr&lt;Success&gt; AddItem(int productId, int quantity, decimal unitPrice)
+    {
+        if (quantity &gt; 20)
+            return Error.Validation(&quot;SaleItem.TooManyUnits&quot;,&quot;Cannot purchase more than 20 identical items.&quot;);
+
+        _products.RemoveAll(i =&gt; i.ProductId == productId);
+
+        var newItem = new SaleItem(productId, quantity, unitPrice);
+        _products.Add(newItem);
+
+        return Result.Success;
+    }
+    
+    public void ClearItems()
+    {
+        _products.Clear();
+    }
+    
+    public void Update(DateTime newDate, int newCustomerId, int newBranchId)
+    {
+        Date = newDate;
+        CustomerId = newCustomerId;
+        BranchId = newBranchId;
+
+        AddDomainEvent(new SaleModifiedEvent(Id, DateTime.UtcNow));
+    }
+    
+    public void Cancel()
+    {
+        if (IsCancelled) return;
+
+        IsCancelled = true;
+        AddDomainEvent(new SaleCancelledEvent(Id, DateTime.UtcNow));
+
+        foreach (var item in Products)
+        {
+            AddDomainEvent(new ItemCancelledEvent(Id, item.ProductId, DateTime.UtcNow));
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,32,10,36,1],[10,37,10,49,1],[11,28,11,32,1],[11,33,11,45,1],[12,29,12,33,1],[12,34,12,46,1],[13,27,13,31,1],[13,32,13,44,1],[15,5,15,55,1],[17,54,17,76,1],[19,31,19,35,1],[19,36,19,48,1],[20,35,20,53,1],[20,53,20,66,1],[20,66,20,67,1],[23,5,23,6,1],[24,9,30,11,1],[32,9,32,88,1],[33,9,33,21,1],[34,5,34,6,1],[37,5,37,6,1],[38,9,38,27,1],[39,13,39,110,1],[41,9,41,34,1],[41,34,41,58,1],[41,58,41,60,1],[43,9,43,68,1],[44,9,44,32,1],[46,9,46,31,1],[47,5,47,6,1],[50,5,50,6,1],[51,9,51,27,1],[52,5,52,6,1],[55,5,55,6,1],[56,9,56,24,1],[57,9,57,36,1],[58,9,58,32,1],[60,9,60,68,1],[61,5,61,6,1],[64,5,64,6,1],[65,9,65,25,1],[65,26,65,33,1],[67,9,67,28,1],[68,9,68,69,1],[70,9,70,16,1],[70,18,70,26,1],[70,27,70,29,1],[70,30,70,38,1],[71,9,71,10,1],[72,13,72,89,1],[73,9,73,10,1],[74,5,74,6,1]]);
+    </script>
+  </body>
+</html>

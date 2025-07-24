@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Users\DeveloperStore.Users.UnitTests\Domain\Entities\UserTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentAssertions;
+using DeveloperStore.Users.Domain.Entities;
+using DeveloperStore.Users.Domain.Enums;
+using DeveloperStore.Users.Domain.ValueObjects;
+
+namespace DeveloperStore.Users.UnitTests.Domain.Entities;
+
+public class UserTests
+{
+    private Name BuildName() =&gt; new(&quot;Fulano&quot;, &quot;de Tal&quot;);
+
+    private Address BuildAddress() =&gt;
+        new(
+            city: &quot;Rio de Janeiro&quot;,
+            street: &quot;Rua das Flores&quot;,
+            number: 123,
+            zipcode: &quot;20000-000&quot;,
+            geolocation: new Geolocation(&quot;22.9068&quot;, &quot;43.1729&quot;)
+        );
+
+    [Fact]
+    public void Create_ShouldInitializeUserWithCorrectValues()
+    {
+        // Arrange
+        var name = BuildName();
+        var address = BuildAddress();
+
+        // Act
+        var user = User.Create(
+            email: &quot;guilherme@email.com&quot;,
+            username: &quot;gui_lima&quot;,
+            password: &quot;12345678&quot;,
+            name: name,
+            address: address,
+            phone: &quot;+55 (21) 99999-9999&quot;,
+            status: UserStatus.Active,
+            role: UserRole.Admin
+        );
+
+        // Assert
+        user.Email.Should().Be(&quot;guilherme@email.com&quot;);
+        user.Username.Should().Be(&quot;gui_lima&quot;);
+        user.Password.Should().Be(&quot;12345678&quot;);
+        user.Name.Should().Be(name);
+        user.Address.Should().Be(address);
+        user.Phone.Should().Be(&quot;+55 (21) 99999-9999&quot;);
+        user.Status.Should().Be(UserStatus.Active);
+        user.Role.Should().Be(UserRole.Admin);
+    }
+
+    [Theory]
+    [InlineData(UserStatus.Active)]
+    [InlineData(UserStatus.Inactive)]
+    [InlineData(UserStatus.Suspended)]
+    public void Update_ShouldChangeUserStatusToAnyValidEnum(UserStatus newStatus)
+    {
+        // Arrange
+        var user = User.Create(
+            email: &quot;original@email.com&quot;,
+            username: &quot;orig_user&quot;,
+            password: &quot;password123&quot;,
+            name: BuildName(),
+            address: BuildAddress(),
+            phone: &quot;1234&quot;,
+            status: UserStatus.Active,
+            role: UserRole.Admin
+        );
+
+        var newName = new Name(&quot;Lucas&quot;, &quot;Silva&quot;);
+        var newAddress = new Address(
+            city: &quot;S&#227;o Paulo&quot;,
+            street: &quot;Av. Central&quot;,
+            number: 500,
+            zipcode: &quot;01000-000&quot;,
+            geolocation: new Geolocation(&quot;23.5505&quot;, &quot;46.6333&quot;)
+        );
+
+        // Act
+        user.Update(
+            email: &quot;lucas@email.com&quot;,
+            username: &quot;lucas.silva&quot;,
+            password: &quot;novaSenha@2025&quot;,
+            name: newName,
+            address: newAddress,
+            phone: &quot;(11) 91234-5678&quot;,
+            status: newStatus,
+            role: UserRole.Manager
+        );
+
+        // Assert
+        user.Email.Should().Be(&quot;lucas@email.com&quot;);
+        user.Username.Should().Be(&quot;lucas.silva&quot;);
+        user.Password.Should().Be(&quot;novaSenha@2025&quot;);
+        user.Name.Should().Be(newName);
+        user.Address.Should().Be(newAddress);
+        user.Phone.Should().Be(&quot;(11) 91234-5678&quot;);
+        user.Status.Should().Be(newStatus);
+        user.Role.Should().Be(UserRole.Manager);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,33,10,56,1],[13,9,19,10,1],[23,5,23,6,1],[25,9,25,32,1],[26,9,26,38,1],[29,9,38,11,1],[41,9,41,55,1],[42,9,42,47,1],[43,9,43,47,1],[44,9,44,37,1],[45,9,45,43,1],[46,9,46,55,1],[47,9,47,52,1],[48,9,48,47,1],[49,5,49,6,1],[56,5,56,6,1],[58,9,67,11,1],[69,9,69,50,1],[70,9,76,11,1],[79,9,88,11,1],[91,9,91,51,1],[92,9,92,50,1],[93,9,93,53,1],[94,9,94,40,1],[95,9,95,46,1],[96,9,96,51,1],[97,9,97,44,1],[98,9,98,49,1],[99,5,99,6,1]]);
+    </script>
+  </body>
+</html>

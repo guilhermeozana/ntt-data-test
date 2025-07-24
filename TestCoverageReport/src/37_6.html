@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Products\DeveloperStore.Products.UnitTests\Infrastructure\Repositories\ProductRepositoryTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using DeveloperStore.Products.Domain.Entities;
+using DeveloperStore.Products.Domain.ValueObjects;
+using DeveloperStore.Products.Infrastructure.Context;
+using DeveloperStore.Products.Infrastructure.Repositories;
+using DeveloperStore.Shared.SharedKernel.Dtos;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+
+namespace DeveloperStore.Products.UnitTests.Infrastructure.Repositories;
+
+public class ProductRepositoryTests
+{
+    private ProductRepository GetRepository(out ProductsDbContext context)
+    {
+        var options = new DbContextOptionsBuilder&lt;ProductsDbContext&gt;()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+
+        context = new ProductsDbContext(options);
+        context.Database.EnsureCreated();
+
+        return new ProductRepository(context);
+    }
+
+    private static Product CreateProduct(string title = &quot;Test Product&quot;, string category = &quot;Books&quot;)
+    {
+        return Product.Create(
+            title: title,
+            price: 50.0m,
+            description: &quot;Sample description&quot;,
+            category: category,
+            image: &quot;http://image.com/product.jpg&quot;,
+            rating: new Rating(4.5, 20)
+        );
+    }
+
+    [Fact]
+    public async Task AddAsync_ShouldPersistProduct()
+    {
+        var repo = GetRepository(out var context);
+        var product = CreateProduct();
+
+        await repo.AddAsync(product);
+
+        context.Products.Should().ContainSingle();
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ShouldReturnProduct()
+    {
+        var repo = GetRepository(out var context);
+        var product = CreateProduct();
+        await context.Products.AddAsync(product);
+        await context.SaveChangesAsync();
+
+        var retrieved = await repo.GetByIdAsync(product.Id);
+
+        retrieved.Should().NotBeNull();
+        retrieved!.Title.Should().Be(product.Title);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ShouldChangeProductFields()
+    {
+        var repo = GetRepository(out var context);
+        var product = CreateProduct();
+        await repo.AddAsync(product);
+
+        product.Update(&quot;Updated Title&quot;, 99.99m, &quot;New Desc&quot;, &quot;Electronics&quot;, &quot;http://img.com&quot;, new Rating(4.9, 80));
+        await repo.UpdateAsync(product);
+
+        var updated = await repo.GetByIdAsync(product.Id);
+        updated!.Title.Should().Be(&quot;Updated Title&quot;);
+        updated.Category.Should().Be(&quot;Electronics&quot;);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ShouldRemoveProduct()
+    {
+        var repo = GetRepository(out var context);
+        var product = CreateProduct();
+        await repo.AddAsync(product);
+
+        var deleted = await repo.DeleteAsync(product);
+
+        deleted.Should().BeTrue();
+        context.Products.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task ExistsAsync_ShouldReturnTrue_WhenProductExists()
+    {
+        var repo = GetRepository(out var context);
+        var product = CreateProduct();
+        await repo.AddAsync(product);
+
+        var exists = await repo.ExistsAsync(product.Id);
+
+        exists.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task GetAllCategoriesAsync_ShouldReturnDistinctSortedCategories()
+    {
+        var repo = GetRepository(out var context);
+        await context.Products.AddRangeAsync(
+            CreateProduct(&quot;Book 1&quot;, &quot;Books&quot;),
+            CreateProduct(&quot;Toy 1&quot;, &quot;Toys&quot;),
+            CreateProduct(&quot;Book 2&quot;, &quot;Books&quot;)
+        );
+        await context.SaveChangesAsync();
+
+        var categories = await repo.GetAllCategoriesAsync();
+
+        categories.Should().BeEquivalentTo(new[] { &quot;Books&quot;, &quot;Toys&quot; }, opts =&gt; opts.WithStrictOrdering());
+    }
+
+    [Fact]
+    public async Task GetAllAsync_ShouldReturnPagedProducts()
+    {
+        var repo = GetRepository(out var context);
+        for (int i = 0; i &lt; 12; i++)
+        {
+            await repo.AddAsync(CreateProduct(title: $&quot;Product {i}&quot;, category: &quot;General&quot;));
+        }
+
+        var criteria = new QueryCriteriaDto(page: 2, size: 5, order: null, filters: null, minValues: null, maxValues: null);
+        var result = await repo.GetAllAsync(criteria);
+
+        result.Items.Should().HaveCount(5);
+        result.TotalCount.Should().Be(12);
+    }
+
+    [Fact]
+    public async Task GetByCategoryAsync_ShouldReturnProductsFilteredByCategory()
+    {
+        var repo = GetRepository(out var context);
+        await repo.AddAsync(CreateProduct(&quot;Camera&quot;, &quot;Electronics&quot;));
+        await repo.AddAsync(CreateProduct(&quot;Laptop&quot;, &quot;Electronics&quot;));
+        await repo.AddAsync(CreateProduct(&quot;Chair&quot;, &quot;Furniture&quot;));
+
+        var criteria = new QueryCriteriaDto(page: 1, size: 10, order: null, filters: null, minValues: null, maxValues: null);
+        var result = await repo.GetByCategoryAsync(&quot;Electronics&quot;, criteria);
+
+        result.Items.Should().HaveCount(2);
+        result.Items.All(p =&gt; p.Category == &quot;Electronics&quot;).Should().BeTrue();
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,5,14,6,1],[15,9,17,22,1],[19,9,19,50,1],[20,9,20,42,1],[22,9,22,47,1],[23,5,23,6,1],[26,5,26,6,1],[27,9,34,11,1],[35,5,35,6,1],[39,5,39,6,1],[40,9,40,51,1],[41,9,41,39,1],[43,9,43,38,1],[45,9,45,51,1],[46,5,46,6,1],[50,5,50,6,1],[51,9,51,51,1],[52,9,52,39,1],[53,9,53,50,1],[54,9,54,42,1],[56,9,56,61,1],[58,9,58,40,1],[59,9,59,53,1],[60,5,60,6,1],[64,5,64,6,1],[65,9,65,51,1],[66,9,66,39,1],[67,9,67,38,1],[69,9,69,115,1],[70,9,70,41,1],[72,9,72,59,1],[73,9,73,53,1],[74,9,74,53,1],[75,5,75,6,1],[79,5,79,6,1],[80,9,80,51,1],[81,9,81,39,1],[82,9,82,38,1],[84,9,84,55,1],[86,9,86,35,1],[87,9,87,45,1],[88,5,88,6,1],[92,5,92,6,1],[93,9,93,51,1],[94,9,94,39,1],[95,9,95,38,1],[97,9,97,57,1],[99,9,99,34,1],[100,5,100,6,1],[104,5,104,6,1],[105,9,105,51,1],[106,9,110,11,1],[111,9,111,42,1],[113,9,113,61,1],[115,9,115,79,1],[115,79,115,104,1],[115,104,115,106,1],[116,5,116,6,1],[120,5,120,6,1],[121,9,121,51,1],[122,14,122,23,1],[122,25,122,31,1],[122,33,122,36,1],[123,9,123,10,1],[124,13,124,92,1],[125,9,125,10,1],[127,9,127,125,1],[128,9,128,55,1],[130,9,130,44,1],[131,9,131,43,1],[132,5,132,6,1],[136,5,136,6,1],[137,9,137,51,1],[138,9,138,69,1],[139,9,139,69,1],[140,9,140,66,1],[142,9,142,126,1],[143,9,143,77,1],[145,9,145,44,1],[146,9,146,31,1],[146,31,146,58,1],[146,58,146,78,1],[147,5,147,6,1]]);
+    </script>
+  </body>
+</html>

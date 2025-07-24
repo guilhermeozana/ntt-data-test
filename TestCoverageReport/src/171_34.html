@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Sales\DeveloperStore.Sales.UnitTests\Application\Commands\CancelSaleCommandHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using ErrorOr;
+using FluentAssertions;
+using NSubstitute;
+using DeveloperStore.Sales.Application.Commands.CancelSale;
+using DeveloperStore.Sales.Application.Common.Events;
+using DeveloperStore.Sales.Application.Common.Repositories;
+using DeveloperStore.Sales.Domain.Entities;
+
+namespace DeveloperStore.Sales.UnitTests.Application.Commands;
+
+public class CancelSaleCommandHandlerTests
+{
+    [Fact]
+    public async Task Handle_ShouldReturnNotFoundError_WhenSaleDoesNotExist()
+    {
+        // Arrange
+        var repo = Substitute.For&lt;ISaleRepository&gt;();
+        var dispatcher = Substitute.For&lt;IDomainEventDispatcher&gt;();
+        var handler = new CancelSaleCommandHandler(repo, dispatcher);
+
+        var command = new CancelSaleCommand(99);
+
+        repo.GetByIdAsync(command.Id).Returns((Sale?)null);
+
+        // Act
+        var result = await handler.Handle(command, default);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Code.Should().Be(&quot;Sale.NotFound&quot;);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldCancelSaleAndPersist_WhenSaleExists()
+    {
+        // Arrange
+        var repo = Substitute.For&lt;ISaleRepository&gt;();
+        var dispatcher = Substitute.For&lt;IDomainEventDispatcher&gt;();
+        var handler = new CancelSaleCommandHandler(repo, dispatcher);
+
+        var sale = Sale.Create(&quot;S-001&quot;, DateTime.Today, 1, 1);
+        sale.AddItem(101, 5, 100);
+        var command = new CancelSaleCommand(sale.Id);
+
+        repo.GetByIdAsync(command.Id).Returns(sale);
+
+        // Act
+        var result = await handler.Handle(command, default);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        sale.IsCancelled.Should().BeTrue();
+
+        await repo.Received(1).UpdateAsync(sale);
+        await dispatcher.Received(1).DispatchEventsAsync(sale.DomainEvents);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldClearDomainEvents_AfterDispatching()
+    {
+        // Arrange
+        var repo = Substitute.For&lt;ISaleRepository&gt;();
+        var dispatcher = Substitute.For&lt;IDomainEventDispatcher&gt;();
+        var handler = new CancelSaleCommandHandler(repo, dispatcher);
+
+        var sale = Sale.Create(&quot;S-002&quot;, DateTime.Today, 1, 1);
+        sale.AddItem(101, 5, 100);
+        sale.Cancel();
+        var command = new CancelSaleCommand(sale.Id);
+
+        repo.GetByIdAsync(command.Id).Returns(sale);
+
+        // Act
+        await handler.Handle(command, default);
+
+        // Assert
+        sale.DomainEvents.Should().BeEmpty();
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,5,15,6,1],[17,9,17,54,1],[18,9,18,67,1],[19,9,19,70,1],[21,9,21,49,1],[23,9,23,60,1],[26,9,26,61,1],[29,9,29,42,1],[30,9,30,64,1],[31,9,31,61,1],[32,5,32,6,1],[36,5,36,6,1],[38,9,38,54,1],[39,9,39,67,1],[40,9,40,70,1],[42,9,42,63,1],[43,9,43,35,1],[44,9,44,54,1],[46,9,46,53,1],[49,9,49,61,1],[52,9,52,43,1],[53,9,53,44,1],[55,9,55,50,1],[56,9,56,77,1],[57,5,57,6,1],[61,5,61,6,1],[63,9,63,54,1],[64,9,64,67,1],[65,9,65,70,1],[67,9,67,63,1],[68,9,68,35,1],[69,9,69,23,1],[70,9,70,54,1],[72,9,72,53,1],[75,9,75,48,1],[78,9,78,46,1],[79,5,79,6,1]]);
+    </script>
+  </body>
+</html>

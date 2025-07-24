@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Sales\DeveloperStore.Sales.UnitTests\Application\Commands\UpdateSaleCommandHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using ErrorOr;
+using FluentAssertions;
+using NSubstitute;
+using DeveloperStore.Sales.Application.Commands.UpdateSale;
+using DeveloperStore.Sales.Application.Common.Events;
+using DeveloperStore.Sales.Application.Common.Repositories;
+using DeveloperStore.Sales.Contracts.Dtos;
+using DeveloperStore.Sales.Domain.Entities;
+
+namespace DeveloperStore.Sales.UnitTests.Application.Commands;
+
+public class UpdateSaleCommandHandlerTests
+{
+    private readonly ISaleRepository _repo = Substitute.For&lt;ISaleRepository&gt;();
+    private readonly IMapper _mapper = Substitute.For&lt;IMapper&gt;();
+    private readonly IDomainEventDispatcher _dispatcher = Substitute.For&lt;IDomainEventDispatcher&gt;();
+
+    private UpdateSaleCommandHandler CreateHandler() =&gt; new(_repo, _mapper, _dispatcher);
+
+    [Fact]
+    public async Task Handle_ShouldReturnNotFound_WhenSaleDoesNotExist()
+    {
+        var command = new UpdateSaleCommand
+        {
+            Id = 99,
+            Date = &quot;2024-05-05&quot;,
+            CustomerId = 1,
+            BranchId = 2,
+            Products = new List&lt;SaleItemDto&gt;()
+        };
+
+        _repo.GetByIdAsync(command.Id).Returns((Sale?)null);
+
+        var handler = CreateHandler();
+        var result = await handler.Handle(command, default);
+
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Code.Should().Be(&quot;Sale.NotFound&quot;);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnError_WhenAnyItemIsInvalid()
+    {
+        var sale = Sale.Create(&quot;S-100&quot;, DateTime.Now, 1, 1);
+
+        var command = new UpdateSaleCommand
+        {
+            Id = sale.Id,
+            Date = DateTime.Today.ToString(&quot;yyyy-MM-dd&quot;),
+            CustomerId = 10,
+            BranchId = 20,
+            Products = new List&lt;SaleItemDto&gt;
+            {
+                new() { ProductId = 101, Quantity = 25, UnitPrice = 100 }
+            }
+        };
+
+        _repo.GetByIdAsync(command.Id).Returns(sale);
+
+        var handler = CreateHandler();
+        var result = await handler.Handle(command, default);
+
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldUpdateSaleAndReturnDto_WhenValid()
+    {
+        var sale = Sale.Create(&quot;S-200&quot;, DateTime.Today, 1, 1);
+
+        var command = new UpdateSaleCommand
+        {
+            Id = sale.Id,
+            Date = DateTime.Today.AddDays(1).ToString(&quot;yyyy-MM-dd&quot;),
+            CustomerId = 2,
+            BranchId = 3,
+            Products = new List&lt;SaleItemDto&gt;
+            {
+                new() { ProductId = 1001, Quantity = 5, UnitPrice = 50 },
+                new() { ProductId = 1002, Quantity = 3, UnitPrice = 30 }
+            }
+        };
+
+        _repo.GetByIdAsync(command.Id).Returns(sale);
+        _mapper.Map&lt;SaleDto&gt;(Arg.Any&lt;Sale&gt;()).Returns(new SaleDto { SaleNumber = &quot;UPDATED&quot; });
+
+        var handler = CreateHandler();
+        var result = await handler.Handle(command, default);
+
+        result.IsError.Should().BeFalse();
+        result.Value.SaleNumber.Should().Be(&quot;UPDATED&quot;);
+
+        await _repo.Received(1).UpdateAsync(sale);
+        await _dispatcher.Received(1).DispatchEventsAsync(sale.DomainEvents);
+        sale.DomainEvents.Should().BeEmpty();
+        sale.Products.Should().HaveCount(2);
+        sale.IsCancelled.Should().BeFalse();
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,5,15,80,1],[16,5,16,66,1],[17,5,17,100,1],[19,57,19,89,1],[23,5,23,6,1],[24,9,31,11,1],[33,9,33,61,1],[35,9,35,39,1],[36,9,36,61,1],[38,9,38,42,1],[39,9,39,64,1],[40,9,40,61,1],[41,5,41,6,1],[45,5,45,6,1],[46,9,46,61,1],[48,9,58,11,1],[60,9,60,54,1],[62,9,62,39,1],[63,9,63,61,1],[65,9,65,42,1],[66,9,66,66,1],[67,5,67,6,1],[71,5,71,6,1],[72,9,72,63,1],[74,9,85,11,1],[87,9,87,54,1],[88,9,88,95,1],[90,9,90,39,1],[91,9,91,61,1],[93,9,93,43,1],[94,9,94,56,1],[96,9,96,51,1],[97,9,97,78,1],[98,9,98,46,1],[99,9,99,45,1],[100,9,100,45,1],[101,5,101,6,1]]);
+    </script>
+  </body>
+</html>

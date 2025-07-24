@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Users\DeveloperStore.Users.UnitTests\Application\Commands\DeleteUserCommandHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using ErrorOr;
+using FluentAssertions;
+using NSubstitute;
+using DeveloperStore.Users.Application.Commands.DeleteUser;
+using DeveloperStore.Users.Application.Common.Repositories;
+using DeveloperStore.Users.Domain.Entities;
+using DeveloperStore.Users.Domain.Enums;
+
+namespace DeveloperStore.Users.UnitTests.Application.Commands;
+
+public class DeleteUserCommandHandlerTests
+{
+    private readonly IUserRepository _repo = Substitute.For&lt;IUserRepository&gt;();
+    private DeleteUserCommandHandler CreateHandler() =&gt; new(_repo);
+
+    [Fact]
+    public async Task Handle_ShouldReturnDeleted_WhenUserExistsAndIsDeleted()
+    {
+        // Arrange
+        var command = new DeleteUserCommand(1);
+        var existingUser = User.Create(
+            email: &quot;user@email.com&quot;,
+            username: &quot;user&quot;,
+            password: &quot;pass&quot;,
+            name: new(&quot;Ana&quot;, &quot;Silva&quot;),
+            address: new(&quot;Rio&quot;, &quot;Rua 1&quot;, 123, &quot;00000-000&quot;, new(&quot;0&quot;, &quot;0&quot;)),
+            phone: &quot;21999999999&quot;,
+            status: UserStatus.Active,
+            role: UserRole.Customer
+        );
+
+        _repo.GetByIdAsync(command.Id).Returns(existingUser);
+        _repo.DeleteAsync(existingUser).Returns(true);
+
+        var handler = CreateHandler();
+
+        // Act
+        var result = await handler.Handle(command, default);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().Be(Result.Deleted);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnValidationError_WhenUserNotFound()
+    {
+        // Arrange
+        var command = new DeleteUserCommand(99);
+        _repo.GetByIdAsync(command.Id).Returns((User?)null);
+
+        var handler = CreateHandler();
+
+        // Act
+        var result = await handler.Handle(command, default);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Code.Should().Be(&quot;User.Delete.NotFound&quot;);
+        result.FirstError.Description.Should().Be(&quot;User with id 99 does not exist&quot;);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnError_WhenDeletionFails()
+    {
+        // Arrange
+        var command = new DeleteUserCommand(2);
+        var existingUser = User.Create(
+            email: &quot;fail@email.com&quot;,
+            username: &quot;failuser&quot;,
+            password: &quot;failpass&quot;,
+            name: new(&quot;Jo&#227;o&quot;, &quot;Lima&quot;),
+            address: new(&quot;SP&quot;, &quot;Rua 2&quot;, 456, &quot;11111-111&quot;, new(&quot;1&quot;, &quot;1&quot;)),
+            phone: &quot;21999988888&quot;,
+            status: UserStatus.Inactive,
+            role: UserRole.Manager
+        );
+
+        _repo.GetByIdAsync(command.Id).Returns(existingUser);
+        _repo.DeleteAsync(existingUser).Returns(false);
+
+        var handler = CreateHandler();
+
+        // Act
+        var result = await handler.Handle(command, default);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Unexpected);
+        result.FirstError.Description.Should().Be(&quot;Failed to delete user&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,5,13,80,1],[14,57,14,67,1],[18,5,18,6,1],[20,9,20,48,1],[21,9,30,11,1],[32,9,32,62,1],[33,9,33,55,1],[35,9,35,39,1],[38,9,38,61,1],[41,9,41,43,1],[42,9,42,50,1],[43,5,43,6,1],[47,5,47,6,1],[49,9,49,49,1],[50,9,50,61,1],[52,9,52,39,1],[55,9,55,61,1],[58,9,58,42,1],[59,9,59,66,1],[60,9,60,68,1],[61,9,61,85,1],[62,5,62,6,1],[66,5,66,6,1],[68,9,68,48,1],[69,9,78,11,1],[80,9,80,62,1],[81,9,81,56,1],[83,9,83,39,1],[86,9,86,61,1],[89,9,89,42,1],[90,9,90,66,1],[91,9,91,76,1],[92,5,92,6,1]]);
+    </script>
+  </body>
+</html>

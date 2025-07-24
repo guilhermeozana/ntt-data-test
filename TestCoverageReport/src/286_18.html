@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Users\DeveloperStore.Users.UnitTests\Application\Queries\GetUserByUsernameQueryHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using DeveloperStore.Shared.Contracts.Dtos;
+using DeveloperStore.Users.Application.Common.Repositories;
+using DeveloperStore.Users.Application.Queries.GetUserByUsername;
+using DeveloperStore.Users.Domain.Entities;
+using DeveloperStore.Users.Domain.Enums;
+using DeveloperStore.Users.Domain.ValueObjects;
+using FluentAssertions;
+using NSubstitute;
+
+namespace DeveloperStore.Users.UnitTests.Application.Queries;
+
+public class GetUserByUsernameQueryHandlerTests
+{
+    private readonly IUserRepository _repo = Substitute.For&lt;IUserRepository&gt;();
+    private readonly IMapper _mapper = Substitute.For&lt;IMapper&gt;();
+    private GetUserByUsernameQueryHandler CreateHandler() =&gt; new(_repo, _mapper);
+
+    [Fact]
+    public async Task Handle_ShouldReturnError_WhenUserByUsernameIsNotFound()
+    {
+        var query = new GetUserByUsernameQuery(username: &quot;admin&quot;);
+
+        _repo.GetByUsernameAsync(query.Username).Returns((User?)null);
+
+        var handler = CreateHandler();
+        var result = await handler.Handle(query, default);
+
+        result.IsError.Should().BeTrue();
+        result.FirstError.Code.Should().Be(&quot;User.NotFound&quot;);
+        result.FirstError.Description.Should().Be(&quot;User not found.&quot;);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnUserDto_WhenUserByUsernameIsFound()
+    {
+        var user = User.Create(
+            email: &quot;ana@email.com&quot;,
+            username: &quot;ana123&quot;,
+            password: &quot;senhaSegura&quot;,
+            name: new Name(&quot;Ana&quot;, &quot;Beatriz&quot;),
+            address: new Address(&quot;RJ&quot;, &quot;Rua 1&quot;, 10, &quot;22222-222&quot;, new Geolocation(&quot;0&quot;, &quot;0&quot;)),
+            phone: &quot;21999999999&quot;,
+            status: UserStatus.Active,
+            role: UserRole.Customer
+        );
+
+        var query = new GetUserByUsernameQuery(&quot;ana123&quot;);
+        _repo.GetByUsernameAsync(query.Username).Returns(user);
+        _mapper.Map&lt;UserDto&gt;(user).Returns(new UserDto { Email = user.Email });
+
+        var handler = CreateHandler();
+        var result = await handler.Handle(query, default);
+
+        result.IsError.Should().BeFalse();
+        result.Value.Email.Should().Be(&quot;ana@email.com&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,5,15,80,1],[16,5,16,66,1],[17,62,17,81,1],[21,5,21,6,1],[22,9,22,67,1],[24,9,24,71,1],[26,9,26,39,1],[27,9,27,59,1],[29,9,29,42,1],[30,9,30,61,1],[31,9,31,70,1],[32,5,32,6,1],[36,5,36,6,1],[37,9,46,11,1],[48,9,48,58,1],[49,9,49,64,1],[50,9,50,80,1],[52,9,52,39,1],[53,9,53,59,1],[55,9,55,43,1],[56,9,56,57,1],[57,5,57,6,1]]);
+    </script>
+  </body>
+</html>

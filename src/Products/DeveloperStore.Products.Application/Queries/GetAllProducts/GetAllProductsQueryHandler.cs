@@ -20,7 +20,7 @@ public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, E
 
     public async Task<ErrorOr<PagedResponse<ProductDto>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
     {
-        var result = await _repo.GetAllAsync(request.Criteria); // Retorna PagedResult<Product>
+        var result = await _repo.GetAllAsync(request.Criteria);
 
         var productDtos = _mapper.Map<List<ProductDto>>(result.Items);
 

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Carts\DeveloperStore.Carts.Infrastructure\DependencyInjection.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using DeveloperStore.Carts.Application.Common.Interfaces;
+using DeveloperStore.Carts.Infrastructure.Context;
+using DeveloperStore.Carts.Infrastructure.Repositories;
+
+namespace DeveloperStore.Carts.Infrastructure;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext&lt;CartsDbContext&gt;(options =&gt;
+            options.UseNpgsql(configuration.GetConnectionString(&quot;CartsConnection&quot;)));
+
+        services.AddScoped&lt;ICartRepository, CartRepository&gt;();
+        
+        services.AddAuthentication(options =&gt;
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =&gt;
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = &quot;DeveloperStore.Auth&quot;,
+                    ValidAudience = &quot;DeveloperStore.Client&quot;,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(configuration[&quot;Jwt:Secret&quot;]))
+                };
+            });
+        
+        return services;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,5,16,6,0],[17,9,18,13,0],[18,13,18,84,0],[18,84,18,86,0],[20,9,20,63,0],[22,9,23,13,0],[23,13,23,14,0],[23,14,24,17,0],[24,17,24,92,0],[24,92,25,17,0],[25,17,25,89,0],[25,89,26,13,0],[26,13,26,14,0],[26,14,28,13,0],[28,13,28,14,0],[28,14,29,17,0],[29,17,38,19,0],[38,19,39,13,0],[39,13,39,14,0],[39,14,39,16,0],[41,9,41,25,0],[42,5,42,6,0]]);
+    </script>
+  </body>
+</html>

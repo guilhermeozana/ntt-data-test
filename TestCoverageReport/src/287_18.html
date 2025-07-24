@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Users\DeveloperStore.Users.UnitTests\Application\Validators\CreateUserCommandValidatorTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentAssertions;
+using DeveloperStore.Shared.Contracts.Dtos;
+using DeveloperStore.Users.Application.Commands.CreateUser;
+using Xunit;
+
+namespace DeveloperStore.Users.UnitTests.Application.Validators;
+
+public class CreateUserCommandValidatorTests
+{
+    private readonly CreateUserCommandValidator _validator = new();
+
+    private CreateUserCommand BuildValidCommand() =&gt;
+        new CreateUserCommand
+        {
+            Email = &quot;user@email.com&quot;,
+            Username = &quot;username123&quot;,
+            Password = &quot;password!&quot;,
+            Phone = &quot;21-99999-9999&quot;,
+            Status = &quot;Active&quot;,
+            Role = &quot;Admin&quot;,
+            Name = new NameDto
+            {
+                Firstname = &quot;Ana&quot;,
+                Lastname = &quot;Lima&quot;
+            },
+            Address = new AddressDto
+            {
+                City = &quot;Rio&quot;,
+                Street = &quot;Rua 1&quot;,
+                Number = 123,
+                Zipcode = &quot;20000-000&quot;,
+                Geolocation = new GeolocationDto
+                {
+                    Lat = &quot;-22.9&quot;,
+                    Long = &quot;-43.1&quot;
+                }
+            }
+        };
+
+    [Fact]
+    public void Should_ValidateSuccessfully_WhenCommandIsValid()
+    {
+        var command = BuildValidCommand();
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Should_Fail_WhenEmailIsInvalid()
+    {
+        var command = BuildValidCommand();
+        command.Email = &quot;invalid-email&quot;;
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; e.PropertyName == &quot;Email&quot;);
+    }
+
+    [Fact]
+    public void Should_Fail_WhenEnumValuesAreInvalid()
+    {
+        var command = BuildValidCommand();
+        command.Status = &quot;UnknownStatus&quot;;
+        command.Role = &quot;UnknownRole&quot;;
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; e.PropertyName == &quot;Status&quot;);
+        result.Errors.Should().Contain(e =&gt; e.PropertyName == &quot;Role&quot;);
+    }
+
+    [Theory]
+    [InlineData(&quot;&quot;)]
+    [InlineData(null)]
+    public void Should_Fail_WhenNameIsMissing(string value)
+    {
+        var command = BuildValidCommand();
+        command.Name.Firstname = value;
+        command.Name.Lastname = value;
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; e.PropertyName == &quot;Name.Firstname&quot;);
+        result.Errors.Should().Contain(e =&gt; e.PropertyName == &quot;Name.Lastname&quot;);
+    }
+
+    [Theory]
+    [InlineData(&quot;&quot;, &quot;Street&quot;, 10)]
+    [InlineData(&quot;City&quot;, &quot;&quot;, 10)]
+    [InlineData(&quot;City&quot;, &quot;Street&quot;, 0)]
+    public void Should_Fail_WhenAddressIsInvalid(string city, string street, int number)
+    {
+        var command = BuildValidCommand();
+        command.Address.City = city;
+        command.Address.Street = street;
+        command.Address.Number = number;
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Should_Fail_WhenGeolocationIsMissing()
+    {
+        var command = BuildValidCommand();
+        command.Address.Geolocation.Lat = &quot;&quot;;
+        command.Address.Geolocation.Long = &quot;&quot;;
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; e.PropertyName == &quot;Address.Geolocation.Lat&quot;);
+        result.Errors.Should().Contain(e =&gt; e.PropertyName == &quot;Address.Geolocation.Long&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,5,10,68,1],[13,9,38,10,1],[42,5,42,6,1],[43,9,43,43,1],[44,9,44,51,1],[46,9,46,42,1],[47,5,47,6,1],[51,5,51,6,1],[52,9,52,43,1],[53,9,53,41,1],[55,9,55,51,1],[57,9,57,43,1],[58,9,58,72,1],[59,5,59,6,1],[63,5,63,6,1],[64,9,64,43,1],[65,9,65,42,1],[66,9,66,38,1],[68,9,68,51,1],[70,9,70,43,1],[71,9,71,73,1],[72,9,72,71,1],[73,5,73,6,1],[79,5,79,6,1],[80,9,80,43,1],[81,9,81,40,1],[82,9,82,39,1],[84,9,84,51,1],[86,9,86,43,1],[87,9,87,81,1],[88,9,88,80,1],[89,5,89,6,1],[96,5,96,6,1],[97,9,97,43,1],[98,9,98,37,1],[99,9,99,41,1],[100,9,100,41,1],[102,9,102,51,1],[104,9,104,43,1],[105,5,105,6,1],[109,5,109,6,1],[110,9,110,43,1],[111,9,111,46,1],[112,9,112,47,1],[114,9,114,51,1],[116,9,116,43,1],[117,9,117,90,1],[118,9,118,91,1],[119,5,119,6,1]]);
+    </script>
+  </body>
+</html>

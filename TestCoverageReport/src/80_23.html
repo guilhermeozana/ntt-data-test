@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Infrastructure\Migrations\20250723182210_InitialCreate.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace DeveloperStore.Users.Infrastructure.Migrations
+{
+    /// &lt;inheritdoc /&gt;
+    public partial class InitialCreate : Migration
+    {
+        /// &lt;inheritdoc /&gt;
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: &quot;Users&quot;,
+                columns: table =&gt; new
+                {
+                    Id = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false)
+                        .Annotation(&quot;Npgsql:ValueGenerationStrategy&quot;, NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Email = table.Column&lt;string&gt;(type: &quot;character varying(100)&quot;, maxLength: 100, nullable: false),
+                    Username = table.Column&lt;string&gt;(type: &quot;character varying(50)&quot;, maxLength: 50, nullable: false),
+                    Password = table.Column&lt;string&gt;(type: &quot;character varying(200)&quot;, maxLength: 200, nullable: false),
+                    Firstname = table.Column&lt;string&gt;(type: &quot;character varying(50)&quot;, maxLength: 50, nullable: false),
+                    Lastname = table.Column&lt;string&gt;(type: &quot;character varying(50)&quot;, maxLength: 50, nullable: false),
+                    City = table.Column&lt;string&gt;(type: &quot;character varying(50)&quot;, maxLength: 50, nullable: false),
+                    Street = table.Column&lt;string&gt;(type: &quot;character varying(100)&quot;, maxLength: 100, nullable: false),
+                    Number = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false),
+                    Zipcode = table.Column&lt;string&gt;(type: &quot;character varying(20)&quot;, maxLength: 20, nullable: false),
+                    GeoLat = table.Column&lt;string&gt;(type: &quot;character varying(30)&quot;, maxLength: 30, nullable: false),
+                    GeoLong = table.Column&lt;string&gt;(type: &quot;character varying(30)&quot;, maxLength: 30, nullable: false),
+                    Phone = table.Column&lt;string&gt;(type: &quot;character varying(20)&quot;, maxLength: 20, nullable: false),
+                    Status = table.Column&lt;string&gt;(type: &quot;text&quot;, nullable: false),
+                    Role = table.Column&lt;string&gt;(type: &quot;text&quot;, nullable: false)
+                },
+                constraints: table =&gt;
+                {
+                    table.PrimaryKey(&quot;PK_Users&quot;, x =&gt; x.Id);
+                });
+        }
+
+        /// &lt;inheritdoc /&gt;
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: &quot;Users&quot;);
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,9,13,10,0],[14,13,16,35,0],[16,35,34,18,0],[34,18,36,17,0],[36,17,36,18,0],[36,18,37,21,0],[37,21,37,61,0],[37,61,38,17,0],[38,17,38,18,0],[38,18,38,20,0],[39,9,39,10,0],[43,9,43,10,0],[44,13,45,32,0],[46,9,46,10,0]]);
+    </script>
+  </body>
+</html>

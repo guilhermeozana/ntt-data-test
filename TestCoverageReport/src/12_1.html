@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Products\DeveloperStore.Products.Api\Mapping\ProductMappingProfile.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using DeveloperStore.Products.Application.Commands.CreateProduct;
+using DeveloperStore.Products.Application.Commands.UpdateProduct;
+using DeveloperStore.Products.Contracts.Dtos;
+using DeveloperStore.Products.Contracts.Requests;
+using DeveloperStore.Products.Domain.Entities;
+using DeveloperStore.Products.Domain.ValueObjects;
+
+namespace DeveloperStore.Products.Api.Mapping;
+
+public class ProductMappingProfile : Profile
+{
+    public ProductMappingProfile()
+    {
+        CreateMap&lt;CreateProductRequest, CreateProductCommand&gt;();
+        CreateMap&lt;UpdateProductRequest, UpdateProductCommand&gt;();
+        CreateMap&lt;Product, ProductDto&gt;();
+        CreateMap&lt;Rating, RatingDto&gt;();
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,5,13,35,0],[14,5,14,6,0],[15,9,15,65,0],[16,9,16,65,0],[17,9,17,42,0],[18,9,18,40,0],[20,5,20,6,0]]);
+    </script>
+  </body>
+</html>

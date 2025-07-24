@@ -17,12 +17,19 @@ public class UsersApiClient : IUsersApiClient
     public async Task<UserDto> GetByUsernameAsync(string username)
     {
         var response = await _httpClient.GetAsync($"users/byUsername/{username}");
-        if (!response.IsSuccessStatusCode) return null;
-
-        var userDto = await response.Content.ReadFromJsonAsync<UserDto>();
-        if (userDto == null)
+        if (!response.IsSuccessStatusCode || response.Content == null)
             return null;
 
-        return userDto;
+        if (response.Content.Headers.ContentLength == 0)
+            return null;
+
+        try
+        {
+            return await response.Content.ReadFromJsonAsync<UserDto>();
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return null;
+        }
     }
 }

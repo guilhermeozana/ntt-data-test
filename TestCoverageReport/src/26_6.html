@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Products\DeveloperStore.Products.UnitTests\Application\Commands\CreateProductCommandHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using DeveloperStore.Products.Application.Commands.CreateProduct;
+using DeveloperStore.Products.Application.Common.Interfaces;
+using DeveloperStore.Products.Contracts.Dtos;
+using DeveloperStore.Products.Domain.Entities;
+using DeveloperStore.Products.Domain.ValueObjects;
+using FluentAssertions;
+using NSubstitute;
+
+namespace DeveloperStore.Products.UnitTests.Application.Commands;
+
+public class CreateProductCommandHandlerTests
+{
+    private readonly IProductRepository _repo = Substitute.For&lt;IProductRepository&gt;();
+    private readonly IMapper _mapper = Substitute.For&lt;IMapper&gt;();
+    private CreateProductCommandHandler CreateHandler() =&gt; new(_repo, _mapper);
+
+    private CreateProductCommand BuildCommand() =&gt;
+        new CreateProductCommand
+        {
+            Title = &quot;Notebook Dell&quot;,
+            Price = 3500.99m,
+            Description = &quot;Notebook potente para desenvolvimento&quot;,
+            Category = &quot;Eletr&#244;nicos&quot;,
+            Image = &quot;image-url&quot;,
+            Rating = new RatingDto { Rate = 0, Count = 0 }
+        };
+
+    [Fact]
+    public async Task Handle_ShouldCreateProductAndReturnDto_WhenValid()
+    {
+        var command = BuildCommand();
+        var expectedProduct = Product.Create(
+            command.Title,
+            command.Price,
+            command.Description,
+            command.Category,
+            command.Image,
+            new Rating(0, 0)
+        );
+
+        _mapper.Map&lt;ProductDto&gt;(expectedProduct).Returns(new ProductDto
+        {
+            Title = expectedProduct.Title,
+            Price = expectedProduct.Price
+        });
+
+        var handler = CreateHandler();
+
+        // Act
+        var result = await handler.Handle(command, default);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Title.Should().Be(&quot;Notebook Dell&quot;);
+        result.Value.Price.Should().Be(3500.99m);
+
+        await _repo.Received(1).AddAsync(Arg.Any&lt;Product&gt;());
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,5,14,86,1],[15,5,15,66,1],[16,60,16,79,1],[19,9,27,10,1],[31,5,31,6,1],[32,9,32,38,1],[33,9,40,11,1],[42,9,46,12,1],[48,9,48,39,1],[51,9,51,61,1],[54,9,54,43,1],[55,9,55,57,1],[56,9,56,50,1],[58,9,58,62,1],[59,5,59,6,1]]);
+    </script>
+  </body>
+</html>

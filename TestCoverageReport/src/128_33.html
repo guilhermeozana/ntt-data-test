@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Sales\DeveloperStore.Sales.Infrastructure\Configurations\SaleConfiguration.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using DeveloperStore.Sales.Domain.Entities;
+namespace DeveloperStore.Sales.Infrastructure.Configurations;
+
+public class SaleConfiguration : IEntityTypeConfiguration&lt;Sale&gt;
+{
+    public void Configure(EntityTypeBuilder&lt;Sale&gt; builder)
+    {
+        builder.HasKey(s =&gt; s.Id);
+
+        builder.Property(s =&gt; s.Id)
+            .ValueGeneratedOnAdd();
+
+        builder.Property(s =&gt; s.SaleNumber)
+            .IsRequired()
+            .HasMaxLength(30);
+
+        builder.Property(s =&gt; s.Date)
+            .IsRequired();
+
+        builder.Property(s =&gt; s.CustomerId)
+            .IsRequired();
+
+        builder.Property(s =&gt; s.BranchId)
+            .IsRequired();
+
+        builder.Property(s =&gt; s.IsCancelled)
+            .IsRequired();
+
+        builder.OwnsMany(s =&gt; s.Products, item =&gt;
+        {
+            item.WithOwner().HasForeignKey(&quot;SaleId&quot;);
+
+            item.Property(i =&gt; i.ProductId).IsRequired();
+            item.Property(i =&gt; i.Quantity).IsRequired();
+            item.Property(i =&gt; i.UnitPrice).HasColumnType(&quot;decimal(18,2)&quot;);
+            item.Property(i =&gt; i.TotalAmount).HasColumnType(&quot;decimal(18,2)&quot;);
+            item.Property(i =&gt; i.Discount).HasColumnType(&quot;decimal(18,2)&quot;);
+            item.Property(i =&gt; i.DiscountRate).HasColumnType(&quot;decimal(5,2)&quot;);
+
+            item.HasKey(&quot;SaleId&quot;, &quot;ProductId&quot;);
+        });
+
+        builder.Navigation(s =&gt; s.Products)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,5,9,6,1],[10,9,10,35,1],[12,9,13,36,1],[15,9,17,31,1],[19,9,20,27,1],[22,9,23,27,1],[25,9,26,27,1],[28,9,29,27,1],[31,9,32,9,1],[32,9,32,10,1],[32,10,33,13,1],[33,13,33,54,1],[33,54,35,13,1],[35,13,35,58,1],[35,58,36,13,1],[36,13,36,57,1],[36,57,37,13,1],[37,13,37,76,1],[37,76,38,13,1],[38,13,38,78,1],[38,78,39,13,1],[39,13,39,75,1],[39,75,40,13,1],[40,13,40,78,1],[40,78,42,13,1],[42,13,42,48,1],[42,48,43,9,1],[43,9,43,10,1],[43,10,43,12,1],[45,9,46,62,1],[47,5,47,6,1]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Products\DeveloperStore.Products.Application\Queries\GetProductById\GetProductByIdQuery.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using ErrorOr;
+using MediatR;
+using DeveloperStore.Products.Contracts.Dtos;
+
+namespace DeveloperStore.Products.Application.Queries.GetProductById;
+
+public class GetProductByIdQuery : IRequest&lt;ErrorOr&lt;ProductDto&gt;&gt;
+{
+    public int Id { get; }
+
+    public GetProductByIdQuery(int id)
+    {
+        Id = id;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,21,9,25,1],[11,5,11,39,1],[12,5,12,6,1],[13,9,13,17,1],[14,5,14,6,1]]);
+    </script>
+  </body>
+</html>

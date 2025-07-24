@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Sales\DeveloperStore.Sales.Infrastructure\Migrations\20250723182754_InitialCreate.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace DeveloperStore.Sales.Infrastructure.Migrations
+{
+    /// &lt;inheritdoc /&gt;
+    public partial class InitialCreate : Migration
+    {
+        /// &lt;inheritdoc /&gt;
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: &quot;Sales&quot;,
+                columns: table =&gt; new
+                {
+                    Id = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false)
+                        .Annotation(&quot;Npgsql:ValueGenerationStrategy&quot;, NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SaleNumber = table.Column&lt;string&gt;(type: &quot;character varying(30)&quot;, maxLength: 30, nullable: false),
+                    Date = table.Column&lt;DateTime&gt;(type: &quot;timestamp with time zone&quot;, nullable: false),
+                    CustomerId = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false),
+                    BranchId = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false),
+                    IsCancelled = table.Column&lt;bool&gt;(type: &quot;boolean&quot;, nullable: false)
+                },
+                constraints: table =&gt;
+                {
+                    table.PrimaryKey(&quot;PK_Sales&quot;, x =&gt; x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: &quot;SaleItem&quot;,
+                columns: table =&gt; new
+                {
+                    ProductId = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false)
+                        .Annotation(&quot;Npgsql:ValueGenerationStrategy&quot;, NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SaleId = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false),
+                    Quantity = table.Column&lt;int&gt;(type: &quot;integer&quot;, nullable: false),
+                    UnitPrice = table.Column&lt;decimal&gt;(type: &quot;numeric(18,2)&quot;, nullable: false),
+                    DiscountRate = table.Column&lt;decimal&gt;(type: &quot;numeric(5,2)&quot;, nullable: false),
+                    Discount = table.Column&lt;decimal&gt;(type: &quot;numeric(18,2)&quot;, nullable: false),
+                    TotalAmount = table.Column&lt;decimal&gt;(type: &quot;numeric(18,2)&quot;, nullable: false)
+                },
+                constraints: table =&gt;
+                {
+                    table.PrimaryKey(&quot;PK_SaleItem&quot;, x =&gt; new { x.SaleId, x.ProductId });
+                    table.ForeignKey(
+                        name: &quot;FK_SaleItem_Sales_SaleId&quot;,
+                        column: x =&gt; x.SaleId,
+                        principalTable: &quot;Sales&quot;,
+                        principalColumn: &quot;Id&quot;,
+                        onDelete: ReferentialAction.Cascade);
+                });
+        }
+
+        /// &lt;inheritdoc /&gt;
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: &quot;SaleItem&quot;);
+
+            migrationBuilder.DropTable(
+                name: &quot;Sales&quot;);
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,9,14,10,0],[15,13,17,35,0],[17,35,26,18,0],[26,18,28,17,0],[28,17,28,18,0],[28,18,29,21,0],[29,21,29,61,0],[29,61,30,17,0],[30,17,30,18,0],[30,18,30,20,0],[32,13,34,35,0],[34,35,44,18,0],[44,18,46,17,0],[46,17,46,18,0],[46,18,47,21,0],[47,21,47,89,0],[47,89,48,21,0],[48,21,53,62,0],[53,62,54,17,0],[54,17,54,18,0],[54,18,54,20,0],[55,9,55,10,0],[59,9,59,10,0],[60,13,61,35,0],[63,13,64,32,0],[65,9,65,10,0]]);
+    </script>
+  </body>
+</html>

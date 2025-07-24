@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Shared\DeveloperStore.Shared.UnitTests\Application\Behaviors\ValidationBehaviorTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using ErrorOr;
+using FluentAssertions;
+using FluentValidation;
+using MediatR;
+using NSubstitute;
+using DeveloperStore.Shared.Application.Behaviors;
+
+namespace DeveloperStore.Shared.UnitTests.Application.Behaviors;
+
+public class FakeRequest : IRequest&lt;ErrorOr&lt;string&gt;&gt;
+{
+    public string Input { get; set; } = string.Empty;
+}
+
+public class FakeRequestValidator : AbstractValidator&lt;FakeRequest&gt;
+{
+    public FakeRequestValidator()
+    {
+        RuleFor(x =&gt; x.Input)
+            .NotEmpty().WithMessage(&quot;Input is required.&quot;);
+    }
+}
+
+public class ValidationBehaviorTests
+{
+    [Fact]
+    public async Task Should_ReturnErrors_WhenRequestIsInvalid()
+    {
+        var validators = new List&lt;IValidator&lt;FakeRequest&gt;&gt; { new FakeRequestValidator() };
+
+        var behavior = new ValidationBehavior&lt;FakeRequest, ErrorOr&lt;string&gt;&gt;(validators);
+        var request = new FakeRequest { Input = &quot;&quot; };
+
+        var next = Substitute.For&lt;RequestHandlerDelegate&lt;ErrorOr&lt;string&gt;&gt;&gt;();
+
+        var result = await behavior.Handle(request, next, default);
+
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Code.Should().Be(&quot;Input&quot;);
+    }
+
+    [Fact]
+    public async Task Should_ContinuePipeline_WhenRequestIsValid()
+    {
+        var validators = new List&lt;IValidator&lt;FakeRequest&gt;&gt; { new FakeRequestValidator() };
+
+        var behavior = new ValidationBehavior&lt;FakeRequest, ErrorOr&lt;string&gt;&gt;(validators);
+        var request = new FakeRequest { Input = &quot;Hello&quot; };
+
+        var next = Substitute.For&lt;RequestHandlerDelegate&lt;ErrorOr&lt;string&gt;&gt;&gt;();
+        next.Invoke().Returns(&quot;OK&quot;);
+
+        var result = await behavior.Handle(request, next, default);
+
+        result.IsError.Should().BeFalse();
+        result.Value.Should().Be(&quot;OK&quot;);
+    }
+
+    [Fact]
+    public async Task Should_SkipValidation_WhenNoValidatorsRegistered()
+    {
+        var validators = new List&lt;IValidator&lt;FakeRequest&gt;&gt;();
+
+        var behavior = new ValidationBehavior&lt;FakeRequest, ErrorOr&lt;string&gt;&gt;(validators);
+        var request = new FakeRequest { Input = &quot;&quot; };
+
+        var next = Substitute.For&lt;RequestHandlerDelegate&lt;ErrorOr&lt;string&gt;&gt;&gt;();
+        next.Invoke().Returns(&quot;Skipped&quot;);
+
+        var result = await behavior.Handle(request, next, default);
+
+        result.IsError.Should().BeFalse();
+        result.Value.Should().Be(&quot;Skipped&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[12,27,12,31,1],[12,32,12,36,1],[12,41,12,53,1],[17,5,17,34,1],[18,5,18,6,1],[19,9,20,59,1],[21,5,21,6,1],[28,5,28,6,1],[29,9,29,91,1],[31,9,31,89,1],[32,9,32,54,1],[34,9,34,78,1],[36,9,36,68,1],[38,9,38,42,1],[39,9,39,66,1],[40,9,40,53,1],[41,5,41,6,1],[45,5,45,6,1],[46,9,46,91,1],[48,9,48,89,1],[49,9,49,59,1],[51,9,51,78,1],[52,9,52,37,1],[54,9,54,68,1],[56,9,56,43,1],[57,9,57,40,1],[58,5,58,6,1],[62,5,62,6,1],[63,9,63,62,1],[65,9,65,89,1],[66,9,66,54,1],[68,9,68,78,1],[69,9,69,42,1],[71,9,71,68,1],[73,9,73,43,1],[74,9,74,45,1],[75,5,75,6,1]]);
+    </script>
+  </body>
+</html>

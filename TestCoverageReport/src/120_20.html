@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Application\Queries\GetAllUsers\GetAllUsersQueryHandler.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using MediatR;
+using ErrorOr;
+using DeveloperStore.Shared.Contracts.Dtos;
+using DeveloperStore.Shared.SharedKernel.Responses;
+using DeveloperStore.Users.Application.Common.Repositories;
+
+namespace DeveloperStore.Users.Application.Queries.GetAllUsers;
+
+public class GetAllUsersQueryHandler : IRequestHandler&lt;GetAllUsersQuery, ErrorOr&lt;PagedResponse&lt;UserDto&gt;&gt;&gt;
+{
+    private readonly IUserRepository _repo;
+    private readonly IMapper _mapper;
+
+    public GetAllUsersQueryHandler(IUserRepository repo, IMapper mapper)
+    {
+        _repo = repo;
+        _mapper = mapper;
+    }
+
+    public async Task&lt;ErrorOr&lt;PagedResponse&lt;UserDto&gt;&gt;&gt; Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
+    {
+        var result = await _repo.GetAllAsync(request.Criteria);
+        var userDtos = _mapper.Map&lt;List&lt;UserDto&gt;&gt;(result.Items);
+        var totalPages = (int)Math.Ceiling((double)result.TotalCount / request.Criteria.Size);
+
+        var pagedResponse = new PagedResponse&lt;UserDto&gt;
+        {
+            Data = userDtos,
+            TotalItems = result.TotalCount,
+            CurrentPage = request.Criteria.Page,
+            TotalPages = totalPages
+        };
+
+        return pagedResponse;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,5,15,73,1],[16,5,16,6,1],[17,9,17,22,1],[18,9,18,26,1],[19,5,19,6,1],[22,5,22,6,1],[23,9,23,64,1],[24,9,24,65,1],[25,9,25,95,1],[27,9,33,11,1],[35,9,35,30,1],[36,5,36,6,1]]);
+    </script>
+  </body>
+</html>

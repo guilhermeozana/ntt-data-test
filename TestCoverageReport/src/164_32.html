@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Sales\DeveloperStore.Sales.Domain\Events\SaleCreatedEvent.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using DeveloperStore.Shared.SharedKernel.Domain.Events;
+
+namespace DeveloperStore.Sales.Domain.Events;
+
+public record SaleCreatedEvent(int SaleId, string SaleNumber, DateTime CreatedAt) : IDomainEvent
+{
+    public DateTime OccurredOn =&gt; CreatedAt;
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[7,35,7,44,0]]);
+    </script>
+  </body>
+</html>

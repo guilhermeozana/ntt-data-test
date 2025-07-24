@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Shared\DeveloperStore.Shared.UnitTests\Api\Middlewares\ErrorHandlingMiddlewareTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Net;
+using System.Text.Json;
+using DeveloperStore.Shared.Api.Middlewares;
+using FluentAssertions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
+
+namespace DeveloperStore.Shared.UnitTests.Api.Middlewares;
+
+public class ErrorHandlingMiddlewareTests
+{
+    [Fact]
+    public async Task Should_ForwardRequest_WhenNoException()
+    {
+        var context = new DefaultHttpContext();
+        var called = false;
+
+        RequestDelegate next = ctx =&gt;
+        {
+            called = true;
+            return Task.CompletedTask;
+        };
+
+        var logger = Substitute.For&lt;ILogger&lt;ErrorHandlingMiddleware&gt;&gt;();
+        var middleware = new ErrorHandlingMiddleware(next, logger);
+
+        await middleware.Invoke(context);
+
+        called.Should().BeTrue();
+        context.Response.StatusCode.Should().Be((int)HttpStatusCode.OK); // default status
+    }
+
+    [Fact]
+    public async Task Should_ReturnInternalServerError_WhenUnhandledExceptionOccurs()
+    {
+        var context = new DefaultHttpContext();
+        var exceptionMessage = &quot;Unexpected failure in pipeline&quot;;
+
+        RequestDelegate next = ctx =&gt; throw new InvalidOperationException(exceptionMessage);
+        var logger = Substitute.For&lt;ILogger&lt;ErrorHandlingMiddleware&gt;&gt;();
+        var middleware = new ErrorHandlingMiddleware(next, logger);
+
+        var stream = new MemoryStream();
+        context.Response.Body = stream;
+
+        await middleware.Invoke(context);
+
+        context.Response.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+        context.Response.ContentType.Should().Be(&quot;application/json&quot;);
+
+        stream.Position = 0;
+        var body = await new StreamReader(stream).ReadToEndAsync();
+
+        var json = JsonSerializer.Deserialize&lt;JsonElement&gt;(body);
+
+        json.GetProperty(&quot;type&quot;).GetString().Should().Be(&quot;InternalServerError&quot;);
+        json.GetProperty(&quot;error&quot;).GetString().Should().Be(&quot;Unexpected failure&quot;);
+        json.GetProperty(&quot;detail&quot;).GetString().Should().Be(exceptionMessage);
+
+        logger
+            .When(l =&gt; l.Log(
+                LogLevel.Error,
+                Arg.Any&lt;EventId&gt;(),
+                Arg.Any&lt;object&gt;(),
+                Arg.Any&lt;Exception&gt;(),
+                Arg.Any&lt;Func&lt;object, Exception, string&gt;&gt;()
+            ))
+            .Do(call =&gt;
+            {
+                var exception = (Exception)call.Args()[3];
+                var formatter = (Func&lt;object, Exception, string&gt;)call.Args()[4];
+                var message = formatter(call.Args()[2], exception);
+
+                message.Should().Contain(&quot;Unhandled exception&quot;);
+                exception.Message.Should().Be(&quot;Unexpected failure in pipeline&quot;);
+            });
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,5,15,6,1],[16,9,16,48,1],[17,9,17,28,1],[19,9,20,9,1],[20,9,20,10,1],[20,10,21,13,1],[21,13,21,27,1],[21,27,22,13,1],[22,13,22,39,1],[22,39,23,9,1],[23,9,23,10,1],[23,10,23,11,1],[25,9,25,73,1],[26,9,26,68,1],[28,9,28,42,1],[30,9,30,34,1],[31,9,31,73,1],[32,5,32,6,1],[36,5,36,6,1],[37,9,37,48,1],[38,9,38,65,1],[40,9,40,39,1],[40,39,40,92,1],[40,92,40,93,1],[41,9,41,73,1],[42,9,42,68,1],[44,9,44,41,1],[45,9,45,40,1],[47,9,47,42,1],[49,9,49,90,1],[50,9,50,70,1],[52,9,52,29,1],[53,9,53,68,1],[55,9,55,66,1],[57,9,57,81,1],[58,9,58,81,1],[59,9,59,78,1],[61,9,62,24,1],[62,24,68,14,1],[68,14,70,13,1],[70,13,70,14,0],[70,14,71,17,1],[71,17,71,59,0],[71,59,72,17,1],[72,17,72,81,0],[72,81,73,17,1],[73,17,73,68,0],[73,68,75,17,1],[75,17,75,65,0],[75,65,76,17,1],[76,17,76,81,0],[76,81,77,13,1],[77,13,77,14,0],[77,14,77,16,1],[78,5,78,6,1]]);
+    </script>
+  </body>
+</html>

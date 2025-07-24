@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Carts\DeveloperStore.Carts.UnitTests\Application\Commands\CreateCartCommandHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using FluentAssertions;
+using NSubstitute;
+using DeveloperStore.Carts.Application.Commands.CreateCart;
+using DeveloperStore.Carts.Application.Common.Interfaces;
+using DeveloperStore.Carts.Contracts.Dtos;
+using DeveloperStore.Carts.Domain.Entities;
+
+namespace DeveloperStore.Carts.UnitTests.Application.Commands;
+
+public class CreateCartCommandHandlerTests
+{
+    private readonly ICartRepository _repo = Substitute.For&lt;ICartRepository&gt;();
+    private readonly IMapper _mapper = Substitute.For&lt;IMapper&gt;();
+    private CreateCartCommandHandler CreateHandler() =&gt; new(_repo, _mapper);
+
+    private CreateCartCommand BuildCommand()
+    {
+        return new CreateCartCommand
+        {
+            UserId = 99,
+            Date = &quot;2025-07-23&quot;,
+            Products = new List&lt;CartItemDto&gt;
+            {
+                new() { ProductId = 1001, Quantity = 2 },
+                new() { ProductId = 1002, Quantity = 1 }
+            }
+        };
+    }
+
+    [Fact]
+    public async Task Handle_ShouldCreateCartAndReturnDto_WhenCommandIsValid()
+    {
+        var command = BuildCommand();
+
+        var expectedCart = Cart.Create(command.UserId, DateTime.Parse(command.Date));
+        expectedCart.AddItem(1001, 2);
+        expectedCart.AddItem(1002, 1);
+
+        _mapper.Map&lt;CartDto&gt;(expectedCart).Returns(new CartDto
+        {
+            UserId = 99,
+            Date = command.Date,
+            Products = command.Products
+        });
+
+        var handler = CreateHandler();
+
+        // Act
+        var result = await handler.Handle(command, default);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.UserId.Should().Be(99);
+        result.Value.Products.Should().HaveCount(2);
+        await _repo.Received(1).AddAsync(Arg.Any&lt;Cart&gt;());
+    }
+
+    [Fact]
+    public async Task Handle_ShouldAddAllItemsToCart()
+    {
+        var command = BuildCommand();
+        var handler = CreateHandler();
+
+        var result = await handler.Handle(command, default);
+
+        var cartArg = Arg.Is&lt;Cart&gt;(c =&gt;
+            Enumerable.Any(c.Products, i =&gt; i.ProductId == 1001 &amp;&amp; i.Quantity == 2) &amp;&amp;
+            Enumerable.Any(c.Products, i =&gt; i.ProductId == 1002 &amp;&amp; i.Quantity == 1)
+        );
+
+        await _repo.Received(1).AddAsync(cartArg);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,5,13,80,1],[14,5,14,66,1],[15,57,15,76,1],[18,5,18,6,1],[19,9,28,11,1],[29,5,29,6,1],[33,5,33,6,1],[34,9,34,38,1],[36,9,36,86,1],[37,9,37,39,1],[38,9,38,39,1],[40,9,45,12,1],[47,9,47,39,1],[50,9,50,61,1],[53,9,53,43,1],[54,9,54,45,1],[55,9,55,53,1],[56,9,56,59,1],[57,5,57,6,1],[61,5,61,6,1],[62,9,62,38,1],[63,9,63,39,1],[65,9,65,61,1],[67,9,70,11,1],[72,9,72,51,1],[73,5,73,6,1]]);
+    </script>
+  </body>
+</html>

@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="15.0.1" />
         <PackageReference Include="coverlet.collector" Version="6.0.0"/>
         <PackageReference Include="ErrorOr" Version="2.0.1" />
         <PackageReference Include="FluentAssertions" Version="8.5.0" />
@@ -18,6 +19,7 @@
         <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
         <PackageReference Include="NSubstitute" Version="5.3.0" />
+        <PackageReference Include="RichardSzalay.MockHttp" Version="7.0.0" />
         <PackageReference Include="xunit" Version="2.5.3"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3"/>
     </ItemGroup>
@@ -27,6 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\src\Auth\DeveloperStore.Auth.Api\DeveloperStore.Auth.Api.csproj" />
       <ProjectReference Include="..\..\..\src\Auth\DeveloperStore.Auth.Application\DeveloperStore.Auth.Application.csproj" />
     </ItemGroup>
 

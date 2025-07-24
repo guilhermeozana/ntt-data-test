@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Users\DeveloperStore.Users.UnitTests\Domain\ValueObjects\AddressTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentAssertions;
+using DeveloperStore.Users.Domain.ValueObjects;
+using Xunit;
+
+namespace DeveloperStore.Users.UnitTests.Domain.ValueObjects;
+
+public class AddressTests
+{
+    private Geolocation BuildGeolocation(string lat = &quot;22.9068&quot;, string lng = &quot;43.1729&quot;)
+        =&gt; new Geolocation(lat, lng);
+
+    [Fact]
+    public void Constructor_ShouldInitializeAllProperties()
+    {
+        var geo = BuildGeolocation();
+        var address = new Address(&quot;Rio de Janeiro&quot;, &quot;Rua das Flores&quot;, 123, &quot;20000-000&quot;, geo);
+
+        address.City.Should().Be(&quot;Rio de Janeiro&quot;);
+        address.Street.Should().Be(&quot;Rua das Flores&quot;);
+        address.Number.Should().Be(123);
+        address.Zipcode.Should().Be(&quot;20000-000&quot;);
+        address.Geolocation.Should().Be(geo);
+    }
+
+    [Fact]
+    public void Addresses_WithSameData_ShouldBeEqual()
+    {
+        var geo = BuildGeolocation();
+        var address1 = new Address(&quot;RJ&quot;, &quot;Rua 1&quot;, 10, &quot;11111-000&quot;, geo);
+        var address2 = new Address(&quot;RJ&quot;, &quot;Rua 1&quot;, 10, &quot;11111-000&quot;, geo);
+
+        address1.Should().Be(address2);
+    }
+
+    [Fact]
+    public void Addresses_WithDifferentCity_ShouldNotBeEqual()
+    {
+        var geo = BuildGeolocation();
+        var address1 = new Address(&quot;RJ&quot;, &quot;Rua 1&quot;, 10, &quot;11111-000&quot;, geo);
+        var address2 = new Address(&quot;SP&quot;, &quot;Rua 1&quot;, 10, &quot;11111-000&quot;, geo);
+
+        address1.Should().NotBe(address2);
+    }
+
+    [Fact]
+    public void Addresses_WithDifferentGeolocation_ShouldNotBeEqual()
+    {
+        var address1 = new Address(&quot;RJ&quot;, &quot;Rua 1&quot;, 10, &quot;11111-000&quot;, BuildGeolocation(&quot;22.90&quot;, &quot;43.17&quot;));
+        var address2 = new Address(&quot;RJ&quot;, &quot;Rua 1&quot;, 10, &quot;11111-000&quot;, BuildGeolocation(&quot;23.00&quot;, &quot;43.17&quot;));
+
+        address1.Should().NotBe(address2);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,12,10,37,1],[14,5,14,6,1],[15,9,15,38,1],[16,9,16,94,1],[18,9,18,52,1],[19,9,19,54,1],[20,9,20,41,1],[21,9,21,50,1],[22,9,22,46,1],[23,5,23,6,1],[27,5,27,6,1],[28,9,28,38,1],[29,9,29,73,1],[30,9,30,73,1],[32,9,32,40,1],[33,5,33,6,1],[37,5,37,6,1],[38,9,38,38,1],[39,9,39,73,1],[40,9,40,73,1],[42,9,42,43,1],[43,5,43,6,1],[47,5,47,6,1],[48,9,48,104,1],[49,9,49,104,1],[51,9,51,43,1],[52,5,52,6,1]]);
+    </script>
+  </body>
+</html>

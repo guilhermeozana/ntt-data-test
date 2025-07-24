@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Sales\DeveloperStore.Sales.Application\Commands\UpdateSale\UpdateSaleCommandHandler.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using ErrorOr;
+using MediatR;
+using DeveloperStore.Sales.Application.Common.Events;
+using DeveloperStore.Sales.Application.Common.Repositories;
+using DeveloperStore.Sales.Contracts.Dtos;
+
+namespace DeveloperStore.Sales.Application.Commands.UpdateSale;
+
+public class UpdateSaleCommandHandler : IRequestHandler&lt;UpdateSaleCommand, ErrorOr&lt;SaleDto&gt;&gt;
+{
+    private readonly ISaleRepository _repo;
+    private readonly IMapper _mapper;
+    private readonly IDomainEventDispatcher _dispatcher;
+
+    public UpdateSaleCommandHandler(ISaleRepository repo, IMapper mapper, IDomainEventDispatcher dispatcher)
+    {
+        _repo = repo;
+        _mapper = mapper;
+        _dispatcher = dispatcher;
+    }
+
+    public async Task&lt;ErrorOr&lt;SaleDto&gt;&gt; Handle(UpdateSaleCommand request, CancellationToken cancellationToken)
+    {
+        var sale = await _repo.GetByIdAsync(request.Id);
+        if (sale is null)
+            return Error.NotFound(&quot;Sale.NotFound&quot;, $&quot;Sale with id {request.Id} was not found.&quot;);
+
+        sale.Update(DateTime.Parse(request.Date).ToUniversalTime(), request.CustomerId, request.BranchId);
+
+        var products = request.Products;
+
+        sale.ClearItems();
+
+        foreach (var product in products)
+        {
+            var result = sale.AddItem(
+                product.ProductId,
+                product.Quantity,
+                product.UnitPrice
+            );
+
+            if (result.IsError)
+                return result.Errors;
+        }
+
+        await _repo.UpdateAsync(sale);
+        await _dispatcher.DispatchEventsAsync(sale.DomainEvents);
+        sale.ClearDomainEvents();
+
+        var dto = _mapper.Map&lt;SaleDto&gt;(sale);
+        return dto;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,5,16,109,1],[17,5,17,6,1],[18,9,18,22,1],[19,9,19,26,1],[20,9,20,34,1],[21,5,21,6,1],[24,5,24,6,1],[25,9,25,57,1],[26,9,26,26,1],[27,13,27,97,1],[29,9,29,107,1],[31,9,31,41,1],[33,9,33,27,1],[35,9,35,16,1],[35,18,35,29,1],[35,30,35,32,1],[35,33,35,41,1],[36,9,36,10,1],[37,13,41,15,1],[43,13,43,32,1],[44,17,44,38,1],[45,9,45,10,1],[47,9,47,39,1],[48,9,48,66,1],[49,9,49,34,1],[51,9,51,46,1],[52,9,52,20,1],[53,5,53,6,1]]);
+    </script>
+  </body>
+</html>

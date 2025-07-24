@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Carts\DeveloperStore.Carts.UnitTests\Application\Commands\DeleteCartCommandHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using ErrorOr;
+using FluentAssertions;
+using NSubstitute;
+using DeveloperStore.Carts.Application.Commands.DeleteCart;
+using DeveloperStore.Carts.Application.Common.Interfaces;
+using DeveloperStore.Carts.Domain.Entities;
+
+namespace DeveloperStore.Carts.UnitTests.Application.Commands;
+
+public class DeleteCartCommandHandlerTests
+{
+    private readonly ICartRepository _repo = Substitute.For&lt;ICartRepository&gt;();
+    private DeleteCartCommandHandler CreateHandler() =&gt; new(_repo);
+
+    [Fact]
+    public async Task Handle_ShouldReturnDeleted_WhenCartExists()
+    {
+        // Arrange
+        var cart = Cart.Create(userId: 10, date: DateTime.UtcNow);
+        var command = new DeleteCartCommand(cart.Id);
+
+        _repo.GetByIdAsync(command.Id).Returns(cart);
+        _repo.DeleteAsync(cart).Returns(Task.FromResult(true));
+
+        var handler = CreateHandler();
+
+        // Act
+        var result = await handler.Handle(command, default);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().Be(Result.Deleted);
+        await _repo.Received(1).DeleteAsync(cart);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnNotFoundError_WhenCartDoesNotExist()
+    {
+        // Arrange
+        var command = new DeleteCartCommand(id: 999);
+        _repo.GetByIdAsync(command.Id).Returns((Cart?)null);
+
+        var handler = CreateHandler();
+
+        // Act
+        var result = await handler.Handle(command, default);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Code.Should().Be(&quot;Cart.NotFound&quot;);
+        result.FirstError.Description.Should().Be(&quot;Cart with id 999 was not found.&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[12,5,12,80,1],[13,57,13,67,1],[17,5,17,6,1],[19,9,19,67,1],[20,9,20,54,1],[22,9,22,54,1],[23,9,23,64,1],[25,9,25,39,1],[28,9,28,61,1],[31,9,31,43,1],[32,9,32,50,1],[33,9,33,51,1],[34,5,34,6,1],[38,5,38,6,1],[40,9,40,54,1],[41,9,41,61,1],[43,9,43,39,1],[46,9,46,61,1],[49,9,49,42,1],[50,9,50,64,1],[51,9,51,61,1],[52,9,52,86,1],[53,5,53,6,1]]);
+    </script>
+  </body>
+</html>

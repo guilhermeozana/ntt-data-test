@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Shared\DeveloperStore.Shared.Api\Queries\RequestQueryOptionsBinder.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Globalization;
+
+namespace DeveloperStore.Shared.Api.Queries;
+
+public class RequestQueryOptionsBinder : IModelBinder
+{
+    public Task BindModelAsync(ModelBindingContext bindingContext)
+    {
+        var query = bindingContext.HttpContext.Request.Query;
+
+        var options = new RequestQueryOptions
+        {
+            Page = int.TryParse(query[&quot;_page&quot;], out var page) ? page : 1,
+            Size = int.TryParse(query[&quot;_size&quot;], out var size) ? size : 10,
+            Order = query[&quot;_order&quot;].FirstOrDefault()
+        };
+
+        options.Filters = query
+            .Where(kvp =&gt; !kvp.Key.StartsWith(&quot;_&quot;))
+            .ToDictionary(
+                kvp =&gt; kvp.Key,
+                kvp =&gt; kvp.Value.FirstOrDefault() ?? string.Empty
+            );
+
+        options.MinValues = query
+            .Where(kvp =&gt; kvp.Key.StartsWith(&quot;_min&quot;))
+            .ToDictionary(
+                kvp =&gt; kvp.Key.Replace(&quot;_min&quot;, &quot;&quot;),
+                kvp =&gt; decimal.TryParse(kvp.Value.FirstOrDefault(), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)
+                    ? result
+                    : 0
+            );
+
+        options.MaxValues = query
+            .Where(kvp =&gt; kvp.Key.StartsWith(&quot;_max&quot;))
+            .ToDictionary(
+                kvp =&gt; kvp.Key.Replace(&quot;_max&quot;, &quot;&quot;),
+                kvp =&gt; decimal.TryParse(kvp.Value.FirstOrDefault(), NumberStyles.Number, CultureInfo.InvariantCulture, out var result)
+                    ? result
+                    : 0
+            );
+
+        bindingContext.Result = ModelBindingResult.Success(options);
+        return Task.CompletedTask;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,5,9,6,1],[10,9,10,62,1],[12,9,17,11,1],[19,9,20,27,1],[20,27,20,51,1],[20,51,22,24,1],[22,24,22,31,1],[22,31,23,24,1],[23,24,23,66,1],[23,66,24,15,1],[26,9,27,27,1],[27,27,27,53,1],[27,53,29,24,1],[29,24,29,51,1],[29,51,30,24,1],[30,24,32,24,1],[32,24,33,15,1],[35,9,36,27,1],[36,27,36,53,1],[36,53,38,24,1],[38,24,38,51,1],[38,51,39,24,1],[39,24,41,24,1],[41,24,42,15,1],[44,9,44,69,1],[45,9,45,35,1],[46,5,46,6,1]]);
+    </script>
+  </body>
+</html>

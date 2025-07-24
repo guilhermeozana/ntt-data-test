@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Shared\DeveloperStore.Shared.SharedKernel\Domain\Entity.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace DeveloperStore.Shared.SharedKernel.Domain;
+
+public abstract class Entity&lt;TId&gt;
+{
+    public TId Id { get; protected set; }
+
+    protected Entity() { }
+
+    protected Entity(TId id) =&gt; Id = id;
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is not Entity&lt;TId&gt; other) return false;
+        if (ReferenceEquals(this, other)) return true;
+
+        return EqualityComparer&lt;TId&gt;.Default.Equals(Id, other.Id);
+    }
+
+    public override int GetHashCode() =&gt; EqualityComparer&lt;TId&gt;.Default.GetHashCode(Id!);
+
+    public static bool operator ==(Entity&lt;TId&gt; a, Entity&lt;TId&gt; b) =&gt; a?.Equals(b) ?? b is null;
+    public static bool operator !=(Entity&lt;TId&gt; a, Entity&lt;TId&gt; b) =&gt; !(a == b);
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[5,21,5,25,1],[5,26,5,40,0],[7,5,7,23,1],[7,24,7,25,1],[7,26,7,27,1],[9,5,9,29,0],[9,33,9,40,0],[12,5,12,6,1],[13,9,13,42,1],[13,43,13,56,1],[14,9,14,42,1],[14,43,14,55,1],[16,9,16,67,1],[17,5,17,6,1],[19,42,19,88,0],[21,69,21,94,1],[22,69,22,78,0]]);
+    </script>
+  </body>
+</html>

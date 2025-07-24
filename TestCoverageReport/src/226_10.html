@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Shared\DeveloperStore.Shared.SharedKernel\Responses\PagedResponse.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace DeveloperStore.Shared.SharedKernel.Responses;
+
+public class PagedResponse&lt;T&gt;
+{
+    public PagedResponse()
+    {
+    }
+
+    public PagedResponse(IEnumerable&lt;T&gt; data, int totalItems, int currentPage, int totalPages)
+    {
+        Data = data;
+        TotalItems = totalItems;
+        CurrentPage = currentPage;
+        TotalPages = totalPages;
+    }
+
+    public IEnumerable&lt;T&gt; Data { get; set; }
+    public int TotalItems { get; set; }
+    public int CurrentPage { get; set; }
+    public int TotalPages { get; set; }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[5,5,5,27,1],[6,5,6,6,1],[7,5,7,6,1],[9,5,9,95,1],[10,5,10,6,1],[11,9,11,21,1],[12,9,12,33,1],[13,9,13,35,1],[14,9,14,33,1],[15,5,15,6,1],[17,34,17,38,1],[17,39,17,43,1],[18,29,18,33,1],[18,34,18,38,1],[19,30,19,34,1],[19,35,19,39,1],[20,29,20,33,1],[20,34,20,38,1]]);
+    </script>
+  </body>
+</html>

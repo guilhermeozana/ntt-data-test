@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Application\Commands\CreateUser\CreateUserCommandValidator.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentValidation;
+using DeveloperStore.Users.Domain.Enums;
+
+namespace DeveloperStore.Users.Application.Commands.CreateUser;
+
+public class CreateUserCommandValidator : AbstractValidator&lt;CreateUserCommand&gt;
+{
+    public CreateUserCommandValidator()
+    {
+        RuleFor(x =&gt; x.Email)
+            .NotEmpty().WithMessage(&quot;Email is required.&quot;)
+            .EmailAddress().WithMessage(&quot;Invalid email format.&quot;);
+
+        RuleFor(x =&gt; x.Username)
+            .NotEmpty().WithMessage(&quot;Username is required.&quot;);
+
+        RuleFor(x =&gt; x.Password)
+            .NotEmpty().WithMessage(&quot;Password is required.&quot;);
+
+        RuleFor(x =&gt; x.Phone)
+            .NotEmpty().WithMessage(&quot;Phone number is required.&quot;);
+
+        RuleFor(x =&gt; x.Status)
+            .Must(status =&gt; Enum.TryParse&lt;UserStatus&gt;(status, true, out _))
+            .WithMessage(&quot;Invalid status value.&quot;);
+
+        RuleFor(x =&gt; x.Role)
+            .Must(role =&gt; Enum.TryParse&lt;UserRole&gt;(role, true, out _))
+            .WithMessage(&quot;Invalid role value.&quot;);
+
+        RuleFor(x =&gt; x.Name.Firstname)
+            .NotEmpty().WithMessage(&quot;First name is required.&quot;);
+
+        RuleFor(x =&gt; x.Name.Lastname)
+            .NotEmpty().WithMessage(&quot;Last name is required.&quot;);
+
+        RuleFor(x =&gt; x.Address.City)
+            .NotEmpty().WithMessage(&quot;City is required.&quot;);
+
+        RuleFor(x =&gt; x.Address.Street)
+            .NotEmpty().WithMessage(&quot;Street is required.&quot;);
+
+        RuleFor(x =&gt; x.Address.Number)
+            .GreaterThan(0).WithMessage(&quot;Address number must be greater than zero.&quot;);
+
+        RuleFor(x =&gt; x.Address.Zipcode)
+            .NotEmpty().WithMessage(&quot;Zip code is required.&quot;);
+
+        RuleFor(x =&gt; x.Address.Geolocation.Lat)
+            .NotEmpty().WithMessage(&quot;Latitude is required.&quot;);
+
+        RuleFor(x =&gt; x.Address.Geolocation.Long)
+            .NotEmpty().WithMessage(&quot;Longitude is required.&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[8,5,8,40,1],[9,5,9,6,1],[10,9,12,66,1],[14,9,15,62,1],[17,9,18,62,1],[20,9,21,66,1],[23,9,24,29,1],[24,29,24,75,1],[24,75,25,51,1],[27,9,28,27,1],[28,27,28,69,1],[28,69,29,49,1],[31,9,32,64,1],[34,9,35,63,1],[37,9,38,58,1],[40,9,41,60,1],[43,9,44,86,1],[46,9,47,62,1],[49,9,50,62,1],[52,9,53,63,1],[54,5,54,6,1]]);
+    </script>
+  </body>
+</html>

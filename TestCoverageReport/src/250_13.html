@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Carts\DeveloperStore.Carts.UnitTests\Application\Validators\CreateCartCommandValidatorTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentValidation;
+
+namespace DeveloperStore.Carts.Application.Commands.CreateCart;
+
+public class CreateCartCommandValidator : AbstractValidator&lt;CreateCartCommand&gt;
+{
+    public CreateCartCommandValidator()
+    {
+        RuleFor(x =&gt; x.UserId)
+            .GreaterThan(0).WithMessage(&quot;User ID is required.&quot;);
+
+        RuleFor(x =&gt; x.Date)
+            .NotEmpty().WithMessage(&quot;Date is required.&quot;)
+            .Must(BeAValidDate).WithMessage(&quot;Date must be a valid format (yyyy-MM-dd).&quot;);
+
+        RuleFor(x =&gt; x.Products)
+            .NotEmpty().WithMessage(&quot;At least one product is required.&quot;);
+
+        RuleForEach(x =&gt; x.Products).ChildRules(product =&gt;
+        {
+            product.RuleFor(p =&gt; p.ProductId)
+                .GreaterThan(0).WithMessage(&quot;Product ID is required.&quot;);
+
+            product.RuleFor(p =&gt; p.Quantity)
+                .GreaterThan(0).WithMessage(&quot;Quantity must be greater than zero.&quot;)
+                .LessThanOrEqualTo(20).WithMessage(&quot;Cannot purchase more than 20 identical items.&quot;);
+
+            // Exemplo de regra condicional: se houver campo `HasDiscount`
+            // product.RuleFor(p =&gt; p.HasDiscount)
+            //     .Must((dto, hasDiscount) =&gt; !hasDiscount || dto.Quantity &gt;= 4)
+            //     .WithMessage(&quot;Purchases below 4 items cannot have a discount.&quot;);
+        });
+    }
+
+    private bool BeAValidDate(string dateString)
+    {
+        return DateTime.TryParse(dateString, out _);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[7,5,7,40,0],[8,5,8,6,0],[9,9,10,65,0],[12,9,14,90,0],[16,9,17,74,0],[19,9,20,9,0],[20,9,20,10,0],[20,10,21,13,0],[21,13,22,72,0],[22,72,24,13,0],[24,13,26,101,0],[26,101,32,9,0],[32,9,32,10,0],[32,10,32,12,0],[33,5,33,6,0],[36,5,36,6,0],[37,9,37,53,0],[38,5,38,6,0]]);
+    </script>
+  </body>
+</html>

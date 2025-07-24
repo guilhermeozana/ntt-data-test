@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Products\DeveloperStore.Products.Application\Commands\CreateProduct\CreateProductCommand.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using ErrorOr;
+using MediatR;
+using DeveloperStore.Products.Contracts.Dtos;
+
+namespace DeveloperStore.Products.Application.Commands.CreateProduct;
+
+public class CreateProductCommand : IRequest&lt;ErrorOr&lt;ProductDto&gt;&gt;
+{
+    public Guid Id { get; set; }
+    public required string Title { get; set; }
+    public decimal Price { get; set; }
+    public required string Description { get; set; }
+    public required string Category { get; set; }
+    public string? Image { get; set; }
+    public RatingDto? Rating { get; set; }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,22,9,26,0],[9,27,9,31,0],[10,36,10,40,1],[10,41,10,45,1],[11,28,11,32,1],[11,33,11,37,1],[12,42,12,46,1],[12,47,12,51,1],[13,39,13,43,1],[13,44,13,48,1],[14,28,14,32,1],[14,33,14,37,1],[15,32,15,36,1],[15,37,15,41,1]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Users\DeveloperStore.Users.UnitTests\Application\Commands\CreateUserCommandHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using FluentAssertions;
+using NSubstitute;
+using DeveloperStore.Shared.Contracts.Dtos;
+using DeveloperStore.Users.Application.Commands.CreateUser;
+using DeveloperStore.Users.Application.Common.Repositories;
+using DeveloperStore.Users.Domain.Entities;
+using DeveloperStore.Users.Domain.Enums;
+
+namespace DeveloperStore.Users.UnitTests.Application.Commands;
+
+public class CreateUserCommandHandlerTests
+{
+    private readonly IUserRepository _repo = Substitute.For&lt;IUserRepository&gt;();
+    private readonly IMapper _mapper = Substitute.For&lt;IMapper&gt;();
+    private CreateUserCommandHandler CreateHandler() =&gt; new(_repo, _mapper);
+
+    private CreateUserCommand BuildCommand() =&gt;
+        new CreateUserCommand
+        {
+            Email = &quot;guilherme@email.com&quot;,
+            Username = &quot;gui_lima&quot;,
+            Password = &quot;secure@2025&quot;,
+            Phone = &quot;21-99999-9999&quot;,
+            Status = &quot;Active&quot;,
+            Role = &quot;Admin&quot;,
+            Name = new NameDto
+            {
+                Firstname = &quot;Guilherme&quot;,
+                Lastname = &quot;Lima&quot;
+            },
+            Address = new AddressDto
+            {
+                City = &quot;Rio de Janeiro&quot;,
+                Street = &quot;Rua das Flores&quot;,
+                Number = 123,
+                Zipcode = &quot;20000-000&quot;,
+                Geolocation = new GeolocationDto
+                {
+                    Lat = &quot;22.9068&quot;,
+                    Long = &quot;43.1729&quot;
+                }
+            }
+        };
+
+    [Fact]
+    public async Task Handle_ShouldCreateUserAndReturnDto_WhenValid()
+    {
+        // Arrange
+        var command = BuildCommand();
+        var handler = CreateHandler();
+
+        _mapper.Map&lt;UserDto&gt;(Arg.Any&lt;User&gt;())
+               .Returns(new UserDto { Email = command.Email });
+
+        // Act
+        var result = await handler.Handle(command, default);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Email.Should().Be(&quot;guilherme@email.com&quot;);
+
+        await _repo.Received(1).AddAsync(Arg.Any&lt;User&gt;());
+    }
+
+    [Theory]
+    [InlineData(&quot;Active&quot;, UserStatus.Active)]
+    [InlineData(&quot;inactive&quot;, UserStatus.Inactive)]
+    [InlineData(&quot;SUSPENDED&quot;, UserStatus.Suspended)]
+    public async Task Handle_ShouldParseUserStatus_FromString(string input, UserStatus expected)
+    {
+        var command = BuildCommand();
+        command.Status = input;
+
+        var handler = CreateHandler();
+        await handler.Handle(command, default);
+
+        await _repo.Received(1).AddAsync(
+            Arg.Is&lt;User&gt;(u =&gt; u.Status == expected)
+        );
+    }
+
+    [Theory]
+    [InlineData(&quot;Admin&quot;, UserRole.Admin)]
+    [InlineData(&quot;manager&quot;, UserRole.Manager)]
+    [InlineData(&quot;CUSTOMER&quot;, UserRole.Customer)]
+    public async Task Handle_ShouldParseUserRole_FromString(string input, UserRole expected)
+    {
+        var command = BuildCommand();
+        command.Role = input;
+
+        var handler = CreateHandler();
+        await handler.Handle(command, default);
+
+        await _repo.Received(1).AddAsync(
+            Arg.Is&lt;User&gt;(u =&gt; u.Role == expected)
+        );
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,5,14,80,1],[15,5,15,66,1],[16,57,16,76,1],[19,9,44,10,1],[48,5,48,6,1],[50,9,50,38,1],[51,9,51,39,1],[53,9,54,64,1],[57,9,57,61,1],[60,9,60,43,1],[61,9,61,63,1],[63,9,63,59,1],[64,5,64,6,1],[71,5,71,6,1],[72,9,72,38,1],[73,9,73,32,1],[75,9,75,39,1],[76,9,76,48,1],[78,9,80,11,1],[81,5,81,6,1],[88,5,88,6,1],[89,9,89,38,1],[90,9,90,30,1],[92,9,92,39,1],[93,9,93,48,1],[95,9,97,11,1],[98,5,98,6,1]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Sales\DeveloperStore.Sales.Domain\ValueObjects\SaleItem.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using DeveloperStore.Shared.SharedKernel.Domain;
+
+namespace DeveloperStore.Sales.Domain.ValueObjects;
+
+public class SaleItem : ValueObject
+{
+    private decimal _discount;
+    private decimal _totalAmount;
+
+    private SaleItem() { } 
+
+    public SaleItem(int productId, int quantity, decimal unitPrice)
+    {
+        ProductId = productId;
+        Quantity = quantity;
+        UnitPrice = unitPrice;
+
+        DiscountRate = GetDiscountRate(quantity);
+        _discount = quantity * unitPrice * DiscountRate;
+        _totalAmount = quantity * unitPrice - _discount;
+    }
+
+    public int ProductId { get; private set; }
+    public int Quantity { get; private set; }
+    public decimal UnitPrice { get; private set; }
+
+    public decimal DiscountRate { get; private set; }
+
+    public decimal Discount =&gt; _discount;
+    public decimal TotalAmount =&gt; _totalAmount;
+
+    private decimal GetDiscountRate(int quantity) =&gt; quantity switch
+    {
+        &gt;= 10 and &lt;= 20 =&gt; 0.20m,
+        &gt;= 4 and &lt; 10   =&gt; 0.10m,
+        _               =&gt; 0.0m
+    };
+
+    protected override IEnumerable&lt;object&gt; GetEqualityComponents()
+    {
+        yield return ProductId;
+        yield return Quantity;
+        yield return UnitPrice;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,5,10,23,0],[10,24,10,25,0],[10,26,10,27,0],[12,5,12,68,1],[13,5,13,6,1],[14,9,14,31,1],[15,9,15,29,1],[16,9,16,31,1],[18,9,18,50,1],[19,9,19,57,1],[20,9,20,57,1],[21,5,21,6,1],[23,28,23,32,1],[23,33,23,45,1],[24,27,24,31,1],[24,32,24,44,1],[25,32,25,36,1],[25,37,25,49,1],[27,35,27,39,1],[27,40,27,52,1],[29,32,29,41,1],[30,35,30,47,1],[32,54,34,28,1],[34,28,34,33,1],[34,33,35,28,1],[35,28,35,33,1],[35,33,36,28,1],[36,28,36,32,1],[36,32,37,6,1],[40,5,40,6,1],[41,9,41,32,1],[42,9,42,31,1],[43,9,43,32,1],[44,5,44,6,1]]);
+    </script>
+  </body>
+</html>

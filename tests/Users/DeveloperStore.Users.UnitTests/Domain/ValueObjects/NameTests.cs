@@ -20,7 +20,7 @@ public class NameTests
         var name1 = new Name("Ana", "Beatriz");
         var name2 = new Name("Ana", "Beatriz");
 
-        name1.Should().Be(name2); // igualdade estrutural
+        name1.Should().Be(name2);
     }
 
     [Fact]

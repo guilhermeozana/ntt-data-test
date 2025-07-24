@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Carts\DeveloperStore.Carts.Domain\ValueObjects\CartItem.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using DeveloperStore.Shared.SharedKernel.Domain;
+
+namespace DeveloperStore.Carts.Domain.ValueObjects;
+
+public class CartItem : ValueObject
+{
+    public int ProductId { get; }
+    public int Quantity { get; }
+
+    public CartItem(int productId, int quantity)
+    {
+        ProductId = productId;
+        Quantity = quantity;
+    }
+
+    protected override IEnumerable&lt;object&gt; GetEqualityComponents()
+    {
+        yield return ProductId;
+        yield return Quantity;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[7,28,7,32,1],[8,27,8,31,1],[10,5,10,49,1],[11,5,11,6,1],[12,9,12,31,1],[13,9,13,29,1],[14,5,14,6,1],[17,5,17,6,1],[18,9,18,32,1],[19,9,19,31,1],[20,5,20,6,1]]);
+    </script>
+  </body>
+</html>

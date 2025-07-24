@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Sales\DeveloperStore.Sales.Application\Commands\CreateSale\CreateSaleCommandValidator.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentValidation;
+using DeveloperStore.Sales.Application.Commands.CreateSale;
+
+namespace DeveloperStore.Sales.Application.Commands.CreateSale;
+
+public class CreateSaleCommandValidator : AbstractValidator&lt;CreateSaleCommand&gt;
+{
+    public CreateSaleCommandValidator()
+    {
+        RuleFor(x =&gt; x.CustomerId)
+            .GreaterThan(0).WithMessage(&quot;Customer ID is required.&quot;);
+
+        RuleFor(x =&gt; x.BranchId)
+            .GreaterThan(0).WithMessage(&quot;Branch ID is required.&quot;);
+
+        RuleFor(x =&gt; x.Date)
+            .NotEmpty().WithMessage(&quot;Date is required.&quot;)
+            .Must(BeAValidDate).WithMessage(&quot;Date must be a valid format (yyyy-MM-dd).&quot;);
+
+        RuleFor(x =&gt; x.Products)
+            .NotEmpty().WithMessage(&quot;At least one product must be included in the sale.&quot;);
+
+        RuleForEach(x =&gt; x.Products).ChildRules(product =&gt;
+        {
+            product.RuleFor(p =&gt; p.ProductId)
+                .GreaterThan(0).WithMessage(&quot;Product ID is required.&quot;);
+
+            product.RuleFor(p =&gt; p.Quantity)
+                .GreaterThan(0).WithMessage(&quot;Quantity must be greater than zero.&quot;)
+                .LessThanOrEqualTo(20).WithMessage(&quot;Cannot purchase more than 20 identical items.&quot;);
+
+            product.RuleFor(p =&gt; p.UnitPrice)
+                .GreaterThan(0).WithMessage(&quot;Unit price must be greater than zero.&quot;);
+
+            product.RuleFor(p =&gt; p.Quantity)
+                .Must(q =&gt; q &gt;= 4 || q == 1 || q == 2 || q == 3)
+                .WithMessage(&quot;Purchases below 4 items cannot have a discount.&quot;);
+        });
+    }
+
+    private bool BeAValidDate(string dateString)
+    {
+        return DateTime.TryParse(dateString, out _);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[8,5,8,40,1],[9,5,9,6,1],[10,9,11,69,1],[13,9,14,67,1],[16,9,18,90,1],[20,9,21,91,1],[23,9,24,9,1],[24,9,24,10,1],[24,10,25,13,1],[25,13,26,72,1],[26,72,28,13,1],[28,13,30,101,1],[30,101,32,13,1],[32,13,33,86,1],[33,86,35,13,1],[35,13,36,28,1],[36,28,36,64,1],[36,64,37,81,1],[37,81,38,9,1],[38,9,38,10,1],[38,10,38,12,1],[39,5,39,6,1],[42,5,42,6,1],[43,9,43,53,1],[44,5,44,6,1]]);
+    </script>
+  </body>
+</html>

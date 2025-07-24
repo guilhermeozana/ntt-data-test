@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Products\DeveloperStore.Products.Application\Commands\DeleteProduct\DeleteProductCommandHandler.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using MediatR;
+using ErrorOr;
+using DeveloperStore.Products.Application.Common.Interfaces;
+
+namespace DeveloperStore.Products.Application.Commands.DeleteProduct;
+
+public class DeleteProductCommandHandler : IRequestHandler&lt;DeleteProductCommand, ErrorOr&lt;Deleted&gt;&gt;
+{
+    private readonly IProductRepository _repo;
+
+    public DeleteProductCommandHandler(IProductRepository repo)
+    {
+        _repo = repo;
+    }
+
+    public async Task&lt;ErrorOr&lt;Deleted&gt;&gt; Handle(DeleteProductCommand request, CancellationToken cancellationToken)
+    {
+        var product = await _repo.GetByIdAsync(request.Id);
+
+        if (product == null)
+        {
+            return Error.Validation(&quot;Product.Delete.NotFound&quot;,$&quot;Product with id {request.Id} does not exist&quot;);
+        }
+        
+        var deleted = await _repo.DeleteAsync(product);
+        
+        return deleted ? Result.Deleted : Error.Unexpected(&quot;Product.Delete.FailedToDelete&quot;,&quot;Failed to delete product&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[11,5,11,64,1],[12,5,12,6,1],[13,9,13,22,1],[14,5,14,6,1],[17,5,17,6,1],[18,9,18,60,1],[20,9,20,29,1],[21,9,21,10,1],[22,13,22,111,1],[25,9,25,56,1],[27,9,27,120,1],[28,5,28,6,1]]);
+    </script>
+  </body>
+</html>

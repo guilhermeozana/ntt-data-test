@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Sales\DeveloperStore.Sales.UnitTests\Application\Commands\CreateSaleCommandHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentAssertions;
+using NSubstitute;
+using DeveloperStore.Sales.Application.Commands.CreateSale;
+using DeveloperStore.Sales.Application.Common.Events;
+using DeveloperStore.Sales.Application.Common.Repositories;
+using DeveloperStore.Sales.Contracts.Dtos;
+using DeveloperStore.Sales.Domain.Entities;
+using DeveloperStore.Sales.Domain.ValueObjects;
+using Xunit;
+using AutoMapper;
+using ErrorOr;
+using DeveloperStore.Shared.SharedKernel.Domain.Events;
+
+namespace DeveloperStore.Sales.UnitTests.Application.Commands;
+
+public class CreateSaleCommandHandlerTests
+{
+    private readonly ISaleRepository _repo = Substitute.For&lt;ISaleRepository&gt;();
+    private readonly IDomainEventDispatcher _dispatcher = Substitute.For&lt;IDomainEventDispatcher&gt;();
+    private readonly IMapper _mapper = Substitute.For&lt;IMapper&gt;();
+
+    private CreateSaleCommandHandler CreateHandler() =&gt; new(_repo, _mapper, _dispatcher);
+
+    [Fact]
+    public async Task Handle_ShouldReturnSaleDto_WhenCommandIsValid()
+    {
+        // Arrange
+        var command = new CreateSaleCommand
+        {
+            Date = DateTime.Today.ToString(&quot;yyyy-MM-dd&quot;),
+            CustomerId = 1,
+            BranchId = 2,
+            Products = new List&lt;SaleItemDto&gt;
+            {
+                new() { ProductId = 10, Quantity = 5, UnitPrice = 100 },
+                new() { ProductId = 11, Quantity = 3, UnitPrice = 200 }
+            }
+        };
+
+        var handler = CreateHandler();
+
+        _mapper.Map&lt;SaleDto&gt;(Arg.Any&lt;Sale&gt;()).Returns(new SaleDto { SaleNumber = &quot;MockedSaleNumber&quot; });
+
+        // Act
+        var result = await handler.Handle(command, default);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.SaleNumber.Should().Be(&quot;MockedSaleNumber&quot;);
+
+        await _repo.Received(1).AddAsync(Arg.Any&lt;Sale&gt;());
+        await _dispatcher.Received(1).DispatchEventsAsync(Arg.Any&lt;IEnumerable&lt;IDomainEvent&gt;&gt;());
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnError_WhenItemIsInvalid()
+    {
+        var command = new CreateSaleCommand
+        {
+            Date = DateTime.Today.ToString(&quot;yyyy-MM-dd&quot;),
+            CustomerId = 1,
+            BranchId = 2,
+            Products = new List&lt;SaleItemDto&gt;
+            {
+                new() { ProductId = 10, Quantity = 25, UnitPrice = 100 }
+            }
+        };
+
+        var handler = CreateHandler();
+
+        var result = await handler.Handle(command, default);
+
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldClearEvents_AfterDispatch()
+    {
+        var command = new CreateSaleCommand
+        {
+            Date = DateTime.Today.ToString(&quot;yyyy-MM-dd&quot;),
+            CustomerId = 1,
+            BranchId = 1,
+            Products = new List&lt;SaleItemDto&gt;
+            {
+                new() { ProductId = 10, Quantity = 5, UnitPrice = 100 }
+            }
+        };
+
+        var handler = CreateHandler();
+
+        Sale capturedSale = null!;
+        await _repo.AddAsync(Arg.Do&lt;Sale&gt;(s =&gt; capturedSale = s));
+
+        _mapper.Map&lt;SaleDto&gt;(Arg.Any&lt;Sale&gt;()).Returns(new SaleDto());
+
+        await handler.Handle(command, default);
+
+        capturedSale.DomainEvents.Should().BeEmpty();
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[18,5,18,80,1],[19,5,19,100,1],[20,5,20,66,1],[22,57,22,89,1],[26,5,26,6,1],[28,9,38,11,1],[40,9,40,39,1],[42,9,42,104,1],[45,9,45,61,1],[48,9,48,43,1],[49,9,49,65,1],[51,9,51,59,1],[52,9,52,97,1],[53,5,53,6,1],[57,5,57,6,1],[58,9,67,11,1],[69,9,69,39,1],[71,9,71,61,1],[73,9,73,42,1],[74,9,74,66,1],[75,5,75,6,1],[79,5,79,6,1],[80,9,89,11,1],[91,9,91,39,1],[93,9,93,35,1],[94,9,94,48,1],[94,48,94,64,1],[94,64,94,67,1],[96,9,96,70,1],[98,9,98,48,1],[100,9,100,54,1],[101,5,101,6,1]]);
+    </script>
+  </body>
+</html>

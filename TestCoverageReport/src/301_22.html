@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Domain\Entities\User.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using DeveloperStore.Shared.SharedKernel.Domain;
+using DeveloperStore.Users.Domain.Enums;
+using DeveloperStore.Users.Domain.ValueObjects;
+
+namespace DeveloperStore.Users.Domain.Entities;
+
+public class User : AggregateRoot&lt;int&gt;
+{
+    public string Email { get; private set; }
+    public string Username { get; private set; }
+    public string Password { get; private set; }
+    public Name Name { get; private set; }
+    public Address Address { get; private set; }
+    public string Phone { get; private set; }
+    public UserStatus Status { get; private set; }
+    public UserRole Role { get; private set; }
+
+    private User() { }
+
+    public User(
+        string email,
+        string username,
+        string password,
+        Name name,
+        Address address,
+        string phone,
+        UserStatus status,
+        UserRole role)
+    {
+        Email = email;
+        Username = username;
+        Password = password;
+        Name = name;
+        Address = address;
+        Phone = phone;
+        Status = status;
+        Role = role;
+    }
+
+    public static User Create(
+        string email,
+        string username,
+        string password,
+        Name name,
+        Address address,
+        string phone,
+        UserStatus status,
+        UserRole role)
+    {
+        return new User(email, username, password, name, address, phone, status, role);
+    }
+
+    public void Update(
+        string email,
+        string username,
+        string password,
+        Name name,
+        Address address,
+        string phone,
+        UserStatus status,
+        UserRole role)
+    {
+        Email = email;
+        Username = username;
+        Password = password;
+        Name = name;
+        Address = address;
+        Phone = phone;
+        Status = status;
+        Role = role;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,27,9,31,1],[9,32,9,44,1],[10,30,10,34,1],[10,35,10,47,1],[11,30,11,34,1],[11,35,11,47,1],[12,24,12,28,1],[12,29,12,41,1],[13,30,13,34,1],[13,35,13,47,1],[14,27,14,31,1],[14,32,14,44,1],[15,32,15,36,1],[15,37,15,49,1],[16,28,16,32,1],[16,33,16,45,1],[18,5,18,19,0],[18,20,18,21,0],[18,22,18,23,0],[20,5,28,23,1],[29,5,29,6,1],[30,9,30,23,1],[31,9,31,29,1],[32,9,32,29,1],[33,9,33,21,1],[34,9,34,27,1],[35,9,35,23,1],[36,9,36,25,1],[37,9,37,21,1],[38,5,38,6,1],[49,5,49,6,1],[50,9,50,88,1],[51,5,51,6,1],[62,5,62,6,1],[63,9,63,23,1],[64,9,64,29,1],[65,9,65,29,1],[66,9,66,21,1],[67,9,67,27,1],[68,9,68,23,1],[69,9,69,25,1],[70,9,70,21,1],[71,5,71,6,1]]);
+    </script>
+  </body>
+</html>

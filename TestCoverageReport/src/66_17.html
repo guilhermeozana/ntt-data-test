@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Carts\DeveloperStore.Carts.Infrastructure\Repositories\CartRepository.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.EntityFrameworkCore;
+using DeveloperStore.Carts.Application.Common.Interfaces;
+using DeveloperStore.Carts.Domain.Entities;
+using DeveloperStore.Carts.Infrastructure.Context;
+using DeveloperStore.Shared.SharedKernel.Dtos;
+using DeveloperStore.Shared.SharedKernel.Extensions;
+using DeveloperStore.Shared.SharedKernel.Pagination;
+
+namespace DeveloperStore.Carts.Infrastructure.Repositories;
+
+public class CartRepository : ICartRepository
+{
+    private readonly CartsDbContext _context;
+
+    public CartRepository(CartsDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task&lt;PagedResult&lt;Cart&gt;&gt; GetPagedAsync(QueryCriteriaDto criteria)
+    {
+        IQueryable&lt;Cart&gt; filteredQuery = _context.Carts
+            .Include(c =&gt; c.Products)
+            .ApplyFiltering(criteria.Filters, criteria.MinValues, criteria.MaxValues);
+
+        var totalCount = await filteredQuery.CountAsync();
+
+        var pagedQuery = filteredQuery
+            .ApplyOrdering(criteria.Order)
+            .ApplyPagination(criteria.Page, criteria.Size);
+
+        var items = await pagedQuery.ToListAsync();
+
+        return new PagedResult&lt;Cart&gt;
+        {
+            Items = items,
+            TotalCount = totalCount
+        };
+    }
+
+    public async Task&lt;Cart?&gt; GetByIdAsync(int id)
+    {
+        return await _context.Carts
+            .Include(c =&gt; c.Products)
+            .FirstOrDefaultAsync(c =&gt; c.Id == id);
+    }
+
+    public async Task AddAsync(Cart cart)
+    {
+        await _context.Carts.AddAsync(cart);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(Cart cart)
+    {
+        _context.Carts.Update(cart);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task&lt;bool&gt; DeleteAsync(Cart cart)
+    {
+        _context.Carts.Remove(cart);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task&lt;bool&gt; ExistsAsync(int id)
+    {
+        return await _context.Carts.AnyAsync(c =&gt; c.Id == id);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,5,15,50,1],[16,5,16,6,1],[17,9,17,28,1],[18,5,18,6,1],[21,5,21,6,1],[22,9,24,87,1],[26,9,26,59,1],[28,9,30,60,1],[32,9,32,52,1],[34,9,38,11,1],[39,5,39,6,1],[42,5,42,6,1],[43,9,45,51,1],[46,5,46,6,1],[49,5,49,6,1],[50,9,50,45,1],[51,9,51,43,1],[52,5,52,6,1],[55,5,55,6,1],[56,9,56,37,1],[57,9,57,43,1],[58,5,58,6,1],[61,5,61,6,1],[62,9,62,37,1],[63,9,63,43,1],[64,9,64,21,1],[65,5,65,6,1],[68,5,68,6,1],[69,9,69,63,1],[70,5,70,6,1]]);
+    </script>
+  </body>
+</html>

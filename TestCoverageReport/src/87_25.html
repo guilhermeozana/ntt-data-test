@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Auth\DeveloperStore.Auth.UnitTests\Api\Controllers\AuthControllerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Text.Json;
+using AutoMapper;
+using DeveloperStore.Auth.Api.Controllers;
+using DeveloperStore.Auth.Application.Commands.Login;
+using DeveloperStore.Auth.Contracts.Requests;
+using DeveloperStore.Auth.Contracts.Response;
+using ErrorOr;
+using FluentAssertions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using NSubstitute;
+
+namespace DeveloperStore.Auth.UnitTests.Api.Controllers;
+
+public class AuthControllerTests
+{
+    private readonly IMediator _mediator = Substitute.For&lt;IMediator&gt;();
+    private readonly IMapper _mapper = Substitute.For&lt;IMapper&gt;();
+    private readonly AuthController _controller;
+
+    public AuthControllerTests()
+    {
+        _controller = new AuthController(_mediator, _mapper);
+    }
+
+    private static JsonElement ToJsonElement(object value)
+    {
+        var json = JsonSerializer.Serialize(value);
+        return JsonDocument.Parse(json).RootElement;
+    }
+
+    [Fact]
+    public async Task Login_ShouldReturnOK_WhenLoginIsSuccessful()
+    {
+        // Arrange
+        var request = new LoginRequest { Username = &quot;test&quot;, Password = &quot;123456&quot; };
+        var command = new LoginCommand(request.Username, request.Password);
+        var token = &quot;jwt-token-123&quot;;
+
+        _mapper.Map&lt;LoginCommand&gt;(request).Returns(command);
+        _mediator.Send(command, Arg.Any&lt;CancellationToken&gt;())
+            .Returns(&quot;jwt-token-123&quot;);
+
+        // Act
+        var result = await _controller.Login(request);
+
+        // Assert
+        var okObjectResult = result as OkObjectResult;
+        okObjectResult.Should().NotBeNull();
+        okObjectResult!.StatusCode.Should().Be(200);
+
+        var response = okObjectResult.Value as LoginResponse;
+        response.Should().NotBeNull();
+        response!.Token.Should().Be(token);
+    }
+
+    [Fact]
+    public async Task Login_ShouldReturnProblem_WhenLoginFails()
+    {
+        // Arrange
+        var request = new LoginRequest { Username = &quot;test&quot;, Password = &quot;wrong&quot; };
+        var command = new LoginCommand(request.Username, request.Password);
+        var error = Error.Unauthorized( &quot;Invalid credentials&quot;, &quot;Invalid credentials&quot;);
+
+        _mapper.Map&lt;LoginCommand&gt;(request).Returns(command);
+        _mediator.Send(command, Arg.Any&lt;CancellationToken&gt;())
+            .Returns(new List&lt;Error&gt;{error});
+
+        // Act
+        var result = await _controller.Login(request);
+
+        // Assert
+        var objectResult = result as ObjectResult;
+        objectResult.Should().NotBeNull();
+        objectResult!.StatusCode.Should().Be(401);
+
+        var root = ToJsonElement(objectResult.Value!);
+        root.GetProperty(&quot;type&quot;).GetString().Should().Be(&quot;AuthenticationError&quot;);
+        root.GetProperty(&quot;error&quot;).GetString().Should().Be(&quot;Invalid authentication token&quot;);
+        root.GetProperty(&quot;detail&quot;).GetString().Should().Be(&quot;Invalid credentials&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[17,5,17,72,1],[18,5,18,66,1],[21,5,21,33,1],[22,5,22,6,1],[23,9,23,62,1],[24,5,24,6,1],[27,5,27,6,1],[28,9,28,52,1],[29,9,29,53,1],[30,5,30,6,1],[34,5,34,6,1],[36,9,36,83,1],[37,9,37,76,1],[38,9,38,37,1],[40,9,40,61,1],[41,9,42,39,1],[45,9,45,55,1],[48,9,48,55,1],[49,9,49,45,1],[50,9,50,53,1],[52,9,52,62,1],[53,9,53,39,1],[54,9,54,44,1],[55,5,55,6,1],[59,5,59,6,1],[61,9,61,82,1],[62,9,62,76,1],[63,9,63,87,1],[65,9,65,61,1],[66,9,67,46,1],[70,9,70,55,1],[73,9,73,51,1],[74,9,74,43,1],[75,9,75,51,1],[77,9,77,55,1],[78,9,78,81,1],[79,9,79,91,1],[80,9,80,83,1],[81,5,81,6,1]]);
+    </script>
+  </body>
+</html>

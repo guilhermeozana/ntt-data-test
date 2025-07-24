@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Users\DeveloperStore.Users.UnitTests\Application\Commands\UpdateUserCommandHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using FluentAssertions;
+using NSubstitute;
+using DeveloperStore.Shared.Contracts.Dtos;
+using DeveloperStore.Users.Application.Commands.UpdateUser;
+using DeveloperStore.Users.Application.Common.Repositories;
+using DeveloperStore.Users.Domain.Entities;
+using DeveloperStore.Users.Domain.Enums;
+using DeveloperStore.Users.Domain.ValueObjects;
+
+namespace DeveloperStore.Users.UnitTests.Application.Commands;
+
+public class UpdateUserCommandHandlerTests
+{
+    private readonly IUserRepository _repo = Substitute.For&lt;IUserRepository&gt;();
+    private readonly IMapper _mapper = Substitute.For&lt;IMapper&gt;();
+    private UpdateUserCommandHandler CreateHandler() =&gt; new(_repo, _mapper);
+
+    private UpdateUserCommand BuildCommand() =&gt;
+        new UpdateUserCommand
+        {
+            Id = 1,
+            Email = &quot;updated@email.com&quot;,
+            Username = &quot;updated_user&quot;,
+            Password = &quot;new_password&quot;,
+            Phone = &quot;21988889999&quot;,
+            Status = &quot;Suspended&quot;,
+            Role = &quot;Manager&quot;,
+            Name = new NameDto
+            {
+                Firstname = &quot;Lucas&quot;,
+                Lastname = &quot;Silva&quot;
+            },
+            Address = new AddressDto
+            {
+                City = &quot;S&#227;o Paulo&quot;,
+                Street = &quot;Av. Paulista&quot;,
+                Number = 500,
+                Zipcode = &quot;01311-000&quot;,
+                Geolocation = new GeolocationDto
+                {
+                    Lat = &quot;-23.561684&quot;,
+                    Long = &quot;-46.655981&quot;
+                }
+            }
+        };
+
+    [Fact]
+    public async Task Handle_ShouldReturnError_WhenUserNotFound()
+    {
+        var command = BuildCommand();
+        _repo.GetByIdAsync(command.Id).Returns((User?)null);
+
+        var handler = CreateHandler();
+        var result = await handler.Handle(command, default);
+
+        result.IsError.Should().BeTrue();
+        result.FirstError.Code.Should().Be(&quot;User.NotFound&quot;);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldUpdateUser_WhenValid()
+    {
+        var command = BuildCommand();
+        var existingUser = User.Create(
+            email: &quot;old@email.com&quot;,
+            username: &quot;olduser&quot;,
+            password: &quot;oldpass&quot;,
+            name: new Name(&quot;Ana&quot;, &quot;Souza&quot;),
+            address: new Address(&quot;RJ&quot;, &quot;Rua 1&quot;, 123, &quot;20000-000&quot;, new Geolocation(&quot;0&quot;, &quot;0&quot;)),
+            phone: &quot;21999999999&quot;,
+            status: UserStatus.Active,
+            role: UserRole.Customer
+        );
+
+        _repo.GetByIdAsync(command.Id).Returns(existingUser);
+        _mapper.Map&lt;UserDto&gt;(existingUser).Returns(new UserDto { Email = command.Email });
+
+        var handler = CreateHandler();
+        var result = await handler.Handle(command, default);
+
+        result.IsError.Should().BeFalse();
+        result.Value.Email.Should().Be(&quot;updated@email.com&quot;);
+
+        await _repo.Received(1).UpdateAsync(existingUser);
+    }
+
+    [Theory]
+    [InlineData(&quot;Active&quot;, UserStatus.Active)]
+    [InlineData(&quot;INACTIVE&quot;, UserStatus.Inactive)]
+    [InlineData(&quot;suspended&quot;, UserStatus.Suspended)]
+    public async Task Handle_ShouldParseUserStatusCorrectly(string input, UserStatus expected)
+    {
+        var command = BuildCommand();
+        command.Status = input;
+
+        var existingUser = User.Create(
+            email: &quot;temp@email.com&quot;,
+            username: &quot;temp&quot;,
+            password: &quot;temp&quot;,
+            name: new Name(&quot;Temp&quot;, &quot;User&quot;),
+            address: new Address(&quot;Cidade&quot;, &quot;Rua&quot;, 1, &quot;00000-000&quot;, new Geolocation(&quot;0&quot;, &quot;0&quot;)),
+            phone: &quot;999999999&quot;,
+            status: UserStatus.Active,
+            role: UserRole.Customer
+        );
+
+        _repo.GetByIdAsync(command.Id).Returns(existingUser);
+        _mapper.Map&lt;UserDto&gt;(Arg.Any&lt;User&gt;()).Returns(new UserDto());
+
+        var handler = CreateHandler();
+        await handler.Handle(command, default);
+
+        existingUser.Status.Should().Be(expected);
+    }
+
+    [Theory]
+    [InlineData(&quot;Customer&quot;, UserRole.Customer)]
+    [InlineData(&quot;ADMIN&quot;, UserRole.Admin)]
+    [InlineData(&quot;manager&quot;, UserRole.Manager)]
+    public async Task Handle_ShouldParseUserRoleCorrectly(string input, UserRole expected)
+    {
+        var command = BuildCommand();
+        command.Role = input;
+
+        var existingUser = User.Create(
+            email: &quot;temp@email.com&quot;,
+            username: &quot;temp&quot;,
+            password: &quot;temp&quot;,
+            name: new Name(&quot;Temp&quot;, &quot;User&quot;),
+            address: new Address(&quot;Cidade&quot;, &quot;Rua&quot;, 1, &quot;00000-000&quot;, new Geolocation(&quot;0&quot;, &quot;0&quot;)),
+            phone: &quot;999999999&quot;,
+            status: UserStatus.Active,
+            role: UserRole.Customer
+        );
+
+        _repo.GetByIdAsync(command.Id).Returns(existingUser);
+        _mapper.Map&lt;UserDto&gt;(Arg.Any&lt;User&gt;()).Returns(new UserDto());
+
+        var handler = CreateHandler();
+        await handler.Handle(command, default);
+
+        existingUser.Role.Should().Be(expected);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,5,15,80,1],[16,5,16,66,1],[17,57,17,76,1],[20,9,46,10,1],[50,5,50,6,1],[51,9,51,38,1],[52,9,52,61,1],[54,9,54,39,1],[55,9,55,61,1],[57,9,57,42,1],[58,9,58,61,1],[59,5,59,6,1],[63,5,63,6,1],[64,9,64,38,1],[65,9,74,11,1],[76,9,76,62,1],[77,9,77,91,1],[79,9,79,39,1],[80,9,80,61,1],[82,9,82,43,1],[83,9,83,61,1],[85,9,85,59,1],[86,5,86,6,1],[93,5,93,6,1],[94,9,94,38,1],[95,9,95,32,1],[97,9,106,11,1],[108,9,108,62,1],[109,9,109,70,1],[111,9,111,39,1],[112,9,112,48,1],[114,9,114,51,1],[115,5,115,6,1],[122,5,122,6,1],[123,9,123,38,1],[124,9,124,30,1],[126,9,135,11,1],[137,9,137,62,1],[138,9,138,70,1],[140,9,140,39,1],[141,9,141,48,1],[143,9,143,49,1],[144,5,144,6,1]]);
+    </script>
+  </body>
+</html>

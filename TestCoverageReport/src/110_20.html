@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Users\DeveloperStore.Users.Application\Commands\CreateUser\CreateUserCommandHandler.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using ErrorOr;
+using MediatR;
+using DeveloperStore.Shared.Contracts.Dtos;
+using DeveloperStore.Users.Application.Common.Repositories;
+using DeveloperStore.Users.Domain.Entities;
+using DeveloperStore.Users.Domain.Enums;
+using DeveloperStore.Users.Domain.ValueObjects;
+
+namespace DeveloperStore.Users.Application.Commands.CreateUser;
+
+public class CreateUserCommandHandler : IRequestHandler&lt;CreateUserCommand, ErrorOr&lt;UserDto&gt;&gt;
+{
+    private readonly IUserRepository _repo;
+    private readonly IMapper _mapper;
+
+    public CreateUserCommandHandler(IUserRepository repo, IMapper mapper)
+    {
+        _repo = repo;
+        _mapper = mapper;
+    }
+
+    public async Task&lt;ErrorOr&lt;UserDto&gt;&gt; Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    {
+        var user = User.Create(
+            email: request.Email,
+            username: request.Username,
+            password: request.Password,
+            name: new Name(request.Name.Firstname, request.Name.Lastname),
+            address: new Address(
+                request.Address.City,
+                request.Address.Street,
+                request.Address.Number,
+                request.Address.Zipcode,
+                new Geolocation(request.Address.Geolocation.Lat, request.Address.Geolocation.Long)
+            ),
+            phone: request.Phone,
+            status: Enum.Parse&lt;UserStatus&gt;(request.Status, ignoreCase: true),
+            role: Enum.Parse&lt;UserRole&gt;(request.Role, ignoreCase: true)
+        );
+
+        await _repo.AddAsync(user);
+
+        var userDto = _mapper.Map&lt;UserDto&gt;(user);
+
+        return userDto;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[17,5,17,74,1],[18,5,18,6,1],[19,9,19,22,1],[20,9,20,26,1],[21,5,21,6,1],[24,5,24,6,1],[25,9,40,11,1],[42,9,42,36,1],[44,9,44,50,1],[46,9,46,24,1],[47,5,47,6,1]]);
+    </script>
+  </body>
+</html>

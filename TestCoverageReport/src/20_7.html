@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Shared\DeveloperStore.Shared.Api\Queries\RequestQueryOptions.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Microsoft.AspNetCore.Mvc;
+
+namespace DeveloperStore.Shared.Api.Queries;
+
+public class RequestQueryOptions
+{
+    [FromQuery(Name = &quot;_page&quot;)]
+    public int Page { get; set; } = 1;
+
+    [FromQuery(Name = &quot;_size&quot;)]
+    public int Size { get; set; } = 10;
+
+    [FromQuery(Name = &quot;_order&quot;)]
+    public string? Order { get; set; }
+
+    [FromQuery]
+    public Dictionary&lt;string, string&gt;? Filters { get; set; }
+
+    [FromQuery]
+    public Dictionary&lt;string, decimal&gt;? MinValues { get; set; }
+
+    [FromQuery]
+    public Dictionary&lt;string, decimal&gt;? MaxValues { get; set; }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[8,23,8,27,1],[8,28,8,32,1],[8,37,8,38,1],[11,23,11,27,1],[11,28,11,32,1],[11,37,11,39,1],[14,28,14,32,1],[14,33,14,37,1],[17,50,17,54,1],[17,55,17,59,1],[20,53,20,57,1],[20,58,20,62,1],[23,53,23,57,1],[23,58,23,62,1]]);
+    </script>
+  </body>
+</html>

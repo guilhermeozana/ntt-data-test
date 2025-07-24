@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Carts\DeveloperStore.Carts.UnitTests\Application\Validators\UpdateCartCommandValidatorTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using FluentAssertions;
+using DeveloperStore.Carts.Application.Commands.UpdateCart;
+using DeveloperStore.Carts.Contracts.Dtos;
+
+namespace DeveloperStore.Carts.UnitTests.Application.Validators;
+
+public class UpdateCartCommandValidatorTests
+{
+    private readonly UpdateCartCommandValidator _validator = new();
+
+    private UpdateCartCommand BuildValidCommand() =&gt; new()
+    {
+        Id = 10,
+        UserId = 99,
+        Date = &quot;2025-07-23&quot;,
+        Products = new List&lt;CartItemDto&gt;
+        {
+            new() { ProductId = 1001, Quantity = 2 },
+            new() { ProductId = 1002, Quantity = 1 }
+        }
+    };
+
+    [Fact]
+    public void Should_PassValidation_WhenCommandIsValid()
+    {
+        var command = BuildValidCommand();
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Should_HaveError_WhenIdIsMissing()
+    {
+        var command = BuildValidCommand();
+        command.Id = 0;
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; e.PropertyName == &quot;Id&quot; &amp;&amp; e.ErrorMessage == &quot;Cart ID is required.&quot;);
+    }
+
+    [Fact]
+    public void Should_HaveError_WhenUserIdIsMissing()
+    {
+        var command = BuildValidCommand();
+        command.UserId = 0;
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; e.PropertyName == &quot;UserId&quot; &amp;&amp; e.ErrorMessage == &quot;User ID is required.&quot;);
+    }
+
+    [Fact]
+    public void Should_HaveError_WhenDateIsInvalid()
+    {
+        var command = BuildValidCommand();
+        command.Date = &quot;not-a-date&quot;;
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; e.PropertyName == &quot;Date&quot; &amp;&amp; e.ErrorMessage == &quot;Date must be a valid format.&quot;);
+    }
+
+    [Fact]
+    public void Should_HaveError_WhenProductIdIsMissing()
+    {
+        var command = BuildValidCommand();
+        command.Products[0].ProductId = 0;
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; e.PropertyName.EndsWith(&quot;ProductId&quot;) &amp;&amp; e.ErrorMessage == &quot;Product ID is required.&quot;);
+    }
+
+    [Fact]
+    public void Should_HaveError_WhenQuantityIsZero()
+    {
+        var command = BuildValidCommand();
+        command.Products[1].Quantity = 0;
+
+        var result = _validator.Validate(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e =&gt; e.PropertyName.EndsWith(&quot;Quantity&quot;) &amp;&amp; e.ErrorMessage == &quot;Quantity must be greater than zero.&quot;);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,5,9,68,1],[11,54,21,6,1],[25,5,25,6,1],[26,9,26,43,1],[28,9,28,51,1],[30,9,30,42,1],[31,5,31,6,1],[35,5,35,6,1],[36,9,36,43,1],[37,9,37,24,1],[39,9,39,51,1],[41,9,41,43,1],[42,9,42,113,1],[43,5,43,6,1],[47,5,47,6,1],[48,9,48,43,1],[49,9,49,28,1],[51,9,51,51,1],[53,9,53,43,1],[54,9,54,117,1],[55,5,55,6,1],[59,5,59,6,1],[60,9,60,43,1],[61,9,61,37,1],[63,9,63,51,1],[65,9,65,43,1],[66,9,66,123,1],[67,5,67,6,1],[71,5,71,6,1],[72,9,72,43,1],[73,9,73,43,1],[75,9,75,51,1],[77,9,77,43,1],[78,9,78,130,1],[79,5,79,6,1],[83,5,83,6,1],[84,9,84,43,1],[85,9,85,42,1],[87,9,87,51,1],[89,9,89,43,1],[90,9,90,141,1],[91,5,91,6,1]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\tests\Products\DeveloperStore.Products.UnitTests\Application\Queries\GetAllProductsQueryHandlerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using FluentAssertions;
+using NSubstitute;
+using DeveloperStore.Products.Application.Common.Interfaces;
+using DeveloperStore.Products.Application.Queries.GetAllProducts;
+using DeveloperStore.Products.Contracts.Dtos;
+using DeveloperStore.Products.Domain.Entities;
+using DeveloperStore.Products.Domain.ValueObjects;
+using DeveloperStore.Shared.SharedKernel.Dtos;
+using DeveloperStore.Shared.SharedKernel.Pagination;
+
+namespace DeveloperStore.Products.UnitTests.Application.Queries;
+
+public class GetAllProductsQueryHandlerTests
+{
+    private readonly IProductRepository _repo = Substitute.For&lt;IProductRepository&gt;();
+    private readonly IMapper _mapper = Substitute.For&lt;IMapper&gt;();
+    private GetAllProductsQueryHandler CreateHandler() =&gt; new(_repo, _mapper);
+
+    [Fact]
+    public async Task Handle_ShouldReturnPagedProducts_WhenProductsExist()
+    {
+        // Arrange
+        var criteria = new QueryCriteriaDto(
+            page: 2,
+            size: 2,
+            order: &quot;title&quot;,
+            filters: new Dictionary&lt;string, string&gt; { [&quot;category&quot;] = &quot;Eletr&#244;nicos&quot; },
+            minValues: null,
+            maxValues: null
+        );
+
+        var query = new GetAllProductsQuery(criteria);
+
+        var domainProducts = new List&lt;Product&gt;
+        {
+            Product.Create(&quot;Monitor&quot;, 799.99m, &quot;Full HD&quot;, &quot;Eletr&#244;nicos&quot;, &quot;monitor.png&quot;, new Rating(4.5, 120)),
+            Product.Create(&quot;Teclado&quot;, 199.90m, &quot;Mec&#226;nico RGB&quot;, &quot;Eletr&#244;nicos&quot;, &quot;teclado.png&quot;, new Rating(4.7, 85))
+        };
+
+        var pagedResult = new PagedResult&lt;Product&gt;
+        {
+            Items = domainProducts,
+            TotalCount = 5 // Simula total em m&#250;ltiplas p&#225;ginas
+        };
+
+        _repo.GetAllAsync(criteria).Returns(pagedResult);
+
+        _mapper.Map&lt;List&lt;ProductDto&gt;&gt;(domainProducts).Returns(new List&lt;ProductDto&gt;
+        {
+            new() { Title = &quot;Monitor&quot;, Price = 799.99m },
+            new() { Title = &quot;Teclado&quot;, Price = 199.90m }
+        });
+
+        var handler = CreateHandler();
+
+        // Act
+        var result = await handler.Handle(query, default);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Data.Should().HaveCount(2);
+        result.Value.TotalItems.Should().Be(5);
+        result.Value.CurrentPage.Should().Be(2);
+        result.Value.TotalPages.Should().Be(3); // 5 itens / 2 por p&#225;gina
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnEmptyList_WhenNoProductsFound()
+    {
+        var criteria = new QueryCriteriaDto(1, 10, null, null, null, null);
+        var query = new GetAllProductsQuery(criteria);
+
+        _repo.GetAllAsync(criteria).Returns(new PagedResult&lt;Product&gt;
+        {
+            Items = new List&lt;Product&gt;(),
+            TotalCount = 0
+        });
+
+        _mapper.Map&lt;List&lt;ProductDto&gt;&gt;(Arg.Any&lt;List&lt;Product&gt;&gt;()).Returns(new List&lt;ProductDto&gt;());
+
+        var handler = CreateHandler();
+        var result = await handler.Handle(query, default);
+
+        result.IsError.Should().BeFalse();
+        result.Value.Data.Should().BeEmpty();
+        result.Value.TotalItems.Should().Be(0);
+        result.Value.TotalPages.Should().Be(0);
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,5,16,86,1],[17,5,17,66,1],[18,59,18,78,1],[22,5,22,6,1],[24,9,31,11,1],[33,9,33,55,1],[35,9,39,11,1],[41,9,45,11,1],[47,9,47,58,1],[49,9,53,12,1],[55,9,55,39,1],[58,9,58,59,1],[61,9,61,43,1],[62,9,62,49,1],[63,9,63,48,1],[64,9,64,49,1],[65,9,65,48,1],[66,5,66,6,1],[70,5,70,6,1],[71,9,71,76,1],[72,9,72,55,1],[74,9,78,12,1],[80,9,80,97,1],[82,9,82,39,1],[83,9,83,59,1],[85,9,85,43,1],[86,9,86,46,1],[87,9,87,48,1],[88,9,88,48,1],[89,5,89,6,1]]);
+    </script>
+  </body>
+</html>

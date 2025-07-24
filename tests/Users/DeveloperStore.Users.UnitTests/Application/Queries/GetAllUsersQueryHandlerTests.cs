@@ -23,7 +23,7 @@ public class GetAllUsersQueryHandlerTests
         // Arrange
         var criteria = new QueryCriteriaDto(
             page: 1,
-            size: 2, // ⬅️ Mudado para simular 3 páginas (5 / 2 = 2.5 → 3)
+            size: 2,
             order: "username",
             filters: new Dictionary<string, string> { ["status"] = "active" },
             minValues: null,

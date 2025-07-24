@@ -12,6 +12,7 @@
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.0"/>
         <PackageReference Include="FluentAssertions" Version="8.5.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.7" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
         <PackageReference Include="NSubstitute" Version="5.3.0" />
         <PackageReference Include="xunit" Version="2.5.3"/>
@@ -23,6 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\src\Users\DeveloperStore.Users.Api\DeveloperStore.Users.Api.csproj" />
       <ProjectReference Include="..\..\..\src\Users\DeveloperStore.Users.Application\DeveloperStore.Users.Application.csproj" />
       <ProjectReference Include="..\..\..\src\Users\DeveloperStore.Users.Contracts\DeveloperStore.Users.Contracts.csproj" />
       <ProjectReference Include="..\..\..\src\Users\DeveloperStore.Users.Domain\DeveloperStore.Users.Domain.csproj" />

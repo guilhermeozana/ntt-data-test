@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\tests\test-ntt-data\DeveloperStore\src\Sales\DeveloperStore.Sales.Application\Commands\CreateSale\CreateSaleCommandHandler.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using AutoMapper;
+using ErrorOr;
+using MediatR;
+using DeveloperStore.Sales.Application.Commands.CreateSale;
+using DeveloperStore.Sales.Application.Common.Events;
+using DeveloperStore.Sales.Application.Common.Repositories;
+using DeveloperStore.Sales.Contracts.Dtos;
+using DeveloperStore.Sales.Domain.Entities;
+using DeveloperStore.Shared.SharedKernel.Domain.Events;
+
+namespace DeveloperStore.Sales.Application.Commands.CreateSale;
+
+public class CreateSaleCommandHandler : IRequestHandler&lt;CreateSaleCommand, ErrorOr&lt;SaleDto&gt;&gt;
+{
+    private readonly ISaleRepository _repo;
+    private readonly IMapper _mapper;
+    private readonly IDomainEventDispatcher _dispatcher;
+
+    public CreateSaleCommandHandler(
+        ISaleRepository repo,
+        IMapper mapper,
+        IDomainEventDispatcher dispatcher)
+    {
+        _repo = repo;
+        _mapper = mapper;
+        _dispatcher = dispatcher;
+    }
+
+    public async Task&lt;ErrorOr&lt;SaleDto&gt;&gt; Handle(CreateSaleCommand request, CancellationToken cancellationToken)
+    {
+        var sale = Sale.Create(
+            saleNumber: GenerateSaleNumber(),
+            date: DateTime.Parse(request.Date).ToUniversalTime(),
+            customerId: request.CustomerId,
+            branchId: request.BranchId
+        );
+
+        foreach (var item in request.Products)
+        {
+            var result = sale.AddItem(
+                productId: item.ProductId,
+                quantity: item.Quantity,
+                unitPrice: item.UnitPrice
+            );
+
+            if (result.IsError)
+                return result.Errors;
+        }
+
+        await _repo.AddAsync(sale);
+
+        await _dispatcher.DispatchEventsAsync(sale.DomainEvents);
+        sale.ClearDomainEvents();
+
+        var saleDto = _mapper.Map&lt;SaleDto&gt;(sale);
+        return saleDto;
+    }
+
+    private string GenerateSaleNumber()
+    {
+        return $&quot;S-{DateTime.UtcNow:yyyyMMddHHmmss}-{Guid.NewGuid().ToString().Substring(0, 4).ToUpper()}&quot;;
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[19,5,22,43,1],[23,5,23,6,1],[24,9,24,22,1],[25,9,25,26,1],[26,9,26,34,1],[27,5,27,6,1],[30,5,30,6,1],[31,9,36,11,1],[38,9,38,16,1],[38,18,38,26,1],[38,27,38,29,1],[38,30,38,46,1],[39,9,39,10,1],[40,13,44,15,1],[46,13,46,32,1],[47,17,47,38,1],[48,9,48,10,1],[50,9,50,36,1],[52,9,52,66,1],[53,9,53,34,1],[55,9,55,50,1],[56,9,56,24,1],[57,5,57,6,1],[60,5,60,6,1],[61,9,61,108,1],[62,5,62,6,1]]);
+    </script>
+  </body>
+</html>
