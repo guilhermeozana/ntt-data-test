@@ -1,9 +1,8 @@
 using AutoMapper;
-using ErrorOr;
-using MediatR;
 using DeveloperStore.Products.Application.Common.Interfaces;
 using DeveloperStore.Products.Contracts.Dtos;
-using DeveloperStore.Products.Domain.Entities;
+using ErrorOr;
+using MediatR;
 
 namespace DeveloperStore.Products.Application.Queries.GetProductById;
 
@@ -22,7 +21,7 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, E
     {
         var product = await _repo.GetByIdAsync(request.Id);
         if (product == null)
-            return Error.NotFound("Product not found.");
+            return Error.NotFound("Product.NotFound","Product not found.");
         
         var productDto = _mapper.Map<ProductDto>(product);
 

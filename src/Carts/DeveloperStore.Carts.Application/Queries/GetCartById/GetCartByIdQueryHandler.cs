@@ -1,8 +1,8 @@
 using AutoMapper;
-using ErrorOr;
-using MediatR;
 using DeveloperStore.Carts.Application.Common.Interfaces;
 using DeveloperStore.Carts.Contracts.Dtos;
+using ErrorOr;
+using MediatR;
 
 namespace DeveloperStore.Carts.Application.Queries.GetCartById;
 
@@ -21,7 +21,7 @@ public class GetCartByIdQueryHandler : IRequestHandler<GetCartByIdQuery, ErrorOr
     {
         var cart = await _repo.GetByIdAsync(request.Id);
         if (cart == null)
-            return Error.NotFound("Cart not found.");
+            return Error.NotFound("Cart.NotFound","Cart not found.");
         
         var cartDto = _mapper.Map<CartDto>(cart);
 
